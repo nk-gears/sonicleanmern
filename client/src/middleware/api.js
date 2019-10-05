@@ -30,13 +30,11 @@ const apiMiddleware = ({ dispatch }) => next => action => {
         dispatch(onStart(label));
     }
 
-    console.log(`/api${url}`, data)
-
-    let baseUrl=`/api${url}`;
+    console.log(url, data)
 
     axios
         .request({
-            baseUrl,
+            url,
             method,
             headers,
             [dataOrParams]: data

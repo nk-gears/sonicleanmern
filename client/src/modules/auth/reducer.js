@@ -39,7 +39,7 @@ export const logout = createAction(LOGOUT)
 export const fetchRegister = (data) => {
 
         // const appBaseURL = process.env.REACT_APP_API_URL;
-        const apiUrl = `/users/register`
+        const apiUrl = `/api/users/register`
 
         return apiAction({
             url: apiUrl,
@@ -54,7 +54,7 @@ export const fetchRegister = (data) => {
 
 export const fetchLogin = (data) => {
     // const appBaseURL = process.env.REACT_APP_API_URL;
-        const apiUrl = `/users/login`
+        const apiUrl = `/api/users/login`
 
         return apiAction({
             url: apiUrl,
