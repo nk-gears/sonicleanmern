@@ -52,11 +52,9 @@
     "simple-line-icons": "^2.4.1",
     "spinkit": "1.2.5",
     "universal-cookie": "^4.0.0",
-    "yup": "^0.26.10"
-  },
-  "devDependencies": {
-    "mutationobserver-shim": "^0.3.3",
-    "react-scripts": "2.1.8"
+    "yup": "^0.26.10",
+    "react-scripts": "2.1.8",
+    "mutationobserver-shim": "^0.3.3"
   },
   "scripts": {
     "start": "react-scripts start",
