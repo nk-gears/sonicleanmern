@@ -1,0 +1,10 @@
+
+.AddPaymentMethod {
+    &__add {
+        cursor: pointer;
+        &:hover {
+            background-color: #20a8d8;
+            color: white;
+        }
+    }
+}
