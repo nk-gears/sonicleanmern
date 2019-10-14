@@ -1,25 +1,45 @@
-import React from 'react'
-
-import {Row, Col, Card, CardBody, ListGroup, ListGroupItem} from 'reactstrap'
+import React, { useEffect } from 'react'
+import {
+    Row, 
+    Col, 
+    Card, 
+    CardBody, 
+    ListGroup, 
+    ListGroupItem
+} from 'reactstrap'
+import { connect } from "react-redux";
+import {fetchAccountData} from 'modules/account'
+import AvatarModal from 'components/AvatarModal/AvatarModal'
 
 import './UserCard.scss'
 
-const UserCard = () => {
+const UserCard = ({
+    fetchAccount,
+    accountData,
+    state
+}) => {
+
+    useEffect(()=> {
+        fetchAccount()
+    }, [])
+
     return (
         <div className="UserCard text-center">
             
             <Card>
                 <CardBody className="position-relative">
-                    <span className="badge p-2 badge-danger position-absolute">Admin</span>
+                    <span className="badge p-2 badge-danger position-absolute text-capitalize" >
+                        {accountData.roles}
+                    </span>
                     <Row>
                         <Col>
-                            <img src="assets/img/avatars/8.jpg" className="img-avatar120" alt="user" />
+                            <AvatarModal />
                          </Col>
                     </Row>
                     <Row>
                         <Col>
-                            <h2>Nina Mcintire</h2>
-                            <h5 className="text-muted font-weight-normal">Brother's Floor Covering</h5>
+                            <h2>{accountData.firstName} {accountData.lastName}</h2>
+                            {/* <h5 className="text-muted font-weight-normal">Brother's Floor Covering</h5> */}
                         </Col>
                     </Row>
                     <Row className="mt-4 mb-3">
@@ -30,7 +50,7 @@ const UserCard = () => {
                                 </ListGroupItem>
                                 <ListGroupItem className="d-flex justify-content-between">
                                     <h5>Dealer Since</h5>
-                                    <h5 className="text-muted font-weight-normal">Feb. 12th, 2018</h5>
+                                    <h5 className="text-muted font-weight-normal">Oct. 5th, 2019</h5>
                                 </ListGroupItem>
                                 <ListGroupItem className="d-flex justify-content-between">
                                     <h5>Orders Placed</h5>
@@ -38,7 +58,7 @@ const UserCard = () => {
                                 </ListGroupItem>
                                 <ListGroupItem className="d-flex justify-content-between">
                                     <h5>Store Locations</h5>
-                                    <h5 className="text-muted font-weight-normal">1</h5>
+                                    <h5 className="text-muted font-weight-normal">{accountData.storesCount}</h5>
                                 </ListGroupItem>
                             </ListGroup>
                         </Col>
@@ -49,4 +69,21 @@ const UserCard = () => {
     )
 }
 
-export default UserCard
+const mapStateToProps = ({ account }) => {
+    const { accountData, state } = account;
+    return { accountData, state };
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        fetchAccount: () => {
+            dispatch(fetchAccountData());
+        }
+    }
+}
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(UserCard);
+

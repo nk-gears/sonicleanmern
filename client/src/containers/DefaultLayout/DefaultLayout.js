@@ -3,7 +3,7 @@ import { Redirect, Route, Switch } from 'react-router-dom';
 import { Container } from 'reactstrap';
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { logout } from "modules/auth";
+import { logout, loginResetState } from "modules/auth";
 import {
   AppAside,
   AppFooter,
@@ -19,6 +19,7 @@ import {
 import navigation from '../../_nav';
 // routes config
 import routes from '../../Routes/routes';
+import {getUploadedImage} from '_helpers/helper'
 
 const DefaultAside = React.lazy(() => import('./DefaultAside'));
 const DefaultFooter = React.lazy(() => import('./DefaultFooter'));
@@ -43,14 +44,13 @@ class DefaultLayout extends Component {
         <div className="app-body">
           <AppSidebar fixed display="lg">
             <AppSidebarHeader >
-              <img src="assets/img/avatars/8.jpg" className="img-avatar" alt="Avatar"></img>
-              <div><strong>JOHN DOE</strong></div>
-              <div className="text-muted"><small>Founder & CEO</small></div>
+              <img src={this.props.userPhoto===undefined ? require('../../assets/img/emptylogo.png') : getUploadedImage(this.props.userPhoto)} className="img-avatar" alt="Avatar"></img>
+              <div><strong>{this.props.accountData.firstName} {this.props.accountData.lastName}</strong></div>
             </AppSidebarHeader>
             <AppSidebarForm />
             <Suspense>
               <AppSidebarNav navConfig={navigation} {...this.props} />
-              <div style={{ height: '170px' }}>
+              <div >
                 <a style={{ width: "100%" }} className="nav-link" onClick={e => this.signOut(e)}> <i className="nav-icon fa fa-lock" ></i> Logout </a>
               </div>
             </Suspense>
@@ -94,17 +94,27 @@ class DefaultLayout extends Component {
   }
 }
 
+
+const mapStateToProps = ({ account }) => {
+  const { accountData, uploadState, userPhoto } = account;
+  return { accountData, uploadState, userPhoto };
+}
+
+
 const mapDispatchToProps = dispatch => {
   return {
     userLogout: () => {
       dispatch(logout());
+    },
+    resetState: () => {
+      dispatch(loginResetState())
     }
   };
 };
 
 export default withRouter(
   connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps,
     null
   )(DefaultLayout)

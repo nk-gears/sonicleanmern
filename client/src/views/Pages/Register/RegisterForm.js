@@ -162,7 +162,7 @@ const RegisterForm = ({submit, state}) => {
                                 </Col>
                                 <Col md={3}>
                                 <FormGroup>
-                                    <Label for="confirmPassword">State</Label>
+                                    <Label for="us_state">State</Label>
                                     <Field name="us_state" component={FormSelect} options={us_state} />
                                 </FormGroup>
                                 </Col>
@@ -175,7 +175,9 @@ const RegisterForm = ({submit, state}) => {
                             </Row>
                             <Row>
                                 <Col md={12} className="mt-3">
-                                    <Button type="submit" color="success" className="mr-1 btn-block" disabled={!isValid || state===REQUEST_STATUS.PENDING} >Submit</Button>
+                                    <Button type="submit" color="success" className="mr-1 btn-block" disabled={!isValid || state===REQUEST_STATUS.PENDING} >
+                                    {state===REQUEST_STATUS.PENDING ? 'Wait...': 'Submit'}
+                                    </Button>
                                 </Col>
                             </Row>
                             </Col>

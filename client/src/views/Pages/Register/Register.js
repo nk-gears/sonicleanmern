@@ -13,19 +13,28 @@ import {
 import './Register.scss'
 import logo from './images/logo.png'
 import RegisterSubmitModal from './RegisterSubmitModal'
-import { fetchRegister } from "modules/auth";
+import { fetchRegister, registerResetState } from "modules/auth";
 import RegisterForm from './RegisterForm'
 import { REQUEST_STATUS } from '_config/constants';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-const Register = ({register, state}) => {
+const Register = ({register, registerState, resetState, error}) => {
 
   const [modal, setModal] = useState(false)
 
   useEffect(()=> {
-    if(state===REQUEST_STATUS.SUCCESS || state===REQUEST_STATUS.FAIL) {
-      setModal(true)
+    
+    if(registerState===REQUEST_STATUS.SUCCESS) {
+      toggleModal(true)
     }
-  }, [state])
+    if(registerState===REQUEST_STATUS.FAIL) {
+      toast.error(error.message);
+      setTimeout(() => {
+        resetState()
+      }, 500)
+    }
+  }, [registerState])
 
   const onSubmit = (values) => {
     register(values)
@@ -33,11 +42,15 @@ const Register = ({register, state}) => {
 
   const toggleModal = (val) => {
     setModal(val)
+    if(!val) {
+      resetState()
+    }
   }
 
     return (
       <div className="app Register">
-        <RegisterSubmitModal modal={modal} state={state} toggleModal={toggleModal} />
+        <ToastContainer />
+        <RegisterSubmitModal modal={modal} state={registerState} toggleModal={toggleModal} />
         <Container>
           <Row>
             <Col md="12" lg="7" xl="12">
@@ -47,7 +60,7 @@ const Register = ({register, state}) => {
                   <h6 className="mt-3 text-center text-muted font-weight-normal">
                     To become a Soniclean dealer, you will need to register your company first using the form below. Please note that this program is only available for authorized Mohawk retailers. Once you've submitted this registration form, please allow up to 24 to 48 hours for your account to be approved. When your account is approved and activated, you will receive a welcome email with your Soniclean account login instructions.
                   </h6>                 
-                  <RegisterForm submit={onSubmit} stat={state} />
+                  <RegisterForm submit={onSubmit} state={registerState} />
                 </CardBody>
               </Card>
             </Col>
@@ -59,14 +72,17 @@ const Register = ({register, state}) => {
 
 //export default Register;
 const mapStateToProps = ({ auth }) => {
-  const { state } = auth;
-  return { state };
+  const { registerState, error } = auth;
+  return { registerState, error };
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     register: (values) => {
       dispatch(fetchRegister(values));
+    },
+    resetState: () => {
+      dispatch(registerResetState())
     }
   }
 }

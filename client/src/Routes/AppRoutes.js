@@ -25,6 +25,11 @@ const Register = Loadable({
     loading
 });
 
+const ResetPassword = Loadable({
+  loader: () => import('views/Pages/ResetPassword'),
+  loading
+});
+
 const Page404 = Loadable({
     loader: () => import('views/Pages/Page404'),
     loading
@@ -47,6 +52,12 @@ const AppRoutes = [
     path: "/register",
     name: "Register Page",
     component: Register,
+    private: false
+  },
+  {
+    path: "/confirmation/:token",
+    name: "Reset Password Page",
+    component: ResetPassword,
     private: false
   },
   {

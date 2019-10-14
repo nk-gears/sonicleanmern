@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react'
 import { connect } from "react-redux";
 
 import { Row, Col, Card, CardHeader, CardBody, Table, Modal, Button } from 'reactstrap'
-import ConfirmModal from 'common/ConfirmModal'
-import AddLocationModal from '../../../../common/AddLocationModal'
-import { fetchStores } from "../../../../modules/Stores";
+import ConfirmModal from 'components/ConfirmModal/ConfirmModal'
+import AddStoreModal from 'components/AddStoreModal/AddStoreModal'
+import { fetchStores } from "modules/Stores";
 import LoadingIndicator from 'common/LoadingIndicator'
 
 import './StoreLocations.scss'
@@ -25,14 +25,6 @@ const StoreLocations = ({ isSubmitSuccess, fetchStores, storesData, state }) => 
     const [modalIndex, setModalIndex] = useState(0)
 
     useEffect(() => {
-        if (isSubmitSuccess) {
-            setModal(false)
-            fetchStores()
-        }
-    }, [isSubmitSuccess])
-
-    useEffect(() => {
-        setModal(false)
         fetchStores()
     }, [])
 
@@ -51,16 +43,12 @@ const StoreLocations = ({ isSubmitSuccess, fetchStores, storesData, state }) => 
     }
         return (
             <div className="StoreLocations mt-5 mb-5" >
-                <Modal isOpen={modal} toggle={toggleModal}
-                    className={'modal-primary ' + 'modal-lg'}>
-                    <AddLocationModal toggleModal={toggleModal} initialValues={data} index={modalIndex} />
-                </Modal>
                 <Row>
                     <Col xs="12" >
                         <Card>
                             <CardHeader className="d-flex justify-content-between align-items-center">
                                 <h5 className="font-weight-normal">Store Locations</h5>
-                                <Button type="button" size="md" className="btn-success btn-brand mr-1 mb-1 float-right" onClick={addLocation}><i className="fa fa-plus"></i><span>Add Store Location</span></Button>
+                                <AddStoreModal />
                             </CardHeader>
                             <CardBody>
                                 {
@@ -79,11 +67,11 @@ const StoreLocations = ({ isSubmitSuccess, fetchStores, storesData, state }) => 
                                                     storesData.map((item, index) => {
                                                         return (
                                                             <tr key={index}>
-                                                                <td>{item.name}</td>
+                                                                <td className="text-left">{item.name}</td>
                                                                 <td className="text-right">{item.address1}</td>
                                                                 <td className="text-right">
-                                                                    <button type="button" className="btn btn-primary mr-2" onClick={() => { editLocation(index); }} >Edit</button>
-                                                                    <ConfirmModal type={"storeDelete"} index={item.id} />
+                                                                    <AddStoreModal type="EDIT" initialData = {item} />
+                                                                    <ConfirmModal type={"storeDelete"} id={item._id} />
                                                                 </td>
                                                             </tr>
                                                         )
@@ -92,7 +80,6 @@ const StoreLocations = ({ isSubmitSuccess, fetchStores, storesData, state }) => 
                                             </tbody>
                                         </Table>
                                 }
-                                
                             </CardBody>
                         </Card>
                     </Col>

@@ -14,40 +14,39 @@ import {
   Row
 } from "reactstrap";
 
-import { fetchLogin } from "modules/auth";
+import { 
+  fetchLogin, 
+  registerResetState 
+} from "modules/auth";
 
 import LoginForm from './LoginForm'
 
 import "ladda/dist/ladda-themeless.min.css";
-import "react-toastify/dist/ReactToastify.css";
+import 'react-toastify/dist/ReactToastify.css';
+import { REQUEST_STATUS } from '_config/constants';
 
-const Login = ({userLogin, isLoggedIn, state, history}) => {
+const Login = ({userLogin, loginState, error, resetState}) => {
 
   useEffect(()=>{
-    if(isLoggedIn) {
-      history.push('/sales')
+    if(loginState===REQUEST_STATUS.FAIL) {
+      toast.error(error.message);
+      // resetState()
     }
-  }, [isLoggedIn])
+   }, [loginState])
 
     const onSubmit = (values) => {
-      console.log(values)
       userLogin(values)
     }
-
-    const containerStyle = {
-      zIndex: 1999
-    };
-
     return (
       <div className="app flex-row align-items-center">
-        <ToastContainer position="top-right" autoClose={3000} style={containerStyle} />
+        <ToastContainer />
         <Container>
           <Row className="justify-content-center">
             <Col md="8">
               <CardGroup>
                 <Card className="p-4">
                   <CardBody>
-                    <LoginForm submit={onSubmit} />
+                    <LoginForm submit={onSubmit} state={loginState} />
                   </CardBody>
                 </Card>
                 <Card
@@ -84,14 +83,17 @@ const Login = ({userLogin, isLoggedIn, state, history}) => {
 }
 
 const mapStateToProps = ({ auth }) => {
-  const { isLoggedIn, user } = auth; 
-  return { isLoggedIn, user};
+  const { isLoggedIn, user, loginState, error } = auth; 
+  return { isLoggedIn, user, loginState, error};
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     userLogin: (data) => {
       dispatch(fetchLogin(data));
+    },
+    resetState: () => {
+      dispatch(registerResetState())
     }
   }
 }

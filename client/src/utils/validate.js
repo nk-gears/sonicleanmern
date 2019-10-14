@@ -36,3 +36,6 @@ export const phoneNumberMask = [
     /\d/,
     /\d/
 ];
+
+export const cardnumberMask = [/\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/, ' ', /\d/, /\d/, /\d/, /\d/];
+export const expiredateMask = [/\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/]

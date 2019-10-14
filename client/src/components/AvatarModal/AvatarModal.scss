@@ -1,0 +1,9 @@
+
+.avatarmodal {
+    &__avatar {
+        cursor: pointer;
+        &:hover {
+            opacity: 0.8;
+        }
+    }
+}

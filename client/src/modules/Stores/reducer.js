@@ -14,8 +14,8 @@ import { apiAction } from 'utils/apiCall'
 import { defineLoopActions, requestLoopHandlers } from 'utils/state'
 const initialState = {
     storesData: [],
-    isSubmitSuccess: false,
-    state: REQUEST_STATUS.INITIAL
+    storebyId: [],
+    state: REQUEST_STATUS.INITIAL,
 };
 
 /* Action creators */
@@ -49,9 +49,8 @@ export const failurefetchstore = createAction(FAILURE_FETCH_STORES)
 /* Actions  */
 export const fetchStores = () => {
 
+    const apiUrl = `/api/store/list`
     const token = getToken();
-    const appBaseURL = process.env.REACT_APP_API_URL;
-    const apiUrl = `${appBaseURL}stores`
 
     return apiAction({
         url: apiUrl,
@@ -66,9 +65,8 @@ export const fetchStores = () => {
 
 export const savestore = (data) => {
 
+    const apiUrl = `/api/store/add`
     const token = getToken();
-    const appBaseURL = process.env.REACT_APP_API_URL;
-    const apiUrl = `${appBaseURL}stores`
 
     return apiAction({
         url: apiUrl,
@@ -83,29 +81,27 @@ export const savestore = (data) => {
 }
 
 
-export const updatestore = (data, id) => {
+export const putstore = (data, id) => {
 
+    const apiUrl = `/api/store/update/${id}`
     const token = getToken();
-    const appBaseURL = process.env.REACT_APP_API_URL;
-    const apiUrl = `${appBaseURL}stores/${id}`
 
     return apiAction({
         url: apiUrl,
         method: 'PUT',
         accessToken: token,
         data: data,
-        onStart: addStore,
-        onSuccess: addStoreSuccess,
-        onFailure: addStoreFail,
-        label: ADDSTORE
+        onStart: updateStore,
+        onSuccess: updateStoreSuccess,
+        onFailure: updateStoreFail,
+        label: UPDATESTORE
     });
 }
 
 export const deleteStoreRequest = (id) => {
 
+    const apiUrl = `/api/store/delete/${id}`
     const token = getToken();
-    const appBaseURL = process.env.REACT_APP_API_URL;
-    const apiUrl = `${appBaseURL}stores/${id}`
 
     return apiAction({
         url: apiUrl,
@@ -122,14 +118,22 @@ export const deleteStoreRequest = (id) => {
 export const StoreReducer = handleActions({
     ...requestLoopHandlers({
         action: ADDSTORE,
-        onStart: (state, payload) => ({
-            ...state,
-            isSubmitSuccess: false,
-        }),
         onSuccess: (state, payload) => {
             return {
                 ...state,
-                isSubmitSuccess: payload.success,
+                storesData: payload,
+                state: REQUEST_STATUS.SUCCESS
+            }
+        }
+    }),
+
+    ...requestLoopHandlers({
+        action: UPDATESTORE,
+        onSuccess: (state, payload) => {
+            console.log(payload)
+            return {
+                ...state,
+                storesData: payload,
                 state: REQUEST_STATUS.SUCCESS
             }
         }
@@ -138,11 +142,9 @@ export const StoreReducer = handleActions({
     ...requestLoopHandlers({
         action: GETSTORES,
         onSuccess: (state, payload) => {
-            var stores = payload.data.map(store => { return { id: store.id, customerid: store.customer_id, name: store.name, address1: store.shippingaddress1, city: store.shippingcity, state: store.shippingstate, zip: store.shippingzip, address2: store.shippingaddress2, phone: store.storephone, firstName: "", lastName: "", } })
-           
             return {
                 ...state,
-                storesData: stores,
+                storesData: payload,
                 state: REQUEST_STATUS.SUCCESS
             }
         }
@@ -150,14 +152,10 @@ export const StoreReducer = handleActions({
 
     ...requestLoopHandlers({
         action: DELETESTORE,
-        onStart: (state, payload) => ({
-            ...state,
-            isSubmitSuccess: false,
-        }),
         onSuccess: (state, payload) => {
             return {
                 ...state,
-                storesData: state.storesData.filter(store => store.id !== parseInt(payload.data)),
+                storesData: payload,
                 state: REQUEST_STATUS.SUCCESS
             }
         }

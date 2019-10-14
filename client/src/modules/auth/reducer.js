@@ -11,14 +11,17 @@ import { defineLoopActions, requestLoopHandlers } from 'utils/state'
 import {
     LOGIN,
     REGISTER,
-    LOGOUT
+    LOGOUT,
+    RESTPASSWORD
  } from './constants'
 
 const initialState = {
     token: '',
     isLoggedIn: !!getToken(),
     user: {},
-    state: REQUEST_STATUS.INITIAL,
+    registerState: REQUEST_STATUS.INITIAL,
+    loginState: REQUEST_STATUS.INITIAL,
+    resetPasswordState: REQUEST_STATUS.INITIAL,
     error: {}
 }
 
@@ -26,13 +29,21 @@ export const {
     start: register,
     success: registerSuccess,
     fail: registerFail,
+    reset: registerResetState
 } = defineLoopActions(REGISTER)
 
 export const {
     start: login,
     success: loginSuccess,
     fail: loginFail,
+    reset: loginResetState
 } = defineLoopActions(LOGIN)
+
+export const {
+    start: resetPassword,
+    success: resetPasswordSuccess,
+    fail: resetPasswordFail,
+} = defineLoopActions(RESTPASSWORD)
 
 export const logout = createAction(LOGOUT)
 
@@ -67,21 +78,58 @@ export const fetchLogin = (data) => {
         });
 }
 
+export const fetchResetPassword = (data) => {
+
+    const apiUrl = `/api/users/confirmation`
+
+    return apiAction({
+        url: apiUrl,
+        method: 'POST',
+        data: data,
+        onStart: resetPassword,
+        onSuccess: resetPasswordSuccess,
+        onFailure: resetPasswordFail,
+        label: RESTPASSWORD
+    });
+}
+
 export const authReducer = handleActions({
     ...requestLoopHandlers({
         action: REGISTER, 
-        onSuccess: (state, payload) => {
-            console.log(payload)
+        onStart: (state, payload) => {
             return {
                 ...state,
-                state: REQUEST_STATUS.SUCCESS
+                registerState: REQUEST_STATUS.PENDING
             }
         },
+        onSuccess: (state, payload) => {
+            return {
+                ...state,
+                error: {},
+                registerState: REQUEST_STATUS.SUCCESS
+            }
+        },
+        onFail: (state, payload) => {
+            return {
+                ...state,
+                error: payload,
+                isLoggedIn: false,
+                registerState: REQUEST_STATUS.FAIL
+            }
+        },
+        initialValue: initialState
     }),
+
     ...requestLoopHandlers({
         action: LOGIN,
+        onStart: (state, payload) => {
+            return {
+                ...state,
+                isLoggedIn: false,
+                loginState: REQUEST_STATUS.PENDING
+            }
+        },
         onSuccess: (state, payload) => {
-            console.log(payload)
             const {token} = payload
             localStorage.setItem("jwtToken", token);
             setToken(token)
@@ -92,10 +140,39 @@ export const authReducer = handleActions({
                 token: payload.token,
                 user: decoded,
                 isLoggedIn: true,
-                state: REQUEST_STATUS.SUCCESS
+                error: {},
+                loginState: REQUEST_STATUS.SUCCESS
             }
         },
+        onFail: (state, payload) => {
+            return {
+                ...state,
+                error: payload,
+                isLoggedIn: false,
+                loginState: REQUEST_STATUS.FAIL
+            }
+        },
+        initialValue: initialState
     }),
+
+    ...requestLoopHandlers({
+        action: RESTPASSWORD, 
+        onStart: (state, payload) => {
+            return {
+                ...state,
+                resetPasswordState: REQUEST_STATUS.PENDING
+            }
+        },
+        onSuccess: (state, payload) => {
+            return {
+                ...state,
+                error: {},
+                resetPasswordState: REQUEST_STATUS.SUCCESS
+            }
+        },
+        initialValue: initialState
+    }),
+
     [LOGOUT]: (state) => {
         removeToken()
         localStorage.removeItem("jwtToken");
@@ -104,7 +181,7 @@ export const authReducer = handleActions({
             ...state,
             token: '',
             user: {},
-            state: REQUEST_STATUS.INITIAL,
+            loginState: REQUEST_STATUS.INITIAL,
             isLoggedIn: false,
         }
     }

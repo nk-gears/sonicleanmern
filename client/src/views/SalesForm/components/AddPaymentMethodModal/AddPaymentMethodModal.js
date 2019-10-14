@@ -10,7 +10,7 @@ import { Formik, Field } from 'formik';
 import MaskedInput from "react-text-mask";
 import 'react-select/dist/react-select.min.css';
 import * as Yup from 'yup'
-import { saveCard } from "../../../../modules/Cards";
+import { saveCard,  } from "../../../../modules/Cards";
 import './AddPaymentMethodModal.scss'
 import { REQUEST_STATUS } from '_config/constants';
 
@@ -100,15 +100,15 @@ class AddPaymentMethodModal extends Component {
         if (validatecvv) {
             const data = {
                 cardnumber: values.cardnumber,
-                cardtype: values.phonenumber,
                 cvv: values.cvvcode,
                 holdername: values.holdername,
                 zipcode: values.zipCode,
                 expiredatemonth: values.expiredate.substr(0, 2),
                 expiredateyear: values.expiredate.substr(3, 6),
-                cardtype: values.cardtype,
+                cardtype: this.state.cardtype,
                 customer_id: this.props.customerId,
             }
+            console.log(data)
            await this.props.saveCard(data);
         }
     }
@@ -381,7 +381,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         saveCard: (data) => {
             dispatch(saveCard(data));
-        }
+        },
     }
 }
 

@@ -17,20 +17,16 @@ const apiMiddleware = ({ dispatch }) => next => action => {
         label,
         headers
     } = action.payload;
-
+    console.log(url, data)
     const dataOrParams = ["GET", "DELETE"].includes(method) ? "params" : "data";
 
     // axios default configs
-    axios.defaults.baseURL = process.env.REACT_APP_BASE_URL || "";
-    axios.defaults.headers.common['ACCESS-CONTROL-ALLOW-ORIGIN'] = '*';
     axios.defaults.headers.common["Content-Type"] = "application/json";
-    axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+    axios.defaults.headers.common["Authorization"] = `${accessToken}`;
 
     if (label) {
         dispatch(onStart(label));
     }
-
-    console.log(url, data)
 
     axios
         .request({

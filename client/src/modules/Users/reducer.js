@@ -1,6 +1,6 @@
 import { createAction, handleActions } from 'redux-actions'
 import {
-    FETCH_USERS,
+    GETUSERSLIST,
     ADD_USER,
     DELETE_USER
 } from './constants'
@@ -11,7 +11,8 @@ import { defineLoopActions, requestLoopHandlers } from 'utils/state'
 const initialState = {
     usersData: [],
     isSubmitSuccess: false,
-    state: REQUEST_STATUS.INITIAL
+    state: REQUEST_STATUS.INITIAL,
+    error: {}
 };
 
 /* Action creators */
@@ -25,7 +26,7 @@ export const {
     start: getUsers,
     success: getUsersSuccess,
     fail: getUsersFail
-} = defineLoopActions(FETCH_USERS)
+} = defineLoopActions(GETUSERSLIST)
 
 export const {
     start: deleteUser,
@@ -37,9 +38,8 @@ export const {
 
 export const fetchUsers = () => {
 
+    const apiUrl = `/api/employee/list`
     const token = getToken();
-    const appBaseURL = process.env.REACT_APP_API_URL;
-    const apiUrl = `${appBaseURL}dealerusers`
 
     return apiAction({
         url: apiUrl,
@@ -47,16 +47,15 @@ export const fetchUsers = () => {
         onStart: getUsers,
         onSuccess: getUsersSuccess,
         onFailure: getUsersFail,
-        label: FETCH_USERS
+        label: GETUSERSLIST
     });
 
 }
 
 export const saveUser = (data) => {
 
+    const apiUrl = `/api/employee/new`
     const token = getToken();
-    const appBaseURL = process.env.REACT_APP_API_URL;
-    const apiUrl = `${appBaseURL}dealerusers`
 
     return apiAction({
         url: apiUrl,
@@ -72,9 +71,8 @@ export const saveUser = (data) => {
 
 export const deleteUserRequest = (id) => {
 
+    const apiUrl = `/api/employee/delete/${id}`
     const token = getToken();
-    const appBaseURL = process.env.REACT_APP_API_URL;
-    const apiUrl = `${appBaseURL}dealerusers/${id}`
 
     return apiAction({
         url: apiUrl,
@@ -94,24 +92,26 @@ export const UserReducer = handleActions({
         onStart: (state, payload) => ({
             ...state,
             isSubmitSuccess: false,
+            error: {},
             state: REQUEST_STATUS.PENDING
         }),
         onSuccess: (state, payload) => {
-            console.log(payload)
             return {
                 ...state,
-                isSubmitSuccess: payload.success,
+                error: {},
+                usersData: payload,
                 state: REQUEST_STATUS.SUCCESS
             }
         }
     }),
 
     ...requestLoopHandlers({
-        action: FETCH_USERS,
+        action: GETUSERSLIST,
         onSuccess: (state, payload) => {
             return {
                 ...state,
-                usersData: payload.data,
+                usersData: payload,
+                error: {},
                 state: REQUEST_STATUS.SUCCESS
             }
         }
@@ -121,13 +121,15 @@ export const UserReducer = handleActions({
         action: DELETE_USER,
         onStart: (state, payload) => ({
             ...state,
-            isSubmitSuccess: false,
+            state: REQUEST_STATUS.PENDING,
+            error: {}
         }),
         onSuccess: (state, payload) => {
             return {
                 ...state,
-                storesData: state.usersData.filter(user => user.id !== parseInt(payload.data)),
-                state: REQUEST_STATUS.SUCCESS
+                usersData: payload,
+                state: REQUEST_STATUS.SUCCESS,
+                error: {}
             }
         }
     })

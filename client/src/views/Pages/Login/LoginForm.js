@@ -19,7 +19,7 @@ import LaddaButton, {
 
 import * as Yup from 'yup'
 
-import { REQUEST_STATUS } from '_config/constants';
+import {isPending} from 'utils/state'
 
 import "ladda/dist/ladda-themeless.min.css";
 import "react-toastify/dist/ReactToastify.css";
@@ -127,6 +127,7 @@ const LoginForm = ({submit, state}) => {
                                   type="button"
                                   color="link"
                                   className="px-0"
+                                  loading={isPending(state)}
                                 >
                                   Forgot password?
                               </Button>

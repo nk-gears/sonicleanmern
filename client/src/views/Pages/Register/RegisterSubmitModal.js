@@ -22,12 +22,16 @@ const RegisterSubmitModal = ({ modal, toggleModal, state }) => {
                             <Col className="RegisterSubmitModal">
                                 {
                                     state===REQUEST_STATUS.SUCCESS &&
+                                    <>
                                     <h5>
                                         Your Soniclean Dealer registration form has been successfully submitted. 
                                         Please allow up to 24 to 48 hours for account approval. Once your account is approved, 
                                         you will receive an activation email with your login credentials. 
-                                        If you have any questions, you can contact Soniclean's dealer department.
+                                        If you have any questions, you can contact Soniclean's dealer department. <br />
                                     </h5> 
+                                    <br />
+                                    <p className="text-success"><h5>A verification email has been sent to your email address </h5> </p>
+                                    </>
                                 }
                                 {
                                     state===REQUEST_STATUS.FAIL && 
@@ -40,7 +44,6 @@ const RegisterSubmitModal = ({ modal, toggleModal, state }) => {
                             </Col>
                         </Row>
                     }
-                    
                 </ModalBody>
                 <ModalFooter className="text-center">
                 { state===REQUEST_STATUS.FAIL && <Link to="/" className="mr-auto ml-auto"><Button color="success">Return to Home Page</Button> </Link> }

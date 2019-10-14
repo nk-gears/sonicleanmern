@@ -9,6 +9,19 @@ export const requestResetState = (actionType) => `${actionType}/reset`
 
 export const requestEnd = (actionType) => `${actionType}/end`
 
+
+export function isPending(requestState) {
+    return requestState === REQUEST_STATUS.PENDING
+  }
+  
+  export function hasSucceeded(requestState) {
+    return requestState === REQUEST_STATUS.SUCCESS
+  }
+  
+  export function hasFailed(requestState) {
+    return requestState === REQUEST_STATUS.FAIL
+  }
+
 export const defineLoopActions = (actionType) => ({
     start: createAction(actionType),
     success: createAction(requestSuccess(actionType)),
@@ -26,7 +39,7 @@ export function requestLoopHandlers(config) {
      */
     let {
         action,
-        onStart, onSuccess, onFail, onEnd,
+        onStart, onSuccess, onFail, onEnd, initialValue
     } = config
 
     if (!action ) {
@@ -50,7 +63,8 @@ export function requestLoopHandlers(config) {
             } else {
                 return {
                     ...state,
-                    state: REQUEST_STATUS.SUCCESS
+                    state: REQUEST_STATUS.SUCCESS,
+                    error: {}
                 }
             }
         },
@@ -64,6 +78,21 @@ export function requestLoopHandlers(config) {
                     error: payload,
                     state: REQUEST_STATUS.FAIL
                 }
+            }
+        },
+        [requestEnd(action)]: (state, { payload }) => {
+            if (onEnd) {
+                return onEnd(state, payload)
+            } else {
+                return {
+                    ...state,
+                    state: REQUEST_STATUS.INITIAL
+                }
+            }
+        },
+        [requestResetState(action)]: (state, { payload }) => {
+               return {
+                ...initialValue
             }
         },
     }

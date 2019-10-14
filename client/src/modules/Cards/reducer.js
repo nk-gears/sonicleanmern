@@ -13,6 +13,7 @@ import { defineLoopActions, requestLoopHandlers } from 'utils/state'
 const initialState = {
     cardsData: [],
     isSubmitSuccess: false,
+    error: {},
     state: REQUEST_STATUS.INITIAL
 };
 
@@ -20,7 +21,8 @@ const initialState = {
 export const {
     start: getCards,
     success: getCardsSuccess,
-    fail: getCardsFail
+    fail: getCardsFail,
+    end: endCards
 } = defineLoopActions(GET_CARDS)
 
 export const {
@@ -35,11 +37,9 @@ export const {
     fail: deleteCardFail
 } = defineLoopActions(DELETE_CARD)
 
-export const fetchCards = (customerid) => {
+export const fetchCards = () => {
+    const apiUrl = `/api/payment/list`
     const token = getToken();
-    const appBaseURL = process.env.REACT_APP_API_URL;
-    const apiUrl = `${appBaseURL}cards/${customerid}`
-
     return apiAction({
         url: apiUrl,
         accessToken: token,
@@ -52,9 +52,8 @@ export const fetchCards = (customerid) => {
 
 export const saveCard = (data) => {
 
+    const apiUrl = `/api/payment/add`
     const token = getToken();
-    const appBaseURL = process.env.REACT_APP_API_URL;
-    const apiUrl = `${appBaseURL}cards`
 
     return apiAction({
         url: apiUrl,
@@ -70,9 +69,10 @@ export const saveCard = (data) => {
 
 export const deleteCardRequest = (id) => {
 
+    console.log(id)
+
+    const apiUrl = `/api/payment/delete/${id}`
     const token = getToken();
-    const appBaseURL = process.env.REACT_APP_API_URL;
-    const apiUrl = `${appBaseURL}cards/${id}`
 
     return apiAction({
         url: apiUrl,
@@ -88,13 +88,11 @@ export const deleteCardRequest = (id) => {
 export const CardReducer = handleActions({
     ...requestLoopHandlers({
         action: ADD_CARD,
-        onStart: (state, payload) => ({
-            ...state,
-            isSubmitSuccess: false,
-        }),
         onSuccess: (state, payload) => {
             return {
                 ...state,
+                cardsData: payload,
+                error: {},
                 isSubmitSuccess: payload.success,
                 state: REQUEST_STATUS.SUCCESS
             }
@@ -103,9 +101,11 @@ export const CardReducer = handleActions({
     ...requestLoopHandlers({
         action: GET_CARDS,
         onSuccess: (state, payload) => {
+            console.log(payload)
             return {
                 ...state,
-                cardsData: payload.data,
+                cardsData: payload,
+                error: {},
                 state: REQUEST_STATUS.SUCCESS
             }
         }
@@ -113,14 +113,12 @@ export const CardReducer = handleActions({
 
     ...requestLoopHandlers({
         action: DELETE_CARD,
-        onStart: (state, payload) => ({
-            ...state,
-            isSubmitSuccess: false,
-        }),
         onSuccess: (state, payload) => {
             return {
                 ...state,
-                cardsData: state.cardsData.filter(card => card.id !== parseInt(payload.data)),
+                error: {},
+                cardsData: payload,
+                state: REQUEST_STATUS.SUCCESS
             }
         }
     })

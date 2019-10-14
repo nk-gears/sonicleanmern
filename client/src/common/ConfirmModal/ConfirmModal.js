@@ -2,14 +2,14 @@ import React, { useState } from 'react'
 import { connect } from "react-redux";
 import { Button, Modal, ModalHeader, ModalBody, Row, Col } from 'reactstrap'
 import { deleteStoreRequest } from 'modules/Stores'
-import { deleteCardRequest } from 'modules/Cards'
+import { deleteCardRequest, endCards } from 'modules/Cards'
 import { deleteUserRequest } from 'modules/Users'
 
 const ConfirmModal = ({ 
     type, 
     onDeleteStore, 
     onDeleteCard, 
-    onDeleteUser, 
+    onDeleteUser,
     index
  }) => {
 
@@ -60,7 +60,8 @@ const mapDispatchToProps = (dispatch) => {
         },
         onDeleteUser: (id) => {
             dispatch(deleteUserRequest(id))
-        }
+        },
+       
     }
 }
 

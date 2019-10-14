@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
 
 import { Row, Col, Card, CardHeader, CardBody, Table, Modal,Button } from 'reactstrap'
 import './PaymentMethods.scss'
-import AddPaymentMethodModal from '../../../SalesForm/components/AddPaymentMethodModal'
-import ConfirmModal from 'common/ConfirmModal'
+import AddPaymentMethodModal from 'components/AddPaymentMethodModal/AddPaymentMethodModal'
+import ConfirmModal from 'components/ConfirmModal/ConfirmModal'
 import LoadingIndicator from 'common/LoadingIndicator'
-import { fetchCards } from "../../../../modules/Cards";
+import { fetchCards, endCards } from "../../../../modules/Cards";
 
 import Visa from '../../images/visa.png'
 import Mastercard from '../../../SalesForm/images/Mastercard.png'
@@ -18,21 +18,12 @@ import VisaElectron from '../../../SalesForm/images/visaelectron.png'
 import { REQUEST_STATUS } from '_config/constants'
 
 
-const PaymentMethods = ({ isSubmitSuccess, fetchCards, cardsData, state}) => {
+const PaymentMethods = ({ isSubmitSuccess, fetchCards, cardsData, state, endfetchCards}) => {
 
     const [modal, setModal] = useState(false)
-
-    useEffect(() => {
-
-        if (isSubmitSuccess) {
-            setModal(false)
-            fetchCards('1')
-        }
-    }, [isSubmitSuccess])
-
     useEffect(() => {
         setModal(false)
-        fetchCards('1')
+        fetchCards()
     }, [])
 
     const toggleModal = () => {
@@ -69,22 +60,19 @@ const PaymentMethods = ({ isSubmitSuccess, fetchCards, cardsData, state}) => {
             case 'Visa Electron':
                 cardtypeImg = VisaElectron;
                 break;
+            default: return ;
         }
         return cardtypeImg;
     }
 
         return (
             <div className="PaymentMethods mt-5 mb-5">
-                <Modal isOpen={modal} toggle={toggleModal}
-                    className={'modal-primary ' + 'modal-md'}>
-                    <AddPaymentMethodModal toggleModal={toggleModal} customerId={'1'} />
-                </Modal>
                 <Row>
                     <Col xs="12" >
                         <Card>
                             <CardHeader className="d-flex justify-content-between align-items-center">
                                 <h5 className="font-weight-normal">Saved Credit Cards</h5>
-                                <Button size="md" className="btn-success btn-brand mr-1 mb-1 float-right" onClick={toggleModal}><i className="fa fa-plus"></i><span>Add New Card</span></Button>
+                                <AddPaymentMethodModal toggleModal={toggleModal} customerId={'1'} />
                             </CardHeader>
                             <CardBody>
                                 {
@@ -96,19 +84,19 @@ const PaymentMethods = ({ isSubmitSuccess, fetchCards, cardsData, state}) => {
                                                     <th>Card</th>
                                                     <th>Card Number</th>
                                                     <th>Exp. Date</th>
-                                                    <th></th>
+                                                    <th className="text-right">Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 {
-                                                    cardsData.map((item, index) => {
+                                                   cardsData && cardsData.map((item, index) => {
                                                         return (
                                                             <tr key={index}>
                                                                 <td><img src={getCardType(item.cardtype)} alt="visa" /></td>
-                                                                <td>•••• {item.endingon}</td>
-                                                                <td>{item.expiredatemonth + '/' + item.expiredateyear}</td>
-                                                                <td>
-                                                                    <ConfirmModal type={"cardDelete"} index={item.id} />
+                                                                <td>•••• {item.cardnumber}</td>
+                                                                <td>{item.expdate}</td>
+                                                                <td className="text-right">
+                                                                    <ConfirmModal type={"cardDelete"} id={item._id} />
                                                                 </td>
                                                             </tr>
                                                         )
@@ -132,8 +120,11 @@ const mapStateToProps = ({ card }) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchCards: (customerid) => {
-            dispatch(fetchCards(customerid));
+        fetchCards: () => {
+            dispatch(fetchCards());
+        },
+        endfetchCards: () => {
+            dispatch(endCards())
         }
     }
 }

@@ -1,5 +1,7 @@
 import { combineReducers } from "redux";
 import { authReducer } from './auth';
+import { accountReducer } from './account';
+import { companyReducer } from './company'
 import { SalesFormReducer } from './salesForm';
 import { StateReducer } from './States';
 import { BrandReducer } from './Brands';
@@ -15,11 +17,14 @@ import { PromoCodeReducer } from './PromoCode';
 import { TaxesReducer } from './Taxes';
 import { OrderReducer } from './Order';
 import { OrderHistoryReducer } from './OrderHistory';
+import { NotificationReducer } from './Notification'
 
 
 
 const appReducers = combineReducers({
     auth: authReducer,
+    account: accountReducer,
+    company: companyReducer,
     salesform: SalesFormReducer,
     states: StateReducer,
     brands: BrandReducer,
@@ -34,7 +39,8 @@ const appReducers = combineReducers({
     taxes: TaxesReducer,
     order: OrderReducer,
     orderhistory: OrderHistoryReducer,
-    users: UserReducer
+    users: UserReducer,
+    notification: NotificationReducer
     // but its referenced here     
 });
 

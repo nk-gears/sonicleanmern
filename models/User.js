@@ -3,27 +3,8 @@ const Schema = mongoose.Schema;
 
 // Create Schema
 
-var storeShema = new Schema({ 
-  address1: {
-    type: String,
-    required: true
-  },
-  address2: {
-    type: String,
-  },
-  city: {
-    type: String,
-    require: true
-  },
-  us_state: {
-    type: String,
-    require: true
-  },
-  zipcode: {
-    type: String,
-    require: true
-  }
-});
+var Store = require('./Store')
+var PaymentMethod = require('./PaymentMethod')
 
 const UserSchema = new Schema({
   firstName: {
@@ -48,27 +29,56 @@ const UserSchema = new Schema({
   },
   companyName: {
     type: String,
-    required: true
+    required: false
   },
   websiteURL: {
     type: String,
-    required: true
+    required: false
   },
   mohawkAccount: {
     type: Number,
-    required: true
+    required: false
   },
   mohawkBrand: {
     type: String,
     enum : ['Mohawk','Karastan', 'Mohawk & Karastan'],
-    default: '',
-    require: true
+    default: 'Mohawk',
+    require: false
   },
-  active: {
+  workPhoneNumber: {
+    type: String
+  },
+  userPhoto: {
+    type: String,
+  },
+  extension: {
+    type: String
+  },
+  companyBio: {
+    type: String
+  },
+  companyLogo: {
+    type: String
+  },
+  roles: {
+    type: String,
+    enum : ['admin','employee'],
+    default: '',
+    require: false
+  },
+  _adminId: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    required: false, 
+  },
+  isVerified: {
     type: Boolean,
     default: false,
   },
-  stores: [storeShema]
+  passwordResetToken: String,
+  passwordResetExpires: Date,
+  created: {type:Date, default:Date.now},
+  stores: [Store.schema],
+  payments: [PaymentMethod.schema]
 });
 
 module.exports = User = mongoose.model("users", UserSchema);

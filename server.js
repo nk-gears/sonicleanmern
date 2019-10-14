@@ -1,20 +1,33 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const bodyParser = require("body-parser");
-const passport = require("passport");
+const express = require("express")
+const mongoose = require("mongoose")
+const bodyParser = require("body-parser")
+const passport = require("passport")
+const path = require('path')
 var cors = require('cors')
-const users = require("./routes/api/users");
+const users = require("./routes/api/users")
+const payment = require("./routes/api/payment")
+const store = require("./routes/api/store")
+const account = require("./routes/api/account")
+const images = require("./routes/api/images")
+const company = require("./routes/api/company")
+const employee = require("./routes/api/employee")
+
 require("dotenv").config()
 
 const app = express();
 
+const publicOptions = {
+  origin: function (origin, callback) {
+    callback(null, true)
+  },
+  methods: "GET"
+}
+
+
 app.use(cors())
+app.use('/public', cors(publicOptions))
 // Bodyparser middleware
-app.use(
-  bodyParser.urlencoded({
-    extended: false
-  })
-);
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
@@ -25,7 +38,10 @@ const db = process.env.MONGODB_URI || require("./config/keys").mongoURI;
 mongoose
   .connect(
     db,
-    { useNewUrlParser: true }
+    { 
+      useCreateIndex: true,
+      useNewUrlParser: true 
+    }
   )
   .then(() => console.log("MongoDB successfully connected"))
   .catch(err => console.log(err));
@@ -38,6 +54,15 @@ require("./config/passport")(passport);
 
 // Routes
 app.use("/api/users", users);
+app.use("/api/payment", payment)
+app.use("/api/store", store)
+app.use("/api/account", account)
+app.use("/api/images", images)
+app.use("/api/company", company)
+app.use("/api/employee", employee)
+
+app.use(express.static(path.join(__dirname, 'public')))
+
 
 const port = process.env.PORT || 5000;
 

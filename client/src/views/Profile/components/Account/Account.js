@@ -1,116 +1,81 @@
-import React from 'react'
-import classNames from 'classnames'
-import { Row, Col, Form, FormGroup, Input, Label, FormFeedback, CustomInput, Button} from 'reactstrap'
+import React, {useEffect} from 'react'
+import { 
+    Row, 
+    Col, 
+    Form, 
+    FormGroup, 
+    Label, 
+    Button
+} from 'reactstrap'
+import { connect } from 'react-redux'
 import { Formik, Field } from 'formik';
+import FormInput from 'components/common/FormInput'
+import FormPhoneInput from 'components/common/FormPhoneInput'
+import LoadingIndicator from 'common/LoadingIndicator'
 import * as Yup from 'yup'
+import { REQUEST_STATUS } from '_config/constants';
 
-import MaskedInput from "react-text-mask";
-import { validate, getErrorsFromValidationError } from '../../../../_helpers/helper.js'
+import { 
+    fetchAccountData, 
+    updateAccountData
+} from 'modules/account'
 
-import './Account.scss'
+const accountSchema = Yup.object().shape({
+    firstName: Yup.string()
+        .min(2, `First name has to be at least 2 characters`)
+        .required('First name is required'),
+    lastName: Yup.string()
+        .min(1, `Last name has to be at least 1 character`)
+        .required('Last name is required'),
+    email: Yup.string()
+        .email('Invalid email address')
+        .required('Email is required!'),
+    phoneNumber: Yup.string()
+        .required('Phone number is required'),
+})
 
-const phoneNumberMask = [
-    "(",
-    /[1-9]/,
-    /\d/,
-    /\d/,
-    ")",
-    " ",
-    /\d/,
-    /\d/,
-    /\d/,
-    "-",
-    /\d/,
-    /\d/,
-    /\d/,
-    /\d/
-];
+const Account = ({
+    fetchAccount, 
+    accountData,
+    updateAccount,
+    state
+}) => {
 
-const validationSchema = function (values) {
-    return Yup.object().shape({
-        firstName: Yup.string()
-            .min(2, `First name has to be at least 2 characters`)
-            .required('First name is required'),
-        lastName: Yup.string()
-            .min(1, `Last name has to be at least 1 character`)
-            .required('Last name is required'),
-        email: Yup.string()
-            .email('Invalid email address')
-            .required('Email is required!'),
-    })
-}
+    useEffect(() => {
+        fetchAccount()
+    }, [])
 
-const initialValues = {
-    firstName: '',
-    lastName: '',
-    email: '',
-    mobilephone: '',
-    workphone: '',
-    extension: ''
-}
-
-const Account = () => {
-
-    const onSubmit = (data) => {
-        console.log(data)
+    const onSubmit = (values) => {
+        updateAccount(values)
     }
 
     return (
         <div className="Account mt-5">
             <Row>
                 <Col>
-                    <Formik
-                        initialValues={initialValues}
-                        validate={validate(validationSchema)}
+                    {
+                        state===REQUEST_STATUS.PENDING? <LoadingIndicator /> : 
+                        <Formik
+                        initialValues={accountData}
+                        validationSchema={accountSchema}
                         onSubmit={onSubmit}
                         render={
                             ({
-                                values,
-                                errors,
-                                touched,
-                                status,
-                                dirty,
-                                handleChange,
-                                handleBlur,
                                 handleSubmit,
-                                isSubmitting,
-                                isValid,
-                                handleReset,
-                                setTouched
+                                isValid
                             }) => (
                                     <Form onSubmit={handleSubmit} noValidate name='simpleForm'>
                                         <Row>
                                             <Col md={6}>
                                                 <FormGroup>
                                                     <Label >First Name*</Label>
-                                                    <Input type="text"
-                                                        name="firstName"
-                                                        id="firstName"
-                                                        autoComplete="given-name"
-                                                        valid={!errors.firstName}
-                                                        invalid={touched.firstName && !!errors.firstName}
-                                                        autoFocus={true}
-                                                        required
-                                                        onChange={handleChange}
-                                                        onBlur={handleBlur}
-                                                        value={values.firstName} />
-                                                    <FormFeedback>{errors.firstName}</FormFeedback>
+                                                    <Field name="firstName" type={'text'} component={FormInput}/>
                                                 </FormGroup>
                                             </Col>
                                             <Col md={6}>
                                                 <FormGroup>
                                                     <Label >Last Name*</Label>
-                                                    <Input type="text"
-                                                        name="lastName"
-                                                        id="lastName"
-                                                        autoComplete="family-name"
-                                                        valid={!errors.lastName}
-                                                        invalid={touched.lastName && !!errors.lastName}
-                                                        required
-                                                        onChange={handleChange}
-                                                        onBlur={handleBlur}
-                                                        value={values.lastName} />
-                                                    <FormFeedback>{errors.lastName}</FormFeedback>
+                                                    <Field name="lastName" type={'text'} component={FormInput}/>
                                                 </FormGroup>
                                             </Col>
                                         </Row>
@@ -118,38 +83,13 @@ const Account = () => {
                                             <Col md={6}>
                                                 <FormGroup>
                                                     <Label >Email Address*</Label>
-                                                    <div>
-                                                        <Input type="email"
-                                                            name="email"
-                                                            id="email"
-                                                            autoComplete="email"
-                                                            valid={!errors.email}
-                                                            invalid={touched.email && !!errors.email}
-                                                            required
-                                                            onChange={handleChange}
-                                                            onBlur={handleBlur}
-                                                            value={values.email} />
-                                                        <FormFeedback>{errors.email}</FormFeedback>
-                                                    </div>
+                                                    <Field name="email" type={'email'} component={FormInput} />
                                                 </FormGroup>
                                             </Col>
                                             <Col md={6}>
                                                 <FormGroup>
-                                                    <Label>Mobile Phone</Label>
-                                                    <Field
-                                                        name="mobilephone"
-                                                        render={({ field }) => (
-                                                            <MaskedInput
-                                                                {...field}
-                                                                mask={phoneNumberMask}
-                                                                id="phonenumber"
-                                                                type="text"
-                                                                onChange={handleChange}
-                                                                className="form-control"
-                                                            />
-                                                        )}
-                                                    />
-                                                    <FormFeedback>{errors.phonenumber}</FormFeedback>
+                                                    <Label>Mobile Phone*</Label>
+                                                    <Field name="phoneNumber" type={'text'} component={FormPhoneInput} />
                                                 </FormGroup>
                                             </Col>
                                         </Row>
@@ -157,60 +97,52 @@ const Account = () => {
                                             <Col>
                                                 <FormGroup>
                                                     <Label>Work Phone</Label>
-                                                    <Field
-                                                        name="workphone"
-                                                        render={({ field }) => (
-                                                            <MaskedInput
-                                                                {...field}
-                                                                mask={phoneNumberMask}
-                                                                id="phonenumber"
-                                                                type="text"
-                                                                onChange={handleChange}
-                                                                className="form-control"
-                                                            />
-                                                        )}
-                                                    />
-                                                    <FormFeedback>{errors.phonenumber}</FormFeedback>
+                                                    <Field name="workPhoneNumber" type={'text'} component={FormPhoneInput} />
                                                 </FormGroup>
                                             </Col>
                                             <Col >
                                                 <FormGroup>
                                                     <Label >Extension</Label>
-                                                    <Input type="extension"
-                                                        name="extension"
-                                                        id="extension"
-                                                        autoComplete="extension"
-                                                        onChange={handleChange}
-                                                        value={values.extension} />
-                                                    <FormFeedback>{errors.extension}</FormFeedback>
+                                                    <Field name="extension" type={'text'} component={FormInput} />
                                                 </FormGroup>
-                                            </Col>
-                                        </Row>
-                                        <Row>
-                                            <Col md={6}>
-                                                <Label >Upload Profile Picture (50px by 50px)</Label>
-                                                <div className="custom-file">
-                                                    <input type="file" className="custom-file-input" name="profilepicture" id="profilepicture" />
-                                                    <label className="custom-file-label" >Choose file</label>
-                                                </div>
                                             </Col>
                                         </Row>
                                         <hr />
                                         <Row className="float-right">
                                             <Col>
                                                 <FormGroup>
-                                                    <Button type="submit" color="success" className="mr-1" disabled={isSubmitting || !isValid}>{isSubmitting ? 'Wait...' : 'Submit'}</Button>
-                                                    <Button type="reset" color="danger" className="mr-1" onClick={handleReset}>Reset</Button>
+                                                    <Button type="submit" color="success" className="mr-1" disabled={!isValid}>Submit</Button>
                                                 </FormGroup>
                                             </Col>
                                         </Row>
                                     </Form>
                                 )} 
                         />
+                    }
+                    
                 </Col>
             </Row>
         </div>
     )
 }
 
-export default Account
+const mapStateToProps = ({ account }) => {
+    const { accountData, state } = account;
+    return { accountData, state };
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        fetchAccount: () => {
+            dispatch(fetchAccountData());
+        },
+        updateAccount: (data) => {
+            dispatch(updateAccountData(data));
+        }
+    }
+}
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(Account);
