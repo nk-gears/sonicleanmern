@@ -83,7 +83,7 @@ router.post("/register", (req, res) => {
                   from: 'wonder.dev21@gmail.com',
                   to: user.email,
                   subject: 'Account Verification Token',
-                  text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/' + token.token + '.\n' 
+                  text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttps:\/\/' + 'soniclean.herokuapp.com' + '\/confirmation\/' + token.token + '.\n' 
                 };
                 transporter.sendMail(mailOptions, function (err) {
                     if (err) { 
