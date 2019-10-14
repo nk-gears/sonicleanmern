@@ -24,7 +24,7 @@ export const getErrorsFromValidationError = (validationError) => {
 
 export const getUploadedImage = (name) => {
     if (process.env.NODE_ENV === 'production') {
-        return `${process.env.REACT_APP_PRODUCTION_URL}/${name}`
+        return `${process.env.REACT_APP_PRODUCTION_URL}/uploads/${name}`
     } else {
         return `${process.env.REACT_APP_URL}/uploads/${name}`
     }
