@@ -20,7 +20,10 @@ router.get('/current', passport.authenticate('jwt', {session: false}), (req, res
         data.userPhoto = user.userPhoto
         data.roles = user.roles
         data.storesCount = user.stores.length
-
+        data.mohawkBrand = user.mohawkBrand
+        data.companyName = user.companyName
+        data.mohawkAccount = user.mohawkAccount
+        data.created = user.created
         res.json(data)
     })
 })

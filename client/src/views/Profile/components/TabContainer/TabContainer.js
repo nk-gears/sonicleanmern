@@ -1,5 +1,6 @@
 import React from 'react'
 import { Route, Switch, Link, Redirect } from 'react-router-dom'
+import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
 import { Card, CardBody, Nav, NavItem, NavLink } from 'reactstrap'
 import Account from '../Account'
@@ -7,10 +8,9 @@ import Company from '../Company'
 import PaymentMethods from '../PaymentMethods'
 import Users from '../Users'
 import StoreLocations from '../StoreLocations'
-
 import './TabContainer.scss'
 
-const TabContainer = ({location}) => {
+const TabContainer = ({location, accountData}) => {
 
     const isPath = (path) => location.pathname.substr(0, path.length) === path
 
@@ -25,16 +25,21 @@ const TabContainer = ({location}) => {
                                     My Account
                                 </NavLink>
                             </NavItem>
-                            <NavItem>
-                                <NavLink tag={Link} to="/profile/company" active={isPath('/profile/company')} >
-                                    Company Profile
-                                </NavLink>
-                            </NavItem>
-                            <NavItem>
-                                <NavLink tag={Link} to="/profile/users" active={isPath('/profile/users')} >
-                                    Users
-                                </NavLink>
-                            </NavItem>
+                            {
+                                accountData.roles==='admin' ? 
+                                <>
+                                    <NavItem>
+                                        <NavLink tag={Link} to="/profile/company" active={isPath('/profile/company')} >
+                                            Company Profile
+                                        </NavLink>
+                                    </NavItem>
+                                    <NavItem>
+                                        <NavLink tag={Link} to="/profile/users" active={isPath('/profile/users')} >
+                                            Users
+                                        </NavLink>
+                                    </NavItem>
+                                </> : null
+                            }
                             <NavItem>
                                 <NavLink tag={Link} to="/profile/store" active={isPath('/profile/store')} >
                                     Store Locations
@@ -66,4 +71,15 @@ const TabContainer = ({location}) => {
     )
 }
 
-export default withRouter(TabContainer)
+
+const mapStateToProps = ({ account }) => {
+    const { accountData, state } = account;
+    return { accountData, state };
+}
+
+
+export default withRouter(connect(
+    mapStateToProps,
+    null
+)(TabContainer));
+

@@ -9,6 +9,7 @@ import {
 } from 'reactstrap'
 import { connect } from "react-redux";
 import {fetchAccountData} from 'modules/account'
+import moment from 'moment'
 import AvatarModal from 'components/AvatarModal/AvatarModal'
 
 import './UserCard.scss'
@@ -39,18 +40,31 @@ const UserCard = ({
                     <Row>
                         <Col>
                             <h2>{accountData.firstName} {accountData.lastName}</h2>
-                            {/* <h5 className="text-muted font-weight-normal">Brother's Floor Covering</h5> */}
+                            <h5 className="text-muted font-weight-normal">{accountData.companyName}</h5>
                         </Col>
                     </Row>
                     <Row className="mt-4 mb-3">
                         <Col>
                             <ListGroup>
+                                <ListGroupItem className="d-flex justify-content-between align-items-center">
+                                    <h5>Account Level</h5>
+                                    <img 
+                                        src={ 
+                                            accountData.mohawkBrand==='Mohawk' ? 
+                                                require('assets/img/mohawk.png') : 
+                                                require('assets/img/karastan.png')
+                                            } 
+                                        alt="accountLevel" 
+                                        className="accountLogo" 
+                                    />
+                                </ListGroupItem>
                                 <ListGroupItem className="d-flex justify-content-between">
-                                    <h5>Account Level:</h5>
+                                    <h5>Mohawk Account</h5>
+                                    <h5 className="text-muted font-weight-normal">{accountData.mohawkAccount}</h5>
                                 </ListGroupItem>
                                 <ListGroupItem className="d-flex justify-content-between">
                                     <h5>Dealer Since</h5>
-                                    <h5 className="text-muted font-weight-normal">Oct. 5th, 2019</h5>
+                                    <h5 className="text-muted font-weight-normal">{moment(accountData.created).format("YYYY-MM-DD")}</h5>
                                 </ListGroupItem>
                                 <ListGroupItem className="d-flex justify-content-between">
                                     <h5>Orders Placed</h5>

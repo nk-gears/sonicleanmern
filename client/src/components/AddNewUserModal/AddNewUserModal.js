@@ -30,13 +30,13 @@ const userSchema =  Yup.object().shape({
     email: Yup.string()
         .email('Invalid email address')
         .required('Email is required!'),
-   
 })
 
 const AddNewUserModal = ({ 
     saveNewUser, 
     state, 
-    error
+    error,
+    accountData
 }) => {
 
     const [modal, setModal] = useState(false)
@@ -51,7 +51,12 @@ const AddNewUserModal = ({
     }, [state])
 
     const onSubmit = async (values, { setSubmitting, setErrors }) => {
-        saveNewUser(values)
+        let data = values
+        data.companyName = accountData.companyName
+        data.mohawkAccount = accountData.mohawkAccount
+        data.mohawkBrand = accountData.mohawkBrand
+        console.log(data)
+        saveNewUser(data)
     }
     return (
         <>
@@ -118,9 +123,10 @@ const AddNewUserModal = ({
 
 
 
-const mapStateToProps = ({ users }) => {
+const mapStateToProps = ({ users, account }) => {
     const { state, error } = users;
-    return { state, error };
+    const {accountData} = account
+    return { state, error, accountData };
 }
 
 const mapDispatchToProps = (dispatch) => {

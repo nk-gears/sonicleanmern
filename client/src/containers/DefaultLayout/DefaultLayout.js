@@ -46,6 +46,7 @@ class DefaultLayout extends Component {
             <AppSidebarHeader >
               <img src={this.props.userPhoto===undefined ? require('../../assets/img/emptylogo.png') : getUploadedImage(this.props.userPhoto)} className="img-avatar" alt="Avatar"></img>
               <div><strong>{this.props.accountData.firstName} {this.props.accountData.lastName}</strong></div>
+              <h6 className="text-muted font-weight-normal">{this.props.accountData.companyName}</h6>
             </AppSidebarHeader>
             <AppSidebarForm />
             <Suspense>
@@ -80,7 +81,7 @@ class DefaultLayout extends Component {
           </main>
           <AppAside fixed>
             <Suspense fallback={this.loading()}>
-              <DefaultAside />
+              {/* <DefaultAside /> */}
             </Suspense>
           </AppAside>
         </div>

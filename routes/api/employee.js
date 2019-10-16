@@ -37,6 +37,9 @@ router.post("/new", passport.authenticate('jwt', {session: false}), (req, res) =
           email: req.body.email,
           firstName: req.body.firstName,
           lastName: req.body.lastName,
+          companyName: req.body.companyName,
+          mohawkAccount: req.body.mohawkAccount,
+          mohawkBrand: req.body.mohawkBrand,
           roles: 'employee',
           _adminId: req.user._id
         });
