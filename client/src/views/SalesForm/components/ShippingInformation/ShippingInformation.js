@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, createRef } from 'react'
 import { connect } from "react-redux";
 import {
     Col,
@@ -9,7 +9,7 @@ import InformationForm from '../InformationForm'
 import LocationForm from '../LocationForm'
 import Stats from '../Stats'
 
-import { selectShippingInfor, onSelectStoreLocation } from 'modules/salesForm'
+import { selectShippingInfor, onSelectStoreLocation, onSetCustomerInfo } from 'modules/salesForm'
 import {fetchStores} from 'modules/Stores'
 import * as Constants from '_config/constants'
 
@@ -22,10 +22,14 @@ const ShippingInformation = ({
     storesData,
     onSelectStore,
     selectedStore,
+    shippinginfor,
+    setCustomerInformation,
     ...props 
 }) => {
 
     const [selectedIndex, setSelectedIndex] = useState(null)
+
+    const form = createRef()
 
     const onSelected = (index) => {
         setSelectedIndex(index)
@@ -35,6 +39,27 @@ const ShippingInformation = ({
     useEffect(()=> {
         fetchStores()
     }, [])
+
+    const handleClick = (...args) => {
+        if(shippinginfor===0) {
+            form.current.handleSubmit(...args);
+        } else {
+            props.nextStep()
+        }
+    }
+
+    const onSubmit = (values) => {
+        if(values.firstName!=='' && 
+            values.lastName!=='' &&
+            values.email!=='' &&
+            values.phoneNumber!=='' &&
+            values.address1!=='' &&
+            values.city!=='' &&
+            values.zipcode!=='') {
+                setCustomerInformation(values)
+                props.nextStep()
+            }
+    }
 
     return (
         <div className="text-center ShippingInformation mx-auto">
@@ -68,7 +93,7 @@ const ShippingInformation = ({
                                 <Col xs="12">
                                     { 
                                         selectedIndex === 0 ? 
-                                            <InformationForm /> : 
+                                            <InformationForm ref={form} submitValue={onSubmit} /> : 
                                         selectedIndex === 1 ? 
                                             <LocationForm 
                                                 data={storesData} 
@@ -94,15 +119,15 @@ const ShippingInformation = ({
                         </Col>
                     </Row>
             }
-            <Stats step={3} {...props} activeNextStep={!selectedStore} />
+            <Stats step={3} {...props} activeNextStep={shippinginfor===1 ? !selectedStore: null} nextStep={handleClick} />
         </div>
     )
 }
 
 const mapStateToProps = ({ salesform, stores }) => {
-    const { orderType, selectedStore } = salesform;
+    const { orderType, selectedStore, shippinginfor } = salesform;
     const {storesData} = stores
-    return { orderType, storesData, selectedStore };
+    return { orderType, storesData, selectedStore, shippinginfor };
 }
 
 const mapDispatchToProps = (dispatch) => {
@@ -115,6 +140,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         fetchStores: () => {
             dispatch(fetchStores());
+        },
+        setCustomerInformation: (value) => {
+            dispatch(onSetCustomerInfo(value))
         }
     }
 }

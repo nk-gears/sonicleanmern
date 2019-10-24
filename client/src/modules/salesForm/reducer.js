@@ -16,7 +16,8 @@ import {
     SELECTCARD,
     SELECTUSERS,
     SETEMPLOYEENAME,
-    SUBMITORDER
+    SUBMITORDER,
+    SETCUSTOMERINFO
 } from './constants'
 
 const initialState = {
@@ -26,6 +27,7 @@ const initialState = {
     ship: [],
     shippinginfor: -1,
     customerinfo:{},
+    customerInformation: {},
     discontValue:{},
     selectedStore: '',
     selectedCard: '',
@@ -50,6 +52,7 @@ export const onSelectStoreLocation = createAction(SELECTSTORELOCATION)
 export const onSelectCard = createAction(SELECTCARD)
 export const onSelectUsers = createAction(SELECTUSERS)
 export const onSetEmployeeName = createAction(SETEMPLOYEENAME)
+export const onSetCustomerInfo = createAction(SETCUSTOMERINFO)
 
 export const {
     start: submitOrder,
@@ -148,6 +151,13 @@ export const SalesFormReducer = handleActions({
         return {
             ...state,
             employeeName: payload
+        }
+    },
+
+    [SETCUSTOMERINFO]: (state, { payload }) => {
+        return {
+            ...state,
+            customerInformation: payload
         }
     },
 

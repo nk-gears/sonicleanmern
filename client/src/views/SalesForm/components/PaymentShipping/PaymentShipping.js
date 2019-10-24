@@ -14,6 +14,7 @@ const PaymentShipping = ({
   shippinginfor,
   setEmployeeName,
   employeeName,
+  customerInformation,
   ...props
 }) => {
 
@@ -67,12 +68,21 @@ const PaymentShipping = ({
         }
         
         <div className="d-flex justify-content-between align-items-center mt-2">
-          <div>
-            <h6 className=".text-muted font-weight-normal pr-5">{store.name}</h6>
-            <h6 className=".text-muted font-weight-normal pr-5">{store.address1}</h6>
-            <h6 className=".text-muted font-weight-normal pr-5">{store.address2}</h6>
-            <h6 className=".text-muted font-weight-normal pr-5">{store.city}, {store.us_state}, {store.zipcode}</h6>
+          {
+            shippinginfor===1 ?
+            <div>
+              <h6 className=".text-muted font-weight-normal pr-5">{store.name}</h6>
+              <h6 className=".text-muted font-weight-normal pr-5">{store.address1}</h6>
+              <h6 className=".text-muted font-weight-normal pr-5">{store.address2}</h6>
+              <h6 className=".text-muted font-weight-normal pr-5">{store.city}, {store.us_state}, {store.zipcode}</h6>
+            </div> : 
+            <div>
+              <h6 className=".text-muted font-weight-normal pr-5">{customerInformation.firstName} {customerInformation.lastName}</h6>
+              <h6 className=".text-muted font-weight-normal pr-5">{customerInformation.address1}</h6>
+              <h6 className=".text-muted font-weight-normal pr-5">{customerInformation.address2}</h6>
+              <h6 className=".text-muted font-weight-normal pr-5">{customerInformation.city}, {customerInformation.us_state}, {customerInformation.zipcode}</h6>
           </div>
+          }
           <Button color="primary" onClick={props.SW} > Edit </Button>
         </div>
       </>
@@ -80,9 +90,9 @@ const PaymentShipping = ({
 }
 
 const mapStateToProps = ({ salesform, stores }) => {
-  const { shippinginfor, selectedStore, employeeName } = salesform;
+  const { shippinginfor, selectedStore, employeeName, customerInformation } = salesform;
   const { storesData } = stores
-  return { shippinginfor, selectedStore, storesData, employeeName };
+  return { shippinginfor, selectedStore, storesData, employeeName, customerInformation };
 }
 
 const mapDispatchToProps = (dispatch) => {

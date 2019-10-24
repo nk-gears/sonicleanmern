@@ -22,13 +22,13 @@ const ProductInfo = ({
       let total = 0;
       for (const p  of products) {
         let result = Contants.DirectShipProducts.filter(product=> product._id===p)
-        total +=parseFloat((result[0].price/100))
+        if(result.length>0) {
+          total +=parseFloat((result[0].price/100))
+        }
     }
 
     setSubTotal(total)
     }
-    
-
   }, [])
 
     return (

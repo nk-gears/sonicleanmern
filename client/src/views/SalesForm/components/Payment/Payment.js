@@ -38,6 +38,8 @@ const Payment = ({
     storesData,
     submitOrder,
     state,
+    shippinginfor,
+    customerInformation,
     ...props
 }) => {
 
@@ -59,7 +61,7 @@ const Payment = ({
         if(selectedCard.length===0) {
             toast.error("Please select a card.", {position: 'bottom-right'});
             return;
-        } else if (employeeName==='') {
+        } else if (shippinginfor===1 && employeeName==='') {
             toast.error("Please input the employee name", {position: 'bottom-right'});
             return;
         } else if (selectedUsers.length===0) {
@@ -69,8 +71,6 @@ const Payment = ({
             toast.error("Please select one more product", {position: 'bottom-right'});
             return;
         }
-
-        let store = storesData.filter(item=> item._id=== selectedStore )
         
         let data = {}
 
@@ -85,25 +85,37 @@ const Payment = ({
             data.amount = total
             data.shipping = {}
             data.shipping.cust_ref = Math.random().toString(36).substring(7)+".DS"
-            data.shipping.ship_first_name = employeeName.split(' ')[0]
-            data.shipping.ship_last_name = employeeName.split(' ')[1]
-            data.shipping.ship_company = store[0].name
-            data.shipping.ship_address_1 = store[0].address1
-            data.shipping.ship_address_2 = store[0].address2
-            data.shipping.ship_city = store[0].city
-            data.shipping.ship_state = store[0].us_state
-            data.shipping.ship_zip = store[0].zipcode
+            if(shippinginfor===0) {
+                data.shipping.ship_first_name = customerInformation.firstName
+                data.shipping.ship_last_name = customerInformation.lastName
+                data.shipping.ship_company = customerInformation.email
+                data.shipping.ship_address_1 = customerInformation.address1
+                data.shipping.ship_address_2 = customerInformation.address2
+                data.shipping.ship_city = customerInformation.city
+                data.shipping.ship_state = customerInformation.us_state
+                data.shipping.ship_zip = customerInformation.zipcode
+            } else {
+                let store = storesData.filter(item=> item._id=== selectedStore )
+                data.shipping.ship_first_name = employeeName.split(' ')[0]
+                data.shipping.ship_last_name = employeeName.split(' ')[1]
+                data.shipping.ship_company = store[0].name
+                data.shipping.ship_address_1 = store[0].address1
+                data.shipping.ship_address_2 = store[0].address2
+                data.shipping.ship_city = store[0].city
+                data.shipping.ship_state = store[0].us_state
+                data.shipping.ship_zip = store[0].zipcode
+            }
             data.shipping.ship_country = 'USA'
-            data.shipping.ship_is_billing = true
-            data.shipping.items = ship.map(item=> {
-                let p = {}
-                p.item=item
-                p.quantity = 1
-                let result = Contants.DirectShipProducts.filter(product=> product._id===item)
-                p.price=parseFloat(result[0].price / 100)
-                p.discount=0
-                return p
-            })
+                data.shipping.ship_is_billing = true
+                data.shipping.items = ship.map(item=> {
+                    let p = {}
+                    p.item=item
+                    p.quantity = 1
+                    let result = Contants.DirectShipProducts.filter(product=> product._id===item)
+                    p.price=parseFloat(result[0].price / 100)
+                    p.discount=0
+                    return p
+                })
         }
         
         submitOrder(data)
@@ -166,11 +178,25 @@ const mapStateToProps = ({ salesform, card, stores }) => {
         employeeName, 
         selectedUsers,
         selectedStore,
-        state
+        state,
+        shippinginfor,
+        customerInformation,
     } = salesform;
     const { cardsData } = card
     const { storesData } = stores
-    return { orderType, selectedCard, cardsData, ship, employeeName, selectedUsers, selectedStore, storesData, state };
+    return { 
+        orderType, 
+        selectedCard, 
+        cardsData, 
+        ship, 
+        employeeName, 
+        selectedUsers, 
+        selectedStore, 
+        storesData, 
+        state, 
+        shippinginfor,
+        customerInformation
+    };
 }
 
 const mapDispatchToProps = (dispatch) => {
