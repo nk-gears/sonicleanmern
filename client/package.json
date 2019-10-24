@@ -15,6 +15,7 @@
     "enzyme": "^3.9.0",
     "enzyme-adapter-react-16": "^1.10.0",
     "flag-icon-css": "^3.3.0",
+    "flatted": "^2.0.1",
     "font-awesome": "^4.7.0",
     "formik": "^1.5.1",
     "html-react-parser": "^0.7.1",

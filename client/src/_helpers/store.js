@@ -3,8 +3,9 @@ import { cacheEnhancer } from 'redux-cache';
 import rootReducer from 'modules';
 import thunk from 'redux-thunk'
 import apiMiddleware from 'middleware/api'
-import { persistStore, persistReducer } from 'redux-persist'
+import { persistStore, persistReducer, createTransform } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
+import {parse, stringify} from 'flatted/esm';
 
 
 export default function configureStore(preloadedState) {
@@ -27,10 +28,15 @@ export default function configureStore(preloadedState) {
       window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ :
       compose
 
+    const transformCircular = createTransform(
+        (inboundState, key) => stringify(inboundState),
+        (outboundState, key) => parse(outboundState),
+    )
   const persistConfig = {
     key: 'root',
     storage,
-    blacklist: []
+    blacklist: [],
+    transforms: [transformCircular]
   }
   const persistedReducer = persistReducer(persistConfig, rootReducer)
 
