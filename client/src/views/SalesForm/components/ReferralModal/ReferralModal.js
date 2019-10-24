@@ -1,6 +1,4 @@
 import React, { Component } from 'react'
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
 import { 
     Col, 
     Form, 
@@ -19,7 +17,7 @@ import classNames from 'classnames'
 import { Formik } from 'formik';
 import 'react-select/dist/react-select.min.css';
 import * as Yup from 'yup'
-import { referral } from "../.././../../modules/Referral";
+
 import './ReferralModal.scss'
 
 const validationSchema = function (values) {
@@ -109,18 +107,13 @@ class ReferralModal extends Component {
             lastName: values.lastName,
             email: values.email
         })
-        const data = {
-        firstname: values.firstName,
-        lastname: values.lastName,
-        email: values.email
-        } 
-        setSubmitting(false)    
-        this.props.referral(data);       
+        setTimeout(() => {
+            this.setState({ submitSuccess: true})
+            setSubmitting(false)
+        }, 5000)
     }
 
     render() {
-        const { isSubmitSuccess,response } = this.props;       
-        this.state.submitSuccess = isSubmitSuccess == null ? this.state.submitSuccess : isSubmitSuccess; 
         return (
             <div className="animated fadeIn mt-3 ReferralModal">
                 <Formik
@@ -142,21 +135,18 @@ class ReferralModal extends Component {
                             isValid,
                             handleReset,
                             setTouched
-                        }) => (                           
+                        }) => (
+
                                 <Modal isOpen={this.props.toogle}
                                     className={'modal-primary ReferralModal ' + 'modal-md'}>
                                     <Form onSubmit={handleSubmit} noValidate name='referralForm'>
                                         <ModalHeader toggle={this.toggleModal}>Send Customer Referral Link</ModalHeader>
                                         <ModalBody>
                                             {
-                                                !this.state.submitSuccess && !isSubmitSuccess ?
+                                                !this.state.submitSuccess && !isSubmitting ?
                                                 <Row>
                                                     <Col>
 
-                                                    <h5  style={{ textAlign: "center", color: "red" }}> {response == null ? "" :  response.error}  </h5>
-                                          
-                                          <h5  style={{ textAlign: "center", color: "red" }}> {response == null ? "" :  response.errors}  </h5>
-                                                  
                                                         <Row>
                                                             <Col>
                                                                 <h6 className="font-weight-normal">
@@ -234,8 +224,8 @@ class ReferralModal extends Component {
                                                         <h6 className="text-muted font-weight-bold">(Do not close or refresh this page)</h6>
                                                         <h6 className="text-muted font-weight-bold mt-3">{this.state.firstName} {this.state.lastName}</h6>
                                                         <h6 className="text-muted font-weight-bold">{this.state.email}</h6>
-                                                        <div className="circle-loader mt-3">
-                                                            <div className="checkmark draw"></div>
+                                                        <div class="circle-loader mt-3">
+                                                            <div class="checkmark draw"></div>
                                                         </div>                                                    
                                                     </Col>
                                                 </Row> : this.state.submitSuccess && !isSubmitting ?
@@ -244,8 +234,8 @@ class ReferralModal extends Component {
                                                         <h4 className="text-muted font-wegith-bold">Referral Link Sent Successfully!</h4>
                                                         <h6 className="text-muted font-weight-bold mt-3">{this.state.firstName} {this.state.lastName}</h6>
                                                         <h6 className="text-muted font-weight-bold">{this.state.email}</h6>
-                                                        <div className="circle-loader load-complete mt-3">
-                                                            <div className="checkmark draw " style={{display: 'block'}}></div>
+                                                        <div class="circle-loader load-complete mt-3">
+                                                            <div class="checkmark draw " style={{display: 'block'}}></div>
                                                         </div>    
                                                     </Col>
                                                 </Row> : null
@@ -263,7 +253,7 @@ class ReferralModal extends Component {
                                                     <Button color="primary" type="submit" disabled={isSubmitting || !isValid}>{'Wait...'}</Button>
                                                 </> : this.state.submitSuccess && !isSubmitting ?
                                                 <>
-                                                 <Button color="danger" onClick={() => { this.props.closeModal(); handleReset()}}>Done</Button>
+                                                                <Button color="danger" onClick={() => { this.props.closeModal(); handleReset()}}>Done</Button>
                                                 </> : null
                                         
                                             }
@@ -278,22 +268,5 @@ class ReferralModal extends Component {
         )
     }
 }
-const mapStateToProps = ({ referral }) => {
-    const { response,isSubmitSuccess} = referral;   
-    return { isSubmitSuccess,response };
-  }
-  
-  const mapDispatchToProps = (dispatch) => {  
-    return {
-        referral: (data) => {
-        dispatch(referral(data));
-      } 
-    }
-  }
-export default withRouter(connect(
-    mapStateToProps,
-    mapDispatchToProps,
-    null
-  )(ReferralModal));
 
-//export default ReferralModal
+export default ReferralModal

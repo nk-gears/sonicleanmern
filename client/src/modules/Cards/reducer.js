@@ -98,10 +98,10 @@ export const CardReducer = handleActions({
             }
         }
     }),
+    
     ...requestLoopHandlers({
         action: GET_CARDS,
         onSuccess: (state, payload) => {
-            console.log(payload)
             return {
                 ...state,
                 cardsData: payload,

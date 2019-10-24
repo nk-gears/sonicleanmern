@@ -1,13 +1,23 @@
 import { createAction, handleActions } from 'redux-actions'
-
+import { REQUEST_STATUS } from '_config/constants'
+import { apiAction } from 'utils/apiCall'
+import { getToken } from '_helpers/token-helpers'
+import { defineLoopActions, requestLoopHandlers } from 'utils/state'
 import {
     SALESFORM_ORDERTYPE,
     SELECT_INVENTORY,
     SELECT_SHIP,
-    SELECT_SHIPPINGINFO, SELECTED_SHIPPINGINFO,SELECTED_INVENTORYDATA,DISCOUNT,SELECTEDPAYMENT
+    SELECT_SHIPPINGINFO, 
+    SELECTED_SHIPPINGINFO,
+    SELECTED_INVENTORYDATA,
+    DISCOUNT,
+    SELECTEDPAYMENT,
+    SELECTSTORELOCATION,
+    SELECTCARD,
+    SELECTUSERS,
+    SETEMPLOYEENAME,
+    SUBMITORDER
 } from './constants'
-
-
 
 const initialState = {
     orderType: -1,
@@ -17,9 +27,14 @@ const initialState = {
     shippinginfor: -1,
     customerinfo:{},
     discontValue:{},
-    paymentId:''
+    selectedStore: '',
+    selectedCard: '',
+    selectedUsers: [],
+    employeeName: '',
+    paymentId:'',
+    orderResponseData: {},
+    submitSuccess: false
 };
-
 
 /* Action creators */
 
@@ -31,10 +46,34 @@ export const selectedShippingInfor = createAction(SELECTED_SHIPPINGINFO)
 export const selectedInventoryData = createAction(SELECTED_INVENTORYDATA)
 export const discount = createAction(DISCOUNT)
 export const selectedPayment = createAction(SELECTEDPAYMENT)
+export const onSelectStoreLocation = createAction(SELECTSTORELOCATION)
+export const onSelectCard = createAction(SELECTCARD)
+export const onSelectUsers = createAction(SELECTUSERS)
+export const onSetEmployeeName = createAction(SETEMPLOYEENAME)
 
+export const {
+    start: submitOrder,
+    success: submitOrderSuccess,
+    fail: submitOrderFail,
+    // reset: submitOrderReset
+} = defineLoopActions(SUBMITORDER)
 
+export const onSubmitOrder = (data) => {
 
+    const apiUrl = `/api/salesform/order`
+    const token = getToken();
 
+    return apiAction({
+        url: apiUrl,
+        method: "POST",
+        accessToken: token,
+        onStart: submitOrder,
+        onSuccess: submitOrderSuccess,
+        onFailure: submitOrderFail,
+        data: data,
+        label: SUBMITORDER
+    });
+}
 
 export const SalesFormReducer = handleActions({
 
@@ -86,5 +125,51 @@ export const SalesFormReducer = handleActions({
             ...state,
             paymentId: payload
         };
-    }
+    },
+    [SELECTSTORELOCATION]: (state, {payload}) => {
+        return {
+            ...state,
+            selectedStore: payload
+        }
+    },
+    [SELECTCARD]: (state, {payload}) => {
+        return {
+            ...state,
+            selectedCard: payload
+        }
+    },
+    [SELECTUSERS]: (state, {payload}) => {
+        return{
+            ...state,
+            selectedUsers: payload
+        }
+    },
+    [SETEMPLOYEENAME]: (state, {payload}) => {
+        return {
+            ...state,
+            employeeName: payload
+        }
+    },
+
+    ...requestLoopHandlers({
+        action: SUBMITORDER,
+        onSuccess: (state, payload) => {
+            return {
+                ...state,
+                submitSuccess: true,
+                error: {},
+                orderResponseData: payload,
+                state: REQUEST_STATUS.SUCCESS
+            }
+        },
+        onFail: (state, payload) => {
+            return {
+                ...state,
+                error: payload,
+                submitSuccess: false,
+                state: REQUEST_STATUS.FAIL
+            }
+        },
+    }),
+
 }, initialState)

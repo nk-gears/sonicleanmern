@@ -44,7 +44,13 @@ const appReducers = combineReducers({
     // but its referenced here     
 });
 
+const initialState = appReducers({}, {})
+
 const VisualbitlizerApp = (state, action) => {
+    if (action.type === 'soniclean/auth/logout') {
+        console.log('asdf')
+        state = initialState
+      }
     return appReducers(state, action);
 };
 

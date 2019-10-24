@@ -113,7 +113,7 @@ const LoginForm = ({submit, state}) => {
                                 <LaddaButton
                                   type="submit"
                                   className="btn btn-primary btn-ladda"
-                                  loading={false}
+                                  loading={isPending(state)}
                                   data-color="primary"
                                   data-size={L}
                                   data-style={EXPAND_RIGHT}

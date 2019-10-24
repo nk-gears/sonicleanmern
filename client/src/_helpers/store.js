@@ -30,7 +30,7 @@ export default function configureStore(preloadedState) {
   const persistConfig = {
     key: 'root',
     storage,
-    blacklist: ['auth', 'account']
+    blacklist: []
   }
   const persistedReducer = persistReducer(persistConfig, rootReducer)
 

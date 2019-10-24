@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const keys = require("../../config/keys");
-const stripe = require("stripe")(keys.stripeKey);
+const stripe = require("stripe")(keys.stripePublicKey);
 const passport = require("passport");
 
 const User = require("../../models/User");

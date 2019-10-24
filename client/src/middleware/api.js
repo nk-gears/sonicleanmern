@@ -17,7 +17,6 @@ const apiMiddleware = ({ dispatch }) => next => action => {
         label,
         headers
     } = action.payload;
-    console.log(url, data)
     const dataOrParams = ["GET", "DELETE"].includes(method) ? "params" : "data";
 
     // axios default configs
@@ -33,7 +32,7 @@ const apiMiddleware = ({ dispatch }) => next => action => {
             url,
             method,
             headers,
-            [dataOrParams]: data
+            [dataOrParams]: data    
         })
         .then(({ data }) => {
             dispatch(onSuccess(data));

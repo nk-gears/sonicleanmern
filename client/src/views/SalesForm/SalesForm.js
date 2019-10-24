@@ -9,7 +9,6 @@ import Nav from './components/Nav'
 import {
     Card,
     CardBody,
-    CardFooter,
     CardHeader,
     Col,
     Row
@@ -61,6 +60,7 @@ class SalesForm extends Component {
             </div>
         )
     }
+  
 }
 
 SalesForm.propTypes = {

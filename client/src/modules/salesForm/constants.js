@@ -10,6 +10,12 @@ export const SELECTED_INVENTORYDATA = `${namespace}/SELECTED_INVENTORYDATA`
 export const DISCOUNT = `${namespace}/DISCOUNT`
 export const SELECTEDPAYMENT = `${namespace}/SELECTEDPAYMENT`
 
+export const SELECTSTORELOCATION = `${namespace}/selectstorelocation`
+export const SELECTCARD = `${namespace}/selectcard`
+export const SELECTUSERS = `${namespace}/selectusers`
+export const SETEMPLOYEENAME = `${namespace}/setemployeename`
+export const SUBMITORDER = `${namespace}/submitorder`
+
 
 
 

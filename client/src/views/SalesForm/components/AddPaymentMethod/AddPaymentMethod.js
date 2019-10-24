@@ -29,7 +29,7 @@ class AddPaymentMethod extends Component {
         <div className="AddPaymentMethod text-center text-primary">
         <Card>
             <CardBody className="AddPaymentMethod__add">
-              <h3 className="text-uppercase font-weight-bold"><i className="fa fa-plus-circle fa-md mr-3"></i>Add New Payment Method</h3>
+              <h3 className="text-uppercase font-weight-bold"><i class="fa fa-plus-circle fa-md mr-3"></i>Add New Payment Method</h3>
             </CardBody>
         </Card>
       </div>

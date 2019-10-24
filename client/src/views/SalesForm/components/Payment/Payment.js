@@ -1,199 +1,192 @@
-import React, { Component } from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
-
 import {
-    Button,
     Card,
     CardBody,
     CardHeader,
     Col,
     Row,
-    Modal
 } from 'reactstrap';
 
+import { ToastContainer, toast } from 'react-toastify';
 import Stats from '../Stats'
-import AddPaymentMethodModal from '../AddPaymentMethodModal'
 import PaymentMethod from '../PaymentMethod'
-
 import PaymentShipping from '../PaymentShipping';
 import EmailNotification from '../EmailNotification'
 import ProductBox from '../ProductBox'
 import ProductInfo from '../ProductInfo'
 import PromoCode from '../PromoCode'
 import ScrollTop from '../ScrollTop'
-import { fetchCards } from "../../../../modules/Cards";
+import * as Contants from '_config/constants'
+
+import { fetchCards } from "modules/Cards";
+import { onSelectCard, onSubmitOrder, submitOrderReset } from 'modules/salesForm'
+
 import './Payment.scss'
-import { PriceType } from '../../../../_config/constants';
-import { selectedPayment } from "../../../../modules/salesForm";
-import { order } from "../../../../modules/Order";
-import { getDealerId, getUserId } from '_helpers/token-helpers'
+import { REQUEST_STATUS } from '_config/constants';
 
+const Payment = ({
+    orderType,
+    fetchCards,
+    cardsData,
+    selectCard,
+    selectedCard,
+    ship,
+    employeeName,
+    selectedUsers,
+    selectedStore,
+    storesData,
+    submitOrder,
+    state,
+    ...props
+}) => {
 
-
-class Payment extends Component {
-    constructor(props) {
-        super(props)
-        this.props.fetchCards(this.props.customerinfo.customerid);
-        this.state = {
-            modal: false,
-            selectedPayment: null,
-            selectedemailNotification: [],
-            paymentShippingAddress: ''
+    useEffect(()=> {
+        fetchCards()
+        if(state===REQUEST_STATUS.SUCCESS) {
+            toast.success("Your Order was Successfully Processe.", {position: 'bottom-right'});
+        } else if(state===REQUEST_STATUS.FAIL){
+            toast.success("Sorry, we ran into an issue processing your payment", {position: 'bottom-right'});
         }
+    }, [state])
+
+    const onSelectCard= (id) => {
+        selectCard(id)
     }
 
-    toggleModal = (isSubmitSuccess) => {
-        this.setState({ modal: !this.state.modal })
-        if (isSubmitSuccess == true) {
-            this.props.fetchCards(this.props.customerinfo.customerid);
-        }
-    }
-
-    onSelectPayment = (index, id) => {
-        this.props.selectedPayment(id)
-        this.setState({ selectedPayment: id })
-    }
-    emailNotification = (vaule) => {
-        let result = vaule.map(a => a.value);
-        this.setState({ selectedemailNotification: result })
-    }
-
-    prevStep = () => {
-        this.props.previousStep()
-    }
-
-    paymentShipping = (value) => {
-        this.setState({ paymentShippingAddress: value })
-    }
-
-    submitOrder = (totalAmount, promoCode, subtotal, tax, amount) => {
-        const { orderType, customerinfo, paymentId, ship, inventoryData } = this.props;
-        let selectedProducts = orderType == PriceType.DIRECTSHIP ? ship : inventoryData;
-        let products = [];
-        for (var i = 0; i < selectedProducts.length; i++) {
-            let product = {};
-            product.itemid = selectedProducts[i].item_id;
-            product.sku = selectedProducts[i].sku;
-            product.qty = selectedProducts[i].quantity;
-            product.price = selectedProducts[i].price;
-            products.push(product);
+//////final Submit Order/////////
+    const onSubmitOrder = async () => {
+        if(selectedCard.length===0) {
+            toast.error("Please select a card.", {position: 'bottom-right'});
+            return;
+        } else if (employeeName==='') {
+            toast.error("Please input the employee name", {position: 'bottom-right'});
+            return;
+        } else if (selectedUsers.length===0) {
+            toast.error("Please select one more Employee", {position: 'bottom-right'});
+            return;
+        } else if( orderType===1 && ship.length===0) {
+            toast.error("Please select one more product", {position: 'bottom-right'});
+            return;
         }
 
-        const data = {
-            pricelist: `${orderType}`,
-            customerid: `${customerinfo.customerid}`,
-            storeid: customerinfo.id != undefined ? `${customerinfo.id}` : '',
-            paymentid: `${paymentId}`,
-            promocode: `${promoCode}`,
-            subtotal: `${subtotal}`,
-            promoamount: `${amount}`,
-            shipping: "0.0",
-            tax: `${tax}`,
-            total: `${totalAmount}`,
-            employeeaddresed: this.state.paymentShippingAddress,
-            emailnotification: this.state.selectedemailNotification.join(),
-            userid: getUserId(),
-            dealerid: getDealerId(),
-            namecompany: customerinfo.name,
-            address1: customerinfo.address1,
-            address2: customerinfo.address2,
-            state: customerinfo.state,
-            city: customerinfo.city,
-            zip: customerinfo.zip,
-            items: products,
-            firstName:customerinfo.firstName,
-            lastName:customerinfo.lastName,
-            PhoneNumber:customerinfo.phone
+        let store = storesData.filter(item=> item._id=== selectedStore )
+        
+        let data = {}
+
+        data.card = selectedCard
+
+        if(orderType===1) {
+            let total = 0;
+            for (const p  of ship) {
+                let result = Contants.DirectShipProducts.filter(product=> product._id===p)
+                total +=parseFloat(result[0].price)
+            }
+            data.amount = total
+            data.shipping = {}
+            data.shipping.cust_ref = Math.random().toString(36).substring(7)+".DS"
+            data.shipping.ship_first_name = employeeName.split(' ')[0]
+            data.shipping.ship_last_name = employeeName.split(' ')[1]
+            data.shipping.ship_company = store[0].name
+            data.shipping.ship_address_1 = store[0].address1
+            data.shipping.ship_address_2 = store[0].address2
+            data.shipping.ship_city = store[0].city
+            data.shipping.ship_state = store[0].us_state
+            data.shipping.ship_zip = store[0].zipcode
+            data.shipping.ship_country = 'USA'
+            data.shipping.ship_is_billing = true
+            data.shipping.items = ship.map(item=> {
+                let p = {}
+                p.item=item
+                p.quantity = 1
+                let result = Contants.DirectShipProducts.filter(product=> product._id===item)
+                p.price=parseFloat(result[0].price / 100)
+                p.discount=0
+                return p
+            })
         }
-        this.props.order(data);
+        
+        submitOrder(data)
     }
 
-    render() {
-        const { modal} = this.state
-        const { orderType, cardsData, customerinfo, ship, inventoryData, paymentId } = this.props;
-        return (
-            <div className="text-center mx-auto Payment">
-                <ScrollTop />
-                <Modal isOpen={modal} toggle={this.toggleModal}
-                    className={'modal-primary ' + 'modal-md'}>
-                    <AddPaymentMethodModal toggleModal={this.toggleModal} customerId={customerinfo.customerid} />
-                </Modal>
-                <Row className="justify-content-center mt-2">
-                    <Col md="12" lg="10">
-                        <Row>
-                            <Col xs="12" md="7" className="text-left">
-                                <div className="d-flex justify-content-between align-items-center mb-3">
-                                    <h3 className="font-weight-normal text-black"> Payment Method </h3>
-                                    <Button color="primary" onClick={this.toggleModal}><i className="fa fa-plus-circle fa-md mr-3"></i>Add Payment</Button>
-                                </div>
+    return (
+        <div className="text-center mx-auto Payment">
+            <ScrollTop />
+            <ToastContainer />  
+            <Row className="justify-content-center mt-2">
+                <Col md="12" lg="10">
+                    <Row>
+                        <Col xs="12" md="7" className="text-left">
+                            <div className="d-flex justify-content-between align-items-center mb-3">
+                                <h3 className="font-weight-normal text-black"> Payment Method </h3>
+                            </div>
+                            {
+                                cardsData.map((item, index) => {
+                                    return <PaymentMethod 
+                                                data={item} 
+                                                key={index} 
+                                                selectPayment={onSelectCard} 
+                                                selectedIndex={selectedCard}
+                                            />
+                                })
+                            }
+                            <hr />
+                            <PaymentShipping SW={props.previousStep} />
+                            <hr />
+                            <EmailNotification />
+                        </Col>
+                        <Col xs="12" md="5">
+                            <Card className="card-accent-primary mt-mobile-5 ">
+                                <CardHeader><h4 className="font-weight-normal text-black">Order Summary</h4></CardHeader>
+                            <CardBody>
                                 {
-                                    cardsData.map((item, index) => {
-                                        return <PaymentMethod
-                                            data={item}
-                                            key={index}
-                                            index={index}
-                                            selectPayment={this.onSelectPayment}
-                                            selectedIndex={paymentId}
-                                        />
+                                    ship && ship.map((item, index) => {
+                                        return <ProductBox item={item} key={index} orderType={orderType} />
                                     })
                                 }
+                                <PromoCode />
                                 <hr />
-                                <PaymentShipping type={this.props.shippinginfor} SW={this.prevStep} data={customerinfo} paymentShipping={this.paymentShipping} />
-                                <hr />
-                                <EmailNotification emailNotification={this.emailNotification} />
-                            </Col>
-                            <Col xs="12" md="5">
-                                <Card className="card-accent-primary mt-mobile-5 ">
-                                    <CardHeader><h4 className="font-weight-normal text-black">Order Summary</h4></CardHeader>
-                                    <CardBody>
-                                        {
-                                            orderType == PriceType.DIRECTSHIP ?
-                                                ship.map((item, index) => {
-                                                    return <ProductBox
-                                                        data={item}
-                                                        index={index}
-                                                    />
-                                                }) : inventoryData.map((item, index) => {
-                                                    return <ProductBox
-                                                        data={item}
-                                                        index={index}
-                                                    />
-                                                })
-                                        }
-                                        <hr />
-                                        <PromoCode customerId={customerinfo.customerid} />
-                                        <hr />
-                                        <ProductInfo submitOrder={this.submitOrder} />
-                                    </CardBody>
-                                </Card>
-                            </Col>
-                        </Row>
-                    </Col>
-                </Row>
-                <Stats step={4} {...this.props} />
-            </div>
-        )
-    }
+                                <ProductInfo onSubmitOrder={onSubmitOrder} products={ship} state={state} />
+                            </CardBody>
+                            </Card>
+                        </Col>
+                    </Row>
+                </Col>
+            </Row>
+            <Stats step={4} {...props} />
+        </div>
+    )
 }
-const mapStateToProps = ({ salesform, card }) => {
-    const { orderType, shippinginfor, customerinfo, ship, inventoryData, paymentId } = salesform;
-    const { cardsData } = card;
-    return { orderType, shippinginfor, cardsData, customerinfo, ship, inventoryData, paymentId };
+
+const mapStateToProps = ({ salesform, card, stores }) => {
+    const { 
+        orderType, 
+        selectedCard, 
+        ship, 
+        employeeName, 
+        selectedUsers,
+        selectedStore,
+        state
+    } = salesform;
+    const { cardsData } = card
+    const { storesData } = stores
+    return { orderType, selectedCard, cardsData, ship, employeeName, selectedUsers, selectedStore, storesData, state };
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchCards: (customerid) => {
-            dispatch(fetchCards(customerid));
+        fetchCards: () => {
+            dispatch(fetchCards());
         },
-        selectedPayment: (paymentId) => {
-            dispatch(selectedPayment(paymentId));
+        selectCard: (card) => {
+            dispatch(onSelectCard(card))
         },
-        order: (data) => {
-            dispatch(order(data));
-        }
+        submitOrder: (data) => {
+            dispatch(onSubmitOrder(data))
+        },
     }
 }
+
 export default connect(
     mapStateToProps,
     mapDispatchToProps

@@ -178,7 +178,6 @@ export const authReducer = handleActions({
         localStorage.removeItem("jwtToken");
         setAuthToken(false);
         return {
-            ...state,
             token: '',
             user: {},
             loginState: REQUEST_STATUS.INITIAL,

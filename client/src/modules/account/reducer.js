@@ -105,7 +105,6 @@ export const accountReducer = handleActions({
     ...requestLoopHandlers({
         action: GETACCOUNTDATA,
         onSuccess: (state, payload) => {
-            console.log(payload)
             return {
                 ...state,
                 accountData: payload,

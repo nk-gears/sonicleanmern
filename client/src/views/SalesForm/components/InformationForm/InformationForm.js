@@ -1,6 +1,4 @@
 import React, { Component } from 'react'
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
 import { Button, Card, CardHeader, CardBody, Col, CustomInput, Form, FormFeedback, FormGroup, Label, Input, Row } from 'reactstrap';
 import { Formik, Field } from 'formik';
 import classNames from 'classnames'
@@ -9,11 +7,11 @@ import * as Yup from 'yup'
 import MaskedInput from "react-text-mask";
 import Select from 'react-select';
 import 'react-select/dist/react-select.min.css';
-import { fetchStates } from "../../../../modules/States";
-import { saveCusomter } from "../../../../modules/Customer";
+import states from '../../../../_config/states';
+
 import './InformationForm.scss'
 
-
+const options = states.US;
 const phoneNumberMask = [
     "(",
     /[1-9]/,
@@ -42,6 +40,9 @@ const validationSchema = function (values) {
         Address: Yup.string()
             .min(5, `Address has to be at least 5 characters`)
             .required('Address is required'),
+        Address2: Yup.string()
+            .min(5, `Address2 has to be at least 5 characters`)
+            .required('Address2 is required'),
         city: Yup.string()
             .min(5, `City has to be at least 5 characters`)
             .required('City is required'),
@@ -51,8 +52,15 @@ const validationSchema = function (values) {
         email: Yup.string()
             .email('Invalid email address')
             .required('Email is required!'),
+        password: Yup.string()
+            .min(6, `Password has to be at least ${6} characters!`)
+            .matches(/(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/, 'Password must contain: numbers, uppercase and lowercase letters\n')
+            .required('Password is required'),
         phonenumber: Yup.string()
-            .required('Phone Number is required')
+            .required('Phone Number is required'),
+        accept: Yup.bool()
+            .required('* required')
+            .test('accept', 'You have to accept our Terms and Conditions!', value => value === true),
     })
 }
 
@@ -84,6 +92,7 @@ const initialValues = {
     Address: "",
     Address2: "",
     email: "",
+    password: "",
     city: "",
     zipCode: "",
     us_state: "",
@@ -91,25 +100,21 @@ const initialValues = {
     accept: true
 }
 
+const onSubmit = (values, { setSubmitting, setErrors }) => {
+    setTimeout(() => {
+        alert(JSON.stringify(values, null, 2))
+        // console.log('User has been successfully saved!', values)
+        setSubmitting(false)
+    }, 2000)
+}
 
 class InformationForm extends Component {
 
     constructor(props) {
         super(props)
-        this.props.fetchStateData();
         this.touchAll = this.touchAll.bind(this)
         this.state = {
-            firstName: "",
-            lastName: "",
-            Address: "",
-            Address2: "",
-            email: "",
-            city: "",
-            zipCode: "",
-            us_state: "",
-            phonenumber: "",
-            us_state_error: false,
-            accept: true
+            us_state: [],
         }
 
     }
@@ -135,11 +140,14 @@ class InformationForm extends Component {
             firstName: false,
             lastName: true,
             Address: true,
+            Address2: true,
             email: true,
+            password: true,
             city: true,
             phonenumber: true,
             zipCode: true,
-            us_state: true
+            us_state: true,
+            accept: true
         }
         )
         this.validateForm(errors)
@@ -147,23 +155,6 @@ class InformationForm extends Component {
 
     saveChanges = (value) => {
         this.setState({ us_state: value, us_state_error: false });
-    }
-
-
-    onSubmit = (values, { setSubmitting, setErrors }) => {
-        const data = {
-            firstname: values.firstName,
-            phone: values.phonenumber,
-            address1: values.Address,
-            city: values.city,
-            state: this.state.us_state.value,
-            zip: values.zipCode,
-            address2: values.Address2,
-            lastname: values.lastName,
-            email: values.email,
-            sendemailconfirmation: values.accept,
-        }
-        this.props.saveCusomter(data, this.state.us_state.label);
     }
 
     handleBlur = () => {
@@ -176,9 +167,10 @@ class InformationForm extends Component {
                 this.setState({ us_state_error: true })
             }
         }
+
     }
+
     render() {
-        const { stateData, isSubmitSuccess, response } = this.props;
         return (
             <div className="animated fadeIn mt-3 InformationForm">
                 <Card>
@@ -189,7 +181,7 @@ class InformationForm extends Component {
                         <Formik
                             initialValues={initialValues}
                             validate={validate(validationSchema)}
-                            onSubmit={this.onSubmit}
+                            onSubmit={onSubmit}
                             render={
                                 ({
                                     values,
@@ -248,42 +240,42 @@ class InformationForm extends Component {
                                                             <FormGroup>
                                                                 <Label for="email">Email</Label>
                                                                 <div>
-                                                                    <Input type="email"
-                                                                        name="email"
-                                                                        id="email"
-                                                                        autoComplete="email"
-                                                                        valid={!errors.email}
-                                                                        invalid={touched.email && !!errors.email}
-                                                                        required
-                                                                        onChange={handleChange}
-                                                                        onBlur={handleBlur}
-                                                                        value={values.email} />
-                                                                    <FormFeedback>{errors.email}</FormFeedback>
+                                                                <Input type="email"
+                                                                    name="email"
+                                                                    id="email"
+                                                                    autoComplete="email"
+                                                                    valid={!errors.email}
+                                                                    invalid={touched.email && !!errors.email}
+                                                                    required
+                                                                    onChange={handleChange}
+                                                                    onBlur={handleBlur}
+                                                                    value={values.email} />
+                                                                <FormFeedback>{errors.email}</FormFeedback>
                                                                 </div>
                                                             </FormGroup>
                                                         </Col>
                                                         <Col md={6}>
                                                             <FormGroup>
                                                                 <Label>Phone Number</Label>
-                                                                <Field
-                                                                    name="phonenumber"
-                                                                    render={({ field }) => (
-                                                                        <MaskedInput
-                                                                            {...field}
-                                                                            mask={phoneNumberMask}
-                                                                            id="phonenumber"
-                                                                            type="text"
-                                                                            onChange={handleChange}
-                                                                            onBlur={handleBlur}
-                                                                            required
-                                                                            className={
-                                                                                errors.phonenumber && touched.phonenumber
-                                                                                    ? "is-invalid form-control"
-                                                                                    : "form-control"
-                                                                            }
-                                                                        />
-                                                                    )}
-                                                                />
+                                                                    <Field
+                                                                        name="phonenumber"
+                                                                        render={({ field }) => (
+                                                                            <MaskedInput
+                                                                                {...field}
+                                                                                mask={phoneNumberMask}
+                                                                                id="phonenumber"
+                                                                                type="text"
+                                                                                onChange={handleChange}
+                                                                                onBlur={handleBlur}
+                                                                                required
+                                                                                className={
+                                                                                    errors.phonenumber && touched.phonenumber
+                                                                                        ? "is-invalid form-control"
+                                                                                        : "form-control"
+                                                                                }
+                                                                            />
+                                                                        )}
+                                                                    />
                                                                 <FormFeedback>{errors.phonenumber}</FormFeedback>
                                                             </FormGroup>
                                                         </Col>
@@ -344,7 +336,7 @@ class InformationForm extends Component {
                                                                             name="us_state"
                                                                             id="us_state"
                                                                             value={this.state.us_state}
-                                                                            options={stateData}
+                                                                            options={options}
                                                                             valid={!errors.us_state}
                                                                             invalid={touched.us_state && !!errors.us_state}
                                                                             onChange={this.saveChanges}
@@ -373,7 +365,7 @@ class InformationForm extends Component {
                                                             </FormGroup>
                                                         </Col>
                                                     </Row>
-
+                                                    
                                                     <FormGroup className="text-center mt-3 mb-3">
                                                         <CustomInput
                                                             type="checkbox"
@@ -384,13 +376,6 @@ class InformationForm extends Component {
                                                             onChange={handleChange}
                                                             onBlur={handleBlur} >
                                                         </CustomInput>
-                                                    </FormGroup>
-                                                    <FormGroup className="text-center mt-3 mb-3">
-                                                        <Button color="primary" type="submit">Submit</Button>
-                                                    </FormGroup>
-                                                    <FormGroup>
-                                                        <h5 style={{ textAlign: "center", color: "green" }}> {isSubmitSuccess ? "Customer  is saved successFully." : ""} </h5>
-                                                        <h5 style={{ textAlign: "center", color: "red" }}> {response == null   ? "" : isSubmitSuccess ? "": response.data.error }  </h5>
                                                     </FormGroup>
                                                 </Form>
                                             </Col>
@@ -403,26 +388,4 @@ class InformationForm extends Component {
     }
 }
 
-const mapStateToProps = ({ states, customer, salesform }) => {
-    const { stateData } = states;
-    const { response, isSubmitSuccess, id } = customer;
-    const { customerinfo } = salesform;
-    return { stateData, response, isSubmitSuccess, id, customerinfo };
-}
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        fetchStateData: () => {
-            dispatch(fetchStates());
-        },
-        saveCusomter: (data,stateName) => {
-            dispatch(saveCusomter(data,stateName));
-        }       
-    }
-}
-
-export default withRouter(connect(
-    mapStateToProps,
-    mapDispatchToProps,
-    null
-)(InformationForm));
+export default InformationForm

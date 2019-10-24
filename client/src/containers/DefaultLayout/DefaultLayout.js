@@ -21,7 +21,6 @@ import navigation from '../../_nav';
 import routes from '../../Routes/routes';
 import {getUploadedImage} from '_helpers/helper'
 
-const DefaultAside = React.lazy(() => import('./DefaultAside'));
 const DefaultFooter = React.lazy(() => import('./DefaultFooter'));
 const DefaultHeader = React.lazy(() => import('./DefaultHeader'));
 

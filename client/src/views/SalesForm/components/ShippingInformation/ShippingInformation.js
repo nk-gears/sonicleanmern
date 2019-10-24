@@ -1,94 +1,120 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect } from "react-redux";
-
-import { Col, Row,} from 'reactstrap';
+import {
+    Col,
+    Row,
+} from 'reactstrap';
 import OrderTypeItem from '../OrderTypeItem'
 import InformationForm from '../InformationForm'
 import LocationForm from '../LocationForm'
 import Stats from '../Stats'
 
-import { selectShippingInfor } from "../../../../modules/salesForm";
-import { shippinginforType, ShippingType } from '_config/constants'
-import { PriceType } from '../../../../_config/constants'
+import { selectShippingInfor, onSelectStoreLocation } from 'modules/salesForm'
+import {fetchStores} from 'modules/Stores'
+import * as Constants from '_config/constants'
 
 import './ShippingInformation.scss'
 
+const ShippingInformation = ({ 
+    orderType, 
+    onSelectShippingInfor,
+    fetchStores,
+    storesData,
+    onSelectStore,
+    selectedStore,
+    ...props 
+}) => {
 
-class ShippingInformation extends Component {
+    const [selectedIndex, setSelectedIndex] = useState(null)
 
-    state = {
-        selectedIndex: null
+    const onSelected = (index) => {
+        setSelectedIndex(index)
+        onSelectShippingInfor(index)
     }
 
-    onSelected = (index) => {
-        this.setState({ selectedIndex: index })
-        this.props.onSelectShippingInfor(index)
-    }
+    useEffect(()=> {
+        fetchStores()
+    }, [])
 
-    render() {
-        const { selectedIndex } = this.state
-        const { orderType,shippinginfor,customerinfo } = this.props       
-        return (
-            <div className="text-center ShippingInformation mx-auto">
-                <Row className="align-items-center mt-4">
-                    <Col>
-                        <h2 className="font-weight-bold text-black"> SHIPPING INFORMATION </h2>
-                    </Col>
-                </Row>
-                {
-                    orderType === PriceType.DIRECTSHIP ?
-                        <>
-                            <Row className="justify-content-center mt-2">
-                                <Col lg="8" sm="12">
-                                    <Row className="justify-content-around">
-                                        {
-                                            shippinginforType.map((item, index) => {
-                                                return (
-                                                    <Col xs="12" sm="4" md="5" className="mt-3" key={index}>
-                                                        <OrderTypeItem info={item} type={item.id} selectedIndex={shippinginfor} onSelected={this.onSelected} />
-                                                    </Col>
-                                                )
-                                            })
-                                        }
-                                    </Row>
-                                </Col>
-                            </Row>
-
-                            <Row className="justify-content-center mt-2">
-                                <Col lg="8" sm="12">
-                                    <Row>
-                                        <Col xs="12">
-                                            {selectedIndex === ShippingType.SHIPTOCUSTOMER ? <InformationForm /> : selectedIndex === ShippingType.SHIPTOSTORE ? <LocationForm /> : ''}
-                                        </Col>
-                                    </Row>
-                                </Col>
-                            </Row>
-                        </> :
-                        <Row className="justify-content-center mt-2">
+    return (
+        <div className="text-center ShippingInformation mx-auto">
+            <Row className="align-items-center mt-4">
+                <Col>
+                    <h2 className="font-weight-bold text-black"> SHIPPING INFORMATION </h2>
+                </Col>
+            </Row>
+            {
+                orderType===1 ?
+                <>
+                    <Row className="justify-content-center mt-2">
                             <Col lg="8" sm="12">
-                                <Row>
-                                    <Col xs="12">
-                                        <LocationForm />
-                                    </Col>
-                                </Row>
-                            </Col>
-                        </Row>
-                }
-                <Stats step={3} {...this.props} activeNextStep={customerinfo.customerid == undefined ? true  : false} />
-            </div>
-        )
-    }
+                                <Row className="justify-content-around">
+                                {
+                                        Constants.shippinginforType.map((item, index) => {
+                                        return (
+                                            <Col xs="12" sm="4" md="5" className="mt-3" key={index}>
+                                                <OrderTypeItem info={item} type={index} selectedIndex={selectedIndex} onSelected={onSelected} />
+                                            </Col>
+                                        )
+                                    })
+                                }
+                            </Row>
+                        </Col>
+                    </Row>
+
+                    <Row className="justify-content-center mt-2">
+                        <Col lg="8" sm="12">
+                            <Row>
+                                <Col xs="12">
+                                    { 
+                                        selectedIndex === 0 ? 
+                                            <InformationForm /> : 
+                                        selectedIndex === 1 ? 
+                                            <LocationForm 
+                                                data={storesData} 
+                                                onSelectStore={onSelectStore} 
+                                                selectedStore={selectedStore} /> : null
+                                    }
+                                </Col>
+                            </Row>
+                        </Col>
+                    </Row>
+                    </> : 
+                    <Row className="justify-content-center mt-2">
+                        <Col lg="8" sm="12">
+                            <Row>
+                                <Col xs="12">
+                                    <LocationForm 
+                                        data={storesData} 
+                                        onSelectStore={onSelectStore} 
+                                        selectedStore={selectedStore} 
+                                    />
+                                </Col>
+                            </Row>
+                        </Col>
+                    </Row>
+            }
+            <Stats step={3} {...props} activeNextStep={!selectedStore} />
+        </div>
+    )
 }
 
-const mapStateToProps = ({ salesform }) => {
-    const { orderType,shippinginfor,customerinfo } = salesform;
-    return { orderType,shippinginfor,customerinfo };
+const mapStateToProps = ({ salesform, stores }) => {
+    const { orderType, selectedStore } = salesform;
+    const {storesData} = stores
+    return { orderType, storesData, selectedStore };
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onSelectShippingInfor: (shippingType) => {
-            dispatch(selectShippingInfor(shippingType));
+        onSelectShippingInfor: (orderType) => {
+            dispatch(selectShippingInfor(orderType));
+        },
+        onSelectStore: (store) => {
+            dispatch(onSelectStoreLocation(store))
+        },
+        fetchStores: () => {
+            dispatch(fetchStores());
         }
     }
 }

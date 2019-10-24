@@ -11,6 +11,7 @@ const account = require("./routes/api/account")
 const images = require("./routes/api/images")
 const company = require("./routes/api/company")
 const employee = require("./routes/api/employee")
+const salesform = require("./routes/api/salesform")
 
 require("dotenv").config()
 
@@ -60,6 +61,7 @@ app.use("/api/account", account)
 app.use("/api/images", images)
 app.use("/api/company", company)
 app.use("/api/employee", employee)
+app.use("/api/salesform", salesform)
 
 app.use(express.static(path.join(__dirname, 'public')))
 
