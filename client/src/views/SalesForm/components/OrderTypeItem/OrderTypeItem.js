@@ -48,7 +48,8 @@ class OrderTypeItem extends Component {
         return (
             <Card className={classNames("OrderTypeItem h-100 w-100 d-inline-block", { 'border-success card-accent-success': selectedIndex===type}) } onClick={this.onSelect}>
                 <CardBody>
-                    <h5 className={classNames("font-weight-bold mt-4 text-muted", selectedIndex === type ? 'OrderTypeItem__text': '')}>{info.name}</h5>
+                    <h4 className={classNames("font-weight-bold text-muted", selectedIndex === type ? 'OrderTypeItem__text': '')}>{info.title}</h4>
+                    <h5 className={classNames("font-weight-bold mt-3 text-muted", selectedIndex === type ? 'OrderTypeItem__text': '')}>{info.name}</h5>
                     {info.description && <h6 className={classNames("mt-3 text-muted", selectedIndex === type ? 'OrderTypeItem__text' : '')}>{info.description}</h6>}
                     <AppSwitch className={'mx-1 mt-4'} checked={selectedIndex === type } disabled={true} color={'success'} onChange={()=> {return;}} label dataOn={'selected'} dataOff={'select'} />
                 </CardBody>

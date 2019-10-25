@@ -16,6 +16,7 @@ export const SELECTUSERS = `${namespace}/selectusers`
 export const SETEMPLOYEENAME = `${namespace}/setemployeename`
 export const SUBMITORDER = `${namespace}/submitorder`
 export const SETCUSTOMERINFO = `${namespace}/setcustomerinfo`
+export const RESTORDER = `${namespace}/resetorder`
 
 
 

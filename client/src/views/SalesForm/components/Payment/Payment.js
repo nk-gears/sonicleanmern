@@ -40,6 +40,7 @@ const Payment = ({
     state,
     shippinginfor,
     customerInformation,
+    resetOrder,
     ...props
 }) => {
 
@@ -47,6 +48,10 @@ const Payment = ({
         fetchCards()
         if(state===REQUEST_STATUS.SUCCESS) {
             toast.success("Your Order was Successfully Processe.", {position: 'bottom-right'});
+            setTimeout(()=> {
+                resetOrder()
+                props.firstStep()
+            }, 2500)
         } else if(state===REQUEST_STATUS.FAIL){
             toast.success("Sorry, we ran into an issue processing your payment", {position: 'bottom-right'});
         }
@@ -210,6 +215,9 @@ const mapDispatchToProps = (dispatch) => {
         submitOrder: (data) => {
             dispatch(onSubmitOrder(data))
         },
+        resetOrder: () => {
+            dispatch(submitOrderReset())
+        }
     }
 }
 

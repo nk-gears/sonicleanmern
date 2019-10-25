@@ -17,7 +17,8 @@ import {
     SELECTUSERS,
     SETEMPLOYEENAME,
     SUBMITORDER,
-    SETCUSTOMERINFO
+    SETCUSTOMERINFO,
+    RESTORDER
 } from './constants'
 
 const initialState = {
@@ -58,7 +59,6 @@ export const {
     start: submitOrder,
     success: submitOrderSuccess,
     fail: submitOrderFail,
-    // reset: submitOrderReset
 } = defineLoopActions(SUBMITORDER)
 
 export const onSubmitOrder = (data) => {
@@ -77,6 +77,8 @@ export const onSubmitOrder = (data) => {
         label: SUBMITORDER
     });
 }
+
+export const submitOrderReset = createAction(RESTORDER)
 
 export const SalesFormReducer = handleActions({
 
@@ -158,6 +160,13 @@ export const SalesFormReducer = handleActions({
         return {
             ...state,
             customerInformation: payload
+        }
+    },
+    [RESTORDER]: (state, {payload}) => {
+        return {
+            ...initialState,
+            ship: [],
+            inventory: []
         }
     },
 
