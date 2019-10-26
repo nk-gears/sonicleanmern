@@ -64,7 +64,7 @@ app.use("/api/employee", employee)
 app.use("/api/salesform", salesform)
 
 app.use(express.static(path.join(__dirname, 'public')))
-
+app.use(express.static(path.join(__dirname, 'client/build' )));
 
 const port = process.env.PORT || 5000;
 
