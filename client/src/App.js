@@ -12,6 +12,9 @@ import './App.scss';
 
 class App extends Component {
 
+  componentDidMount = () => {    this.connecToServer();  }
+  connecToServer = () => {    fetch('/');  }
+
   render() {
     return (
       <>

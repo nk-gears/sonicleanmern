@@ -63,17 +63,17 @@ app.use("/api/company", company)
 app.use("/api/employee", employee)
 app.use("/api/salesform", salesform)
 
+app.use(express.static(path.join(__dirname, 'client/build')));
 app.use(express.static(path.join(__dirname, 'public')))
 
 
 const port = process.env.PORT || 5000;
 
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, 'client/build' )));
-
-  app.get('*', (req, res) => {
-      res.sendFile(path.join(__dirname, 'client', 'build', 'index.html')); // relative path
-  });
+  app.use(express.static(path.join(__dirname, 'client/build')));  //  
+  app.get('*', (req, res) => {    res.sendfile(path.join(__dirname = 'client/build/index.html'));  })
+} else {
+  app.get('*', (req, res) => {  res.sendFile(path.join(__dirname+'/client/public/index.html'));})
 }
 
 app.listen(port, () => console.log(`Server up and running on port ${port} !`));
