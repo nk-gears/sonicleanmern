@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import {
     Card,
@@ -17,6 +17,7 @@ import ProductBox from '../ProductBox'
 import ProductInfo from '../ProductInfo'
 import PromoCode from '../PromoCode'
 import ScrollTop from '../ScrollTop'
+import AddPaymentMethodModal from 'components/AddPaymentMethodModal/AddPaymentMethodModal'
 import * as Contants from '_config/constants'
 
 import { fetchCards } from "modules/Cards";
@@ -44,13 +45,18 @@ const Payment = ({
     ...props
 }) => {
 
+    const [modal, setModal] = useState(false)
+    const toggleModal = () => {
+        setModal(!modal)
+    }
+
     useEffect(()=> {
         fetchCards()
         if(state===REQUEST_STATUS.SUCCESS) {
             toast.success("Your Order was Successfully Processe.", {position: 'bottom-right'});
             setTimeout(()=> {
                 resetOrder()
-                props.firstStep()
+                // props.firstStep()
             }, 2500)
         } else if(state===REQUEST_STATUS.FAIL){
             toast.success("Sorry, we ran into an issue processing your payment", {position: 'bottom-right'});
@@ -128,14 +134,14 @@ const Payment = ({
 
     return (
         <div className="text-center mx-auto Payment">
-            <ScrollTop />
-            <ToastContainer />  
+            <ToastContainer />
             <Row className="justify-content-center mt-2">
                 <Col md="12" lg="10">
                     <Row>
                         <Col xs="12" md="7" className="text-left">
                             <div className="d-flex justify-content-between align-items-center mb-3">
                                 <h3 className="font-weight-normal text-black"> Payment Method </h3>
+                                <AddPaymentMethodModal toggleModal={toggleModal} customerId={'1'} />
                             </div>
                             {
                                 cardsData.map((item, index) => {

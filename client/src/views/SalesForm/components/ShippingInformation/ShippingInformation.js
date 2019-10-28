@@ -24,12 +24,18 @@ const ShippingInformation = ({
     selectedStore,
     shippinginfor,
     setCustomerInformation,
+    customerInformation,
     ...props 
 }) => {
 
     const [selectedIndex, setSelectedIndex] = useState(null)
-
+    const [customerData, setCustomerData] = useState()
     const form = createRef()
+
+    useEffect(()=> {
+        setSelectedIndex(shippinginfor)
+        setCustomerData(customerInformation)
+    }, [])
 
     const onSelected = (index) => {
         setSelectedIndex(index)
@@ -93,7 +99,7 @@ const ShippingInformation = ({
                                 <Col xs="12">
                                     { 
                                         selectedIndex === 0 ? 
-                                            <InformationForm ref={form} submitValue={onSubmit} /> : 
+                                            <InformationForm ref={form} submitValue={onSubmit} initialValues={customerData} /> : 
                                         selectedIndex === 1 ? 
                                             <LocationForm 
                                                 data={storesData} 
@@ -125,9 +131,9 @@ const ShippingInformation = ({
 }
 
 const mapStateToProps = ({ salesform, stores }) => {
-    const { orderType, selectedStore, shippinginfor } = salesform;
+    const { orderType, selectedStore, shippinginfor, customerInformation } = salesform;
     const {storesData} = stores
-    return { orderType, storesData, selectedStore, shippinginfor };
+    return { orderType, storesData, selectedStore, shippinginfor, customerInformation };
 }
 
 const mapDispatchToProps = (dispatch) => {

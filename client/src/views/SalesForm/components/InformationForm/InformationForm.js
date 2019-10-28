@@ -41,17 +41,14 @@ const storeLocationSchema =  Yup.object().shape({
 })
 
 export default React.forwardRef((props, ref) => (
-        <Card className="mt-5">
+        <Card className="mt-5 informationForm">
             <CardHeader className="text-left">
                 <i className="icon-note"></i><strong>Customer Shipping Information</strong>
             </CardHeader>
-            <CardBody className="text-left">
+            <CardBody className="text-left" style={{overflow: 'unset'}}>
                 <Formik
                     ref={ref}
-                    initialValues={{
-                        firstName: '',
-                        us_state: 'AL'
-                    }}
+                    initialValues={props.initialValues}
                     validationSchema={storeLocationSchema}
                     onSubmit={values => props.submitValue(values)}
                     enableReinitialize={true}

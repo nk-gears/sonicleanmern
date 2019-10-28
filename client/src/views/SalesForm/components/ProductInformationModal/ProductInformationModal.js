@@ -1,41 +1,17 @@
 import React, { Component } from 'react'
-import classNames from 'classnames'
-
 import {
-    Badge,
-    Button,
-    ButtonDropdown,
-    ButtonGroup,
-    ButtonToolbar,
-    Card,
-    CardBody,
-    CardFooter,
-    CardHeader,
-    CardTitle,
     Col,
-    Dropdown,
-    DropdownItem,
-    DropdownMenu,
-    DropdownToggle,
-    Progress,
     Row,
-    Table,
-    Input,
-    InputGroup,
-    InputGroupAddon,
-    InputGroupText,
-    UncontrolledTooltip,
-    Tooltip,
-    Modal,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
     Carousel, 
     CarouselCaption, 
     CarouselControl, 
     CarouselIndicators, 
     CarouselItem,
-    Nav, NavItem, NavLink, TabContent, TabPane
+    Nav, 
+    NavItem, 
+    NavLink, 
+    TabContent, 
+    TabPane
 } from 'reactstrap';
 
 import './ProductInformationModal.scss'

@@ -2,11 +2,7 @@ import React, { useEffect, useState } from 'react'
 import {Link} from 'react-router-dom'
 import {isPending} from 'utils/state'
 import * as Contants from '_config/constants'
-
-import LaddaButton, {
-  EXPAND_RIGHT,
-  XL
-} from 'react-ladda';
+import SubmitOrderModal from 'components/SubmitOrderModal/SubmitOrderModal'
 
 const ProductInfo = ({
   onSubmitOrder,
@@ -50,17 +46,7 @@ const ProductInfo = ({
             <h6 className="font-weight-bold text-muted">Total</h6>
             <h6 className="text-primary">${subTotal.toFixed(2)}</h6>
         </div>
-        <LaddaButton
-          onClick={onSubmitOrder}
-            className="btn btn-success btn-ladda"
-            loading={isPending(state)}
-            data-color="success"
-            data-size={XL}
-            data-style={EXPAND_RIGHT}
-          >
-            Submit Order
-        </LaddaButton>
-        {/* <Button className="mt-4 font-weight-bold" color="success" size="lg" onClick={onSubmitOrder}>Submit Order</Button> */}
+        <SubmitOrderModal onSubmitOrder={onSubmitOrder} state={state} />
         <div>
             <h6 className="text-muted mt-4">By submitting this order, you agree to the <Link to="#">terms & conditions</Link> of Soniclean’s MAP policy.</h6>
         </div>

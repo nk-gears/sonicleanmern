@@ -36,7 +36,8 @@ const initialState = {
     employeeName: '',
     paymentId:'',
     orderResponseData: {},
-    submitSuccess: false
+    submitSuccess: false,
+    state: REQUEST_STATUS.INITIAL
 };
 
 /* Action creators */
