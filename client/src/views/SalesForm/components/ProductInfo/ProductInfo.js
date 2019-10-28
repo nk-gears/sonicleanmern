@@ -7,7 +7,8 @@ import SubmitOrderModal from 'components/SubmitOrderModal/SubmitOrderModal'
 const ProductInfo = ({
   onSubmitOrder,
   state,
-  products
+  products,
+  onResetOrder
 }) => {
 
  const [subTotal, setSubTotal] = useState(0)
@@ -46,7 +47,7 @@ const ProductInfo = ({
             <h6 className="font-weight-bold text-muted">Total</h6>
             <h6 className="text-primary">${subTotal.toFixed(2)}</h6>
         </div>
-        <SubmitOrderModal onSubmitOrder={onSubmitOrder} state={state} />
+        <SubmitOrderModal onSubmitOrder={onSubmitOrder} state={state} onResetOrder={onResetOrder} />
         <div>
             <h6 className="text-muted mt-4">By submitting this order, you agree to the <Link to="#">terms & conditions</Link> of Soniclean’s MAP policy.</h6>
         </div>

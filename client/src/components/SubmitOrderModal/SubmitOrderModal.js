@@ -4,12 +4,16 @@ import * as Contants from '_config/constants'
 
 import './SubmitOrderModal.scss'
 
-const SubmitOrderModal = ({onSubmitOrder, state}) => {
+const SubmitOrderModal = ({onSubmitOrder, state, onResetOrder}) => {
 
     const [modal, setModal] = useState(false)
 
     const toggle = () => {
         setModal(!modal)
+    }
+
+    const resetOrder = () => {
+        onResetOrder()
     }
 
     return (
@@ -19,7 +23,7 @@ const SubmitOrderModal = ({onSubmitOrder, state}) => {
                 <ModalHeader>Confirm Order Submission?</ModalHeader>
                 <ModalBody className="text-center">
                     {
-                        state===Contants.REQUEST_STATUS.INITIAL ?   
+                        state===Contants.REQUEST_STATUS.INITIAL ?
                             <div className="mt-5 mb-5 d-flex justify-content-center align-items-center">
                                 <Button color="success" className="mr-1" onClick={onSubmitOrder}>Submit Order!</Button>
                                 <Button color="danger" className="ml-1" onClick={toggle}>Cancel</Button>
@@ -43,14 +47,10 @@ const SubmitOrderModal = ({onSubmitOrder, state}) => {
                                     <div class="checkmark draw " style={{display: 'block'}}></div>
                                 </div>
                                 <div>
-                                <Button color="info" className="ml-1" onClick={toggle}>View Reception</Button>
+                                <Button color="info" className="ml-1" onClick={resetOrder} >View Reception</Button>
                                 </div>
                             </div> : null
                     }
-                    
-
-                    
-                    
                 </ModalBody>
             </Modal>
         </div>

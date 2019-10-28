@@ -67,6 +67,11 @@ const Payment = ({
         selectCard(id)
     }
 
+    const onResetOrder = () => {
+        resetOrder()
+        props.firstStep()
+    }
+
 //////final Submit Order/////////
     const onSubmitOrder = async () => {
         if(selectedCard.length===0) {
@@ -169,7 +174,7 @@ const Payment = ({
                                 }
                                 <PromoCode />
                                 <hr />
-                                <ProductInfo onSubmitOrder={onSubmitOrder} products={ship} state={state} />
+                                <ProductInfo onSubmitOrder={onSubmitOrder} products={ship} state={state} onResetOrder={onResetOrder} />
                             </CardBody>
                             </Card>
                         </Col>
