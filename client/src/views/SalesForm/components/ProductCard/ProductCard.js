@@ -141,7 +141,7 @@ class ProductCard extends Component {
                                 {
                                     type==='check' ?
                                     <>
-                                        <AppSwitch className={'mx-1'} color={'success'} checked={selected} onChange={this.onSelect} label dataOn={'selected'} dataOff={'select'} />
+                                        <AppSwitch className={'mx-1'} color={'success'} checked={selected} onChange={()=>this.onSelect(productIndex)} label dataOn={'selected'} dataOff={'select'} />
                                     </> : 
                                     <>
                                             <InputGroup>
