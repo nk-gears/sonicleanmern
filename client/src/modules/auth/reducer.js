@@ -132,6 +132,7 @@ export const authReducer = handleActions({
         onSuccess: (state, payload) => {
             const {token} = payload
             localStorage.setItem("jwtToken", token);
+            console.log(token)
             setToken(token)
             setAuthToken(token);
             const decoded = jwt_decode(token);

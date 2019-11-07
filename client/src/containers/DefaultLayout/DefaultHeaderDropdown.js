@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Badge, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Progress } from 'reactstrap';
-import { Link } from 'react-router-dom';
 
 const propTypes = {
   notif: PropTypes.bool,
@@ -114,7 +113,7 @@ class DefaultHeaderDropdown extends Component {
   }
 
   render() {
-    const { notif, accnt, tasks, mssgs } = this.props;
+    const { notif, tasks } = this.props;
     return (
       notif ? this.dropNotif() :
         tasks ? this.dropTasks() : null

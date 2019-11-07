@@ -21,7 +21,7 @@ const TabContainer = ({location, accountData}) => {
                     <section>
                         <Nav pills className="Tabs text-info">
                             <NavItem>
-                                <NavLink tag={Link} to="/profile/account" active={true} active={isPath('/profile/account')}>
+                                <NavLink tag={Link} to="/profile/account" active={isPath('/profile/account')}>
                                     My Account
                                 </NavLink>
                             </NavItem>

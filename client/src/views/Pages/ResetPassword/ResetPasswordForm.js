@@ -19,8 +19,6 @@ import LaddaButton, {
 
 import * as Yup from 'yup'
 
-import {isPending} from 'utils/state'
-
 import "ladda/dist/ladda-themeless.min.css";
 import "react-toastify/dist/ReactToastify.css";
 import { REQUEST_STATUS } from '_config/constants';

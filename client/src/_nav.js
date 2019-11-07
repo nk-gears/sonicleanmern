@@ -19,8 +19,8 @@ export default {
       icon: 'icon-settings',
     },
     {
-      name: 'Orders history',
-      url: '/order-history',
+      name: 'Orders',
+      url: '/Orders',
       icon: 'fa fa-history',      
     },
   ]

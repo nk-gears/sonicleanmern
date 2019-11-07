@@ -27,7 +27,7 @@ export const fetchPricelist = () => {
             })
                 .then(response => response.json())
                 .then(data => {
-                    if (data.data != null && data.data != undefined) {
+                    if (data.data !== null && data.data !== undefined) {
                         dispatch({
                             type: FETCH_PRICELIST,
                             payload: data.data
@@ -63,7 +63,7 @@ export const fetchPerPriceList = (orderType) => {
             })
                 .then(response => response.json())
                 .then(data => {
-                    if (data.data != null && data.data != undefined) {                        
+                    if (data.data !== null && data.data !== undefined) {                        
                         dispatch({
                             type: FETCH_PERPRICELIST,
                             payload: data.data

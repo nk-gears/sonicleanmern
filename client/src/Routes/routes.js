@@ -6,7 +6,7 @@ const Profile = React.lazy(() => import ('../views/Profile'))
 const Account = React.lazy(() => import('../views/Profile/components/Account'))
 const Company = React.lazy(() => import('../views/Profile/components/Company'))
 const PaymentMethods = React.lazy(() => import('../views/Profile/components/PaymentMethods'))
-const OrderHistory = React.lazy(() => import('../views/OrderHistory'))
+const Orders = React.lazy(() => import('../views/Orders'))
 const OrderDetail = React.lazy(() => import('../views/OrderDetail'))
 
 const routes = [
@@ -16,8 +16,8 @@ const routes = [
   { path: "/profile/account", exact: true, name: "Profile", component: Account, private: true },
   { path: "/profile/company", exact: true, name: "Profile", component: Company, private: true },
   { path: "/profile/billing", exact: true, name: "Profile", component: PaymentMethods, private: true },
-  { path: "/order-history", exact: true, name: "OrderHistory", component: OrderHistory, private: true },
-  { path: "/order-detail/:id", exact: true, name: "OrderDetail", component: OrderDetail, private: true },
+  { path: "/orders", exact: true, name: "Orders", component: Orders, private: true },
+  { path: "/order/:id", exact: true, name: "OrderDetail", component: OrderDetail, private: true },
 ];
 
 export default routes

@@ -1,13 +1,13 @@
-import React, {useState, useEffect} from 'react'
-import { Row, Col, Card, CardHeader, CardBody, Table, Button } from 'reactstrap'
+import React, { useEffect} from 'react'
+import { Row, Col, Card, CardHeader, CardBody, Table } from 'reactstrap'
 import {connect} from 'react-redux'
 import ConfirmModal from 'components/ConfirmModal/ConfirmModal'
 import AddNewUserModal from 'components/AddNewUserModal/AddNewUserModal'
 import './Users.scss'
 import { fetchUsers } from "modules/Users";
-import {showNotification, removeNotification} from 'modules/Notification'
+import { showNotification } from 'modules/Notification'
 import { REQUEST_STATUS } from '_config/constants'
-import LoadingIndicator from 'common/LoadingIndicator'
+import LoadingIndicator from 'components/common/LoadingIndicator'
 const Users = ({ 
     fetchUsers, 
     usersData, 

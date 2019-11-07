@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 
-import { Row, Col, Card, CardHeader, CardBody, Table, Modal,Button } from 'reactstrap'
+import { Row, Col, Card, CardHeader, CardBody, Table } from 'reactstrap'
 import './PaymentMethods.scss'
 import AddPaymentMethodModal from 'components/AddPaymentMethodModal/AddPaymentMethodModal'
 import ConfirmModal from 'components/ConfirmModal/ConfirmModal'
-import LoadingIndicator from 'common/LoadingIndicator'
+import LoadingIndicator from 'components/common/LoadingIndicator'
 import { fetchCards, endCards } from "../../../../modules/Cards";
 
 import Visa from '../../images/visa.png'

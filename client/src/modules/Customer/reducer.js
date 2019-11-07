@@ -1,4 +1,4 @@
-import { createAction, handleActions } from 'redux-actions'
+import { handleActions } from 'redux-actions'
 import { SAVE_CUSTOMER, FAILURE_CUSTOMER } from './constants'
 import { SELECTED_SHIPPINGINFO,SELECTEDPAYMENT } from '../salesForm'
 

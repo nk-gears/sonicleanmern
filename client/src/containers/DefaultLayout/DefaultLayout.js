@@ -4,6 +4,10 @@ import { Container } from 'reactstrap';
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { logout, loginResetState } from "modules/auth";
+import { Link } from 'react-router-dom'
+import { 
+  fetchAccountData
+} from 'modules/account'
 import {
   AppAside,
   AppFooter,
@@ -26,6 +30,10 @@ const DefaultHeader = React.lazy(() => import('./DefaultHeader'));
 
 class DefaultLayout extends Component {
   loading = () => <div className="animated fadeIn pt-1 text-center"><div className="sk-spinner sk-spinner-pulse"></div></div>;
+
+  componentDidMount = () => {
+    this.props.fetchAccount()
+  }
 
   signOut(e) {
     e.preventDefault()
@@ -51,7 +59,7 @@ class DefaultLayout extends Component {
             <Suspense>
               <AppSidebarNav navConfig={navigation} {...this.props} />
               <div >
-                <a style={{ width: "100%" }} className="nav-link" onClick={e => this.signOut(e)}> <i className="nav-icon fa fa-lock" ></i> Logout </a>
+                <Link style={{ width: "100%" }} to="#" className="nav-link" onClick={e => this.signOut(e)}> <i className="nav-icon fa fa-lock" ></i> Logout </Link>
               </div>
             </Suspense>
             <AppSidebarFooter />
@@ -108,6 +116,9 @@ const mapDispatchToProps = dispatch => {
     },
     resetState: () => {
       dispatch(loginResetState())
+    },
+    fetchAccount: () => {
+      dispatch(fetchAccountData())
     }
   };
 };

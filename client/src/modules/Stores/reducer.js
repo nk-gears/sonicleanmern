@@ -1,7 +1,6 @@
 import { createAction, handleActions } from 'redux-actions'
 import { 
     SUCCESS_SAVE_STORES, 
-    FAILURE_SAVE_STORES, 
     FAILURE_FETCH_STORES,
     GETSTORES,
     DELETESTORE,

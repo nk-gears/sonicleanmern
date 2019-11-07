@@ -36,7 +36,7 @@ const ConfirmModal = ({
         <>
             <Button color="danger" onClick={()=>setModal(true)}>DELETE</Button>
             <Modal isOpen={modal}
-                className={'modal-primary' + 'modal-md'}>
+                className={'modal-primary modal-md'}>
                 <ModalHeader toggle={()=>setModal(false)}>Delete</ModalHeader>
                     <ModalBody className="text-center">
                         <Row className="mb-3">

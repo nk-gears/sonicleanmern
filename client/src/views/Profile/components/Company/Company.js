@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { 
     Row, 
     Col, 
@@ -13,7 +13,7 @@ import { connect } from 'react-redux'
 import { Formik, Field } from 'formik';
 import FormInput from 'components/common/FormInput'
 import FormPhoneInput from 'components/common/FormPhoneInput'
-import LoadingIndicator from 'common/LoadingIndicator'
+import LoadingIndicator from 'components/common/LoadingIndicator'
 import LogoModal from 'components/LogoModal/LogoModal'
 import { fetchCompanyData, updateCompanyData } from 'modules/company'
 import { REQUEST_STATUS } from '_config/constants';

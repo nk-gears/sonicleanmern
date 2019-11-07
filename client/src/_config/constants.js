@@ -4,8 +4,8 @@ import p9 from '../views/SalesForm/images/p9.png'
 import p6 from '../views/SalesForm/images/p6.png'
 import p8 from '../views/SalesForm/images/p8.png'
 import p7 from '../views/SalesForm/images/p7.png'
-import p10 from '../views/SalesForm/images/p10.png'
-import p11 from '../views/SalesForm/images/p11.png'
+// import p10 from '../views/SalesForm/images/p10.png'
+// import p11 from '../views/SalesForm/images/p11.png'
 
 import HH_0800 from '../assets/img/HH-0800.jpg'
 import KSC_7500 from '../assets/img/KSC-7500.jpg'
@@ -58,8 +58,8 @@ const DirectShipProducts = [
         _id: '00004',
         price: '2150',
         unit: 'unit',
-        tooltip: 'Upright HEPA Filter Bags',
-        name: 'Upright HEPA Filter Bags',
+        tooltip: 'Soniclean Upright HEPA Filter Bags',
+        name: 'Soniclean Upright HEPA Filter Bags',
         description: '(Model: SUF-0520)',
         image: SUF_0520,
         multiples: 2
@@ -78,11 +78,81 @@ const DirectShipProducts = [
         _id: '00006',
         price: '1650',
         unit: 'unit',
-        tooltip: 'Handheld HEPA Filter Bags',
-        name: 'Handheld HEPA Filter Bags',
+        tooltip: 'Soniclean Handheld HEPA Filter Bags',
+        name: 'Soniclean Handheld HEPA Filter Bags',
         description: '(Model: SHF-0800)',
         image: SHF_0800,
         multiples: 2
+    },
+]
+
+
+const InventoryProducts = [
+    {
+        _id: '00001',
+        price: '23500',
+        discount: '22500',
+        unit: 'unit',
+        tooltip: 'Karastan Soft Carpet Upright Vacuum',
+        name: 'Karastan Soft Carpet Upright Vacuum',
+        description: '(Model: KSC-7500)',
+        image: KSC_7500,
+        multiples: 4
+    },
+    {
+        _id: '00002',
+        price: '22500',
+        discount: '21500',
+        unit: 'unit',
+        tooltip: 'Soft Carpet Upright Vacuum',
+        name: 'Soft Carpet Upright Vacuum',
+        description: '(Model: SFC-7000)',
+        image: SFC_7000,
+        multiples: 2
+    },
+    {
+        _id: '00003',
+        price: '8000',
+        discount: '7500',
+        unit: 'unit',
+        tooltip: 'Soniclean Handheld Vacuum',
+        name: 'Soniclean Handheld Vacuum',
+        description: '(Model: HH-0800)',
+        image: HH_0800,
+        multiples: 2
+    },
+    {
+        _id: '00004',
+        price: '2000',
+        discount: '2000',
+        unit: 'package',
+        tooltip: 'Soniclean Upright HEPA Filter Bags',
+        name: 'Soniclean Upright HEPA Filter Bags',
+        description: '(Model: SUF-0520)',
+        image: SUF_0520,
+        multiples: 4
+    },
+    {
+        _id: '00005',
+        price: '1500',
+        discount: '1500',
+        unit: 'package',
+        tooltip: 'Sonicfresh Fragrance Pods',
+        name: 'Sonicfresh Fragrance Pods',
+        description: '(Model: SFP-0100)',
+        image: SFP_0100,
+        multiples: 4
+    },
+    {
+        _id: '00006',
+        price: '1500',
+        discount: '1500',
+        unit: 'package',
+        tooltip: 'Soniclean Handheld HEPA Filter Bags',
+        name: 'Soniclean Handheld HEPA Filter Bags',
+        description: '(Model: SHF-0800)',
+        image: SHF_0800,
+        multiples: 4
     },
 ]
 
@@ -183,6 +253,7 @@ const ShippingType={
 }
 
 export {
+    InventoryProducts,
     DirectShipProducts,
     products,
     orderType,

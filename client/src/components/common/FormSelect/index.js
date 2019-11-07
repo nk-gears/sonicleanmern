@@ -1,5 +1,5 @@
 import React from 'react'
-import { FormFeedback, Input } from 'reactstrap'
+import { FormFeedback } from 'reactstrap'
 import Select from 'react-select';
 import 'react-select/dist/react-select.min.css';
 import PropTypes from 'prop-types'

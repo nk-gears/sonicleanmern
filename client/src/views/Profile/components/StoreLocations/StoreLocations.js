@@ -1,46 +1,21 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { connect } from "react-redux";
 
-import { Row, Col, Card, CardHeader, CardBody, Table, Modal, Button } from 'reactstrap'
+import { Row, Col, Card, CardHeader, CardBody, Table } from 'reactstrap'
 import ConfirmModal from 'components/ConfirmModal/ConfirmModal'
 import AddStoreModal from 'components/AddStoreModal/AddStoreModal'
 import { fetchStores } from "modules/Stores";
-import LoadingIndicator from 'common/LoadingIndicator'
+import LoadingIndicator from 'components/common/LoadingIndicator'
 
 import './StoreLocations.scss'
 import { REQUEST_STATUS } from '_config/constants';
-let data = {
-    storeName: "",
-    Address: "",
-    Address2: "",
-    city: "",
-    zipCode: "",
-    phonenumber: "",
-    us_state: ""
-}
 
 const StoreLocations = ({ isSubmitSuccess, fetchStores, storesData, state }) => {
-
-    const [modal, setModal] = useState(false)
-    const [modalIndex, setModalIndex] = useState(0)
 
     useEffect(() => {
         fetchStores()
     }, [])
 
-    const toggleModal = () => {
-        setModal(!modal)
-    }
-
-    const editLocation = (index) => {
-        setModalIndex(index)
-        toggleModal()
-    }
-
-    const addLocation = () => {
-        setModalIndex(-1)
-        toggleModal()
-    }
         return (
             <div className="StoreLocations mt-5 mb-5" >
                 <Row>

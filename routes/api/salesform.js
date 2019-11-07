@@ -7,6 +7,7 @@ const axios = require("axios")
 const stripe = require("stripe")(keys.stripeSecretKey);
 
 const User = require("../../models/User");
+const Orders = require("../../models/Orders")
 
 /* POST a payment method */
 router.post('/order', passport.authenticate('jwt', {session: false}), async (req, res) => {
@@ -27,24 +28,51 @@ router.post('/order', passport.authenticate('jwt', {session: false}), async (req
             try {
                 stripe.customers
                 .create({
-                    name: req.body.shipping.ship_first_name + req.body.shipping.ship_last_name,
+                    name: req.body.order.ship_first_name + req.body.order.ship_last_name,
                     email: req.user.email,
                     source: token.id
                 })
                 .then(customer => {
                         stripe.charges.create({
-                            amount: req.body.amount,
+                            amount: req.body.amount * 100,
                             currency: "usd",
                             customer: customer.id,
                             description: 'Soniclean Order'
                         }).then(async (charges)=> {
                             try {
-                                let response = await axios.post('https://api.cartrover.com/v1/cart/orders/cartrover?api_user=50867OywbXA9&api_key=6Mg5XJet1t4qsGG', req.body.shipping)
+                                let response = await axios.post(
+                                    `https://api.cartrover.com/v1/cart/orders/cartrover?api_user=${keys.CartRoverApiUser}&api_key=${keys.CartRoverApiKey}`, 
+                                    req.body.order
+                                )
                                 let data = await response.data
+                                
+
                                 if(data.success_code) {
-                                    res.json(data);
+
+                                    const order = new Orders({
+                                        success_code: data.success_code,
+                                        cust_ref: data.cust_ref,
+                                        order_number: data.order_number, 
+                                        createdBy: req.user._id,
+                                    })
+
+                                    order.save()
+                                    .then(orderData=> {
+                                        res.json(orderData);
+                                    })
                                 } else {
                                     res.status(400).json(data.message);
+                                    const order = new Orders({
+                                        success_code: data.success_code,
+                                        cust_ref: data.cust_ref,
+                                        order_number: data.order_number, 
+                                        createdBy: req.user._id,
+                                    })
+
+                                    order.save()
+                                    .then(orderData=> {
+                                        res.json(orderData);
+                                    })
                                 }
                               } catch (e) {
                                 return res.status(400).json({message: 'Failed to send order'});

@@ -1,10 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from "react-router-dom";
 import {
     Button, 
-    Card, 
-    CardBody, 
     Col, 
     Form, 
     FormFeedback, 
@@ -66,22 +64,6 @@ const AddPaymentMethodModal = ({ toggleModal, saveCard, state, endfetchCards, er
             setErrors(error)
         }
     }, [state])
-
-   const findFirstError = (formName, hasError) => {
-        const form = document.forms[formName]
-        for (let i = 0; i < form.length; i++) {
-            if (hasError(form[i].name)) {
-                form[i].focus()
-                break
-            }
-        }
-    }
-
-    const validateForm = (errors) => {
-        findFirstError('addPayment', (fieldName) => {
-            return Boolean(errors[fieldName])
-        })
-    }
 
     const onSubmit = async (values, { setSubmitting, setErrors }) => {
         const validatecvv = validateCvvnumber(values.cvvcode)

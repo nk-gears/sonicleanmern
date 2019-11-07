@@ -1,5 +1,8 @@
 import { handleActions } from 'redux-actions'
-import { GETORDERLIST } from './constants'
+import { 
+    GETORDERLIST, 
+    GETORDERBYID 
+} from './constants'
 import { getToken } from '_helpers/token-helpers'
 import { REQUEST_STATUS } from '_config/constants'
 
@@ -8,6 +11,11 @@ import { defineLoopActions, requestLoopHandlers } from 'utils/state'
 
 const initialState = {
     orderhistorylist: {},
+    totalCount: 0,
+    currentPage: 1,
+    sizePerPage: 1,
+    orderDataById: {},
+    orderStatus: '',
     state: REQUEST_STATUS.INITIAL
 }
 
@@ -17,32 +25,69 @@ export const {
     fail: getOrderFail,
 } = defineLoopActions(GETORDERLIST)
 
-export const fetchOrderHistoryList = (search, page) => {
-    
-        const token = getToken();
-        const appBaseURL = process.env.REACT_APP_API_URL;
-        const apiUrl = `${appBaseURL}orders?search=${search}&limit=${page}`
+export const {
+    start: getOrderById,
+    success: getOrderByIdSuccess,
+    fail: getOrderByIdFail,
+} = defineLoopActions(GETORDERBYID)
 
-        return apiAction({
-            url: apiUrl,
-            accessToken: token,
-            onStart: getOrder,
-            onSuccess: getOrderSuccess,
-            onFailure: getOrderFail,
-            label: GETORDERLIST
-         });
+export const fetchOrderHistoryList = (page, size) => {
+
+    const apiUrl = `/api/orders/orderslist?page=${page}&size=${size}`
+    const token = getToken();
+
+    return apiAction({
+        url: apiUrl,
+        method: "GET",
+        accessToken: token,
+        onStart: getOrder,
+        onSuccess: getOrderSuccess,
+        onFailure: getOrderFail,
+        label: GETORDERLIST
+    });
+}
+
+export const fetchOrderByID = (id) => {
+    const apiUrl = `/api/orders/order/${id}`
+    const token = getToken();
+
+    return apiAction({
+        url: apiUrl,
+        method: "GET",
+        accessToken: token,
+        onStart: getOrderById,
+        onSuccess: getOrderByIdSuccess,
+        onFailure: getOrderByIdFail,
+        label: GETORDERBYID
+    });
 }
 
 export const OrderHistoryReducer = handleActions({
+    
     ...requestLoopHandlers({
         action: GETORDERLIST, 
         onSuccess: (state, payload) => {
-            console.log(payload)
-            return {
+                return {
                 ...state,
-                orderhistorylist: payload.data.data,
+                orderhistorylist: payload.data,
+                totalCount: payload.pages,
+                currentPage: payload.currentPage,
+                sizePerPage: payload.sizePerPage,
+                state: REQUEST_STATUS.SUCCESS
+            }
+        },
+    }),
+
+    ...requestLoopHandlers({
+        action: GETORDERBYID, 
+        onSuccess: (state, payload) => {
+                return {
+                ...state,
+                orderDataById: payload.orderData,
+                orderStatus: payload.orderStatus,
                 state: REQUEST_STATUS.SUCCESS
             }
         },
     })
+
 }, initialState)

@@ -16,7 +16,7 @@ import EmailNotification from '../EmailNotification'
 import ProductBox from '../ProductBox'
 import ProductInfo from '../ProductInfo'
 import PromoCode from '../PromoCode'
-import ScrollTop from '../ScrollTop'
+// import ScrollTop from '../ScrollTop'
 import AddPaymentMethodModal from 'components/AddPaymentMethodModal/AddPaymentMethodModal'
 import * as Contants from '_config/constants'
 
@@ -24,7 +24,6 @@ import { fetchCards } from "modules/Cards";
 import { onSelectCard, onSubmitOrder, submitOrderReset } from 'modules/salesForm'
 
 import './Payment.scss'
-import { REQUEST_STATUS } from '_config/constants';
 
 const Payment = ({
     orderType,
@@ -40,31 +39,42 @@ const Payment = ({
     submitOrder,
     state,
     shippinginfor,
+    inventory,
     customerInformation,
     resetOrder,
+    accountData,
     ...props
 }) => {
 
     const [modal, setModal] = useState(false)
+
+    const [totalPrice, setTotalPrice] = useState(0)
+
     const toggleModal = () => {
         setModal(!modal)
     }
 
     useEffect(()=> {
         fetchCards()
-        if(state===REQUEST_STATUS.SUCCESS) {
-            toast.success("Your Order was Successfully Processe.", {position: 'bottom-right'});
-            // setTimeout(()=> {
-            //     resetOrder()
-            //     // props.firstStep()
-            // }, 2500)
-        } else if(state===REQUEST_STATUS.FAIL){
-            toast.success("Sorry, we ran into an issue processing your payment", {position: 'bottom-right'});
-        }
-    }, [state])
+        // if(state===REQUEST_STATUS.SUCCESS) {
+        //     toast.success("Your Order was Successfully Processe.", {position: 'bottom-right'});
+        //     // setTimeout(()=> {
+        //     //     resetOrder()
+        //     //     // props.firstStep()
+        //     // }, 2500)
+        // } else if(state===REQUEST_STATUS.FAIL){
+        //     toast.success("Sorry, we ran into an issue processing your payment", {position: 'bottom-right'});
+        // }
+    }, [])
 
     const onSelectCard= (id) => {
         selectCard(id)
+    }
+
+    let total=0
+    const getTotalPrice = (price) => {
+         total += price
+        setTotalPrice(total)
     }
 
     const onResetOrder = () => {
@@ -72,7 +82,30 @@ const Payment = ({
         props.firstStep()
     }
 
-//////final Submit Order/////////
+    const getInventoryProducts = (inventory) => {
+
+        var map = inventory.reduce(function(prev, cur) {
+            prev[cur] = (prev[cur] || 0) + 1;
+            return prev;
+          }, {});
+
+
+        const items = []
+
+        for (const key of Object.keys(map)) {
+            items.push( <ProductBox item={key} key={key} orderType={orderType} quantity={map[key]} setPrice={getTotalPrice} />)
+        }
+        return items
+    }
+
+    const getDirectProducts = (ship) => {
+       let p = ship.map((item, index) => {
+            return <ProductBox item={item} key={index} orderType={orderType} setPrice={getTotalPrice} />
+        })
+        return p
+    }
+
+    /******* final Submit Order ******/
     const onSubmitOrder = async () => {
         if(selectedCard.length===0) {
             toast.error("Please select a card.", {position: 'bottom-right'});
@@ -86,54 +119,108 @@ const Payment = ({
         } else if( orderType===1 && ship.length===0) {
             toast.error("Please select one more product", {position: 'bottom-right'});
             return;
+        } else if( orderType===0 && inventory.length===0) {
+            toast.error("Please select one more product", {position: 'bottom-right'});
+            return;
         }
         
         let data = {}
 
         data.card = selectedCard
+        data.order = {}
+        data.amount = totalPrice
+        data.order.cust_company = accountData.mainstore.name
+        data.order.cust_first_name = accountData.firstName
+        data.order.cust_last_name = accountData.lastName
+        data.order.cust_address_1 = accountData.mainstore.address1
+        data.order.cust_address_2 = accountData.mainstore.address2
+        data.order.cust_city = accountData.mainstore.city
+        data.order.cust_state = accountData.mainstore.us_state
+        data.order.cust_zip = accountData.mainstore.zipcode
+        data.order.cust_phone = accountData.mainstore.phoneNumber
+        data.order.cust_e_mail = accountData.email
+        data.order.credit_card_no = selectedCard.cardnumber
+
+        data.order.ship_country = 'USA'
+        data.order.cust_country = 'USA'
+        data.order.ship_is_billing = false
 
         if(orderType===1) {
-            let total = 0;
-            for (const p  of ship) {
-                let result = Contants.DirectShipProducts.filter(product=> product._id===p)
-                total +=parseFloat(result[0].price)
-            }
-            data.amount = total
-            data.shipping = {}
-            data.shipping.cust_ref = Math.random().toString(36).substring(7)+".DS"
+            data.order.cust_ref = Math.random().toString(36).substring(7)+".DS"
             if(shippinginfor===0) {
-                data.shipping.ship_first_name = customerInformation.firstName
-                data.shipping.ship_last_name = customerInformation.lastName
-                data.shipping.ship_company = customerInformation.email
-                data.shipping.ship_address_1 = customerInformation.address1
-                data.shipping.ship_address_2 = customerInformation.address2
-                data.shipping.ship_city = customerInformation.city
-                data.shipping.ship_state = customerInformation.us_state
-                data.shipping.ship_zip = customerInformation.zipcode
+                data.order.ship_first_name = customerInformation.firstName
+                data.order.ship_last_name = customerInformation.lastName
+                // data.order.ship_company = customerInformation.email
+                data.order.ship_address_1 = customerInformation.address1
+                data.order.ship_address_2 = customerInformation.address2
+                data.order.ship_phone = customerInformation.phoneNumber
+                data.order.ship_city = customerInformation.city
+                data.order.ship_state = customerInformation.us_state
+                data.order.ship_zip = customerInformation.zipcode
+                data.order.ship_e_mail = customerInformation.email
             } else {
                 let store = storesData.filter(item=> item._id=== selectedStore )
-                data.shipping.ship_first_name = employeeName.split(' ')[0]
-                data.shipping.ship_last_name = employeeName.split(' ')[1]
-                data.shipping.ship_company = store[0].name
-                data.shipping.ship_address_1 = store[0].address1
-                data.shipping.ship_address_2 = store[0].address2
-                data.shipping.ship_city = store[0].city
-                data.shipping.ship_state = store[0].us_state
-                data.shipping.ship_zip = store[0].zipcode
+                data.order.ship_first_name = employeeName.split(' ')[0]
+                data.order.ship_last_name = employeeName.split(' ')[1]
+                data.order.ship_company = store[0].name
+                data.order.ship_phone = store[0].phoneNumber
+                data.order.ship_address_1 = store[0].address1
+                data.order.ship_address_2 = store[0].address2
+                data.order.ship_city = store[0].city
+                data.order.ship_state = store[0].us_state
+                data.order.ship_zip = store[0].zipcode
+                data.order.ship_e_mail = accountData.email
             }
-            data.shipping.ship_country = 'USA'
-                data.shipping.ship_is_billing = true
-                data.shipping.items = ship.map(item=> {
-                    let p = {}
-                    p.item=item
-                    p.quantity = 1
-                    let result = Contants.DirectShipProducts.filter(product=> product._id===item)
+            data.order.items = ship.map(item=> {
+                let p = {}
+                p.item=item
+                p.quantity = 1
+                let result = Contants.DirectShipProducts.filter(product=> product._id===item)
+                p.price=parseFloat(result[0].price / 100)
+                p.discount=0
+                return p
+            })
+        } else if( orderType===0 ) {
+            data.order.cust_ref = Math.random().toString(36).substring(7)+".INV"
+
+            let store = storesData.filter(item=> item._id=== selectedStore )
+            
+            data.order.ship_first_name = employeeName.split(' ')[0]
+            data.order.ship_last_name = employeeName.split(' ')[1]
+            data.order.ship_company = store[0].name
+            data.order.ship_phone = store[0].phoneNumber
+            data.order.ship_address_1 = store[0].address1
+            data.order.ship_address_2 = store[0].address2
+            data.order.ship_city = store[0].city
+            data.order.ship_state = store[0].us_state
+            data.order.ship_zip = store[0].zipcode
+            data.order.ship_e_mail = accountData.email
+            
+            
+            var map = inventory.reduce(function(prev, cur) {
+                prev[cur] = (prev[cur] || 0) + 1;
+                return prev;
+              }, {});
+    
+            data.order.items = []
+    
+            for (const key of Object.keys(map)) {
+
+                let p = {}
+                p.item = key;
+                let result = Contants.InventoryProducts.filter(product=> product._id===key)
+                p.quantity = map[key] * result[0].multiples
+                if (p.quantity >= 10) {
+                    p.price=parseFloat(result[0].discount / 100)
+                } else {
                     p.price=parseFloat(result[0].price / 100)
-                    p.discount=0
-                    return p
-                })
+                }
+                
+                p.discount=0
+                data.order.items.push(p)
+            }
         }
-        
+
         submitOrder(data)
     }
 
@@ -152,7 +239,7 @@ const Payment = ({
                                 cardsData.map((item, index) => {
                                     return <PaymentMethod 
                                                 data={item} 
-                                                key={index} 
+                                                key={index}
                                                 selectPayment={onSelectCard} 
                                                 selectedIndex={selectedCard}
                                             />
@@ -168,13 +255,20 @@ const Payment = ({
                                 <CardHeader><h4 className="font-weight-normal text-black">Order Summary</h4></CardHeader>
                             <CardBody>
                                 {
-                                    ship && ship.map((item, index) => {
-                                        return <ProductBox item={item} key={index} orderType={orderType} />
-                                    })
+                                    orderType===0 ? 
+                                        inventory && getInventoryProducts(inventory) : 
+                                    orderType===1 ?
+                                        ship && getDirectProducts(ship) : null
                                 }
                                 <PromoCode />
                                 <hr />
-                                <ProductInfo onSubmitOrder={onSubmitOrder} products={ship} state={state} onResetOrder={onResetOrder} />
+                                <ProductInfo 
+                                    onSubmitOrder={onSubmitOrder} 
+                                    products={orderType===0 ? inventory : ship} 
+                                    state={state} 
+                                    onResetOrder={onResetOrder}
+                                    totalPrice={totalPrice}
+                                />
                             </CardBody>
                             </Card>
                         </Col>
@@ -186,7 +280,7 @@ const Payment = ({
     )
 }
 
-const mapStateToProps = ({ salesform, card, stores }) => {
+const mapStateToProps = ({ salesform, card, stores, account }) => {
     const { 
         orderType, 
         selectedCard, 
@@ -196,10 +290,12 @@ const mapStateToProps = ({ salesform, card, stores }) => {
         selectedStore,
         state,
         shippinginfor,
+        inventory,
         customerInformation,
     } = salesform;
     const { cardsData } = card
     const { storesData } = stores
+    const { accountData } = account;
     return { 
         orderType, 
         selectedCard, 
@@ -211,7 +307,9 @@ const mapStateToProps = ({ salesform, card, stores }) => {
         storesData, 
         state, 
         shippinginfor,
-        customerInformation
+        inventory,
+        customerInformation,
+        accountData
     };
 }
 

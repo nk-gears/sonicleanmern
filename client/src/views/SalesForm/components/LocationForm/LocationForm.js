@@ -18,8 +18,6 @@ const SelectShippingStore = ({
     selectedStore
 }) => {
 
-
-
     const [storeValue, storeInputProps] = useRadioButtons("store", (value)=> {
         onSelectStore(value)
     });

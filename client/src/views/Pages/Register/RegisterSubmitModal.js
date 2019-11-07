@@ -11,7 +11,7 @@ const RegisterSubmitModal = ({ modal, toggleModal, state }) => {
     return (
         <div className="">
             <Modal isOpen={modal} toggle={()=>toggleModal(false)}
-                className={'modal-primary ' + 'modal-md'}>
+                className={'modal-primary modal-md'}>
                 <ModalHeader toggle={()=>toggleModal(false)}>
                 { state===REQUEST_STATUS.SUCCESS && 'Success' }
                 { state===REQUEST_STATUS.FAIL && 'Error' }

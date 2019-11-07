@@ -38,6 +38,7 @@ const apiMiddleware = ({ dispatch }) => next => action => {
             dispatch(onSuccess(data));
         })
         .catch(error => {
+            console.log(error)
             // dispatch(apiError(error));
             console.log(error.response.data)
             dispatch(onFailure(error.response.data));

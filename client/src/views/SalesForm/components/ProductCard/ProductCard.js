@@ -19,8 +19,6 @@ import {
 import { AppSwitch } from '@coreui/react'
 import ProductInformationModal from '../ProductInformationModal'
 
-import p1 from '../../images/p1.png'
-
 import './ProductCard.scss'
 
 class ProductCard extends Component {
@@ -107,7 +105,7 @@ class ProductCard extends Component {
     render() {
 
         const { productIndex, data, type } = this.props
-        const { selected, modal } = this.state
+        const { selected, modal, quantity } = this.state
 
         return (
             <div className="ProductCard w-100" >
@@ -115,11 +113,11 @@ class ProductCard extends Component {
                     <Col >
                         <Card className={classNames('w-100', selected ? "card-accent-primary":"")}>
                             <CardHeader className="text-left" >
-                                <span className="h5">${(data.price / 100).toFixed(2)}/{data.unit}</span>
+                                <span className="h5">${quantity < 10 ? (data.price / 100).toFixed(2): (data.discount / 100).toFixed(2)}/{data.unit }</span>
                                 <div className="card-header-actions">
                                     <i className="fa fa-info-circle fa-lg text-info ProductCard__info" id={"info" + productIndex} onClick={this.toggleModal} ></i>
                                     <Modal isOpen={modal} toggle={this.toggleModal}
-                                        className={'modal-primary ' + 'modal-lg'}>
+                                        className={'modal-primary modal-lg'}>
                                         <ModalHeader toggle={this.toggleModal}>Product Information</ModalHeader>
                                         <ModalBody>
                                             <ProductInformationModal />

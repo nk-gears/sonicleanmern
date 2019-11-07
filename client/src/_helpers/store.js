@@ -1,5 +1,4 @@
 import { compose, createStore,applyMiddleware } from 'redux';
-import { cacheEnhancer } from 'redux-cache';
 import rootReducer from 'modules';
 import thunk from 'redux-thunk'
 import apiMiddleware from 'middleware/api'

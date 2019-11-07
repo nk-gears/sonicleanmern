@@ -50,7 +50,7 @@ class SelectProduct extends Component {
                 this.setState({ inventoryIndex: inventoryIndex })
             } else {
                 let inventoryIndex = this.props.inventory;
-                var index = inventoryIndex.lastIndexOf(selectedIndex);
+                index = inventoryIndex.lastIndexOf(selectedIndex);
                 if (index !== -1) inventoryIndex.splice(index, 1);
                 this.props.onSelectInventory(inventoryIndex)
                 this.setState({ inventoryIndex: inventoryIndex })
@@ -98,7 +98,7 @@ class SelectProduct extends Component {
                                     </Col>
                                 )
                             }) : 
-                            Contants.products.map((item, index) => {
+                            Contants.InventoryProducts.map((item, index) => {
                                 return (
                                     <Col xs="12" sm="6" md="6" lg="4" className="mt-4" key={index}>
                                         <ProductCard 

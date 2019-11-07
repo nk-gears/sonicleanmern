@@ -13,7 +13,6 @@ import {
     ModalFooter,
     Button
  } from 'reactstrap';
-import classNames from 'classnames'
 import { Formik } from 'formik';
 import 'react-select/dist/react-select.min.css';
 import * as Yup from 'yup'
@@ -138,7 +137,7 @@ class ReferralModal extends Component {
                         }) => (
 
                                 <Modal isOpen={this.props.toogle}
-                                    className={'modal-primary ReferralModal ' + 'modal-md'}>
+                                    className={'modal-primary ReferralModal modal-md'}>
                                     <Form onSubmit={handleSubmit} noValidate name='referralForm'>
                                         <ModalHeader toggle={this.toggleModal}>Send Customer Referral Link</ModalHeader>
                                         <ModalBody>

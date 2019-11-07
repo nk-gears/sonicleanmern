@@ -1,0 +1,1 @@
+{"version":3,"sources":["/Volumes/Source/ReactApps/sonicleanmern/client/src/views/Orders/Orders.scss"],"names":[],"mappings":"AACA,mBAEQ,cAAe","file":"21.c36ab586.chunk.css","sourcesContent":["\n.Orders {\n    .card-body {\n        overflow: unset;\n    }\n}"]}

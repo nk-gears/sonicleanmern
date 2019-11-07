@@ -9,7 +9,6 @@ import {
     ModalFooter,
     Row,
     Col,
-    Label,
     Button
 } from 'reactstrap'
 import { REQUEST_STATUS } from '_config/constants'

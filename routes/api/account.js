@@ -9,6 +9,7 @@ const validateAccountInput = require("../../validation/account");
 router.get('/current', passport.authenticate('jwt', {session: false}), (req, res) => {
 
     User.findById(req.user._id).then(user=>{
+
         let data = {}
         data._id = user._id
         data.firstName = user.firstName
@@ -24,6 +25,15 @@ router.get('/current', passport.authenticate('jwt', {session: false}), (req, res
         data.companyName = user.companyName
         data.mohawkAccount = user.mohawkAccount
         data.created = user.created
+
+        data.mainstore = {}
+        data.mainstore.name = user.stores[0].name
+        data.mainstore.phoneNumber = user.stores[0].phoneNumber,
+        data.mainstore.address1 = user.stores[0].address1,
+        data.mainstore.address2 = user.stores[0].address2,
+        data.mainstore.city = user.stores[0].city,
+        data.mainstore.us_state = user.stores[0].us_state,
+        data.mainstore.zipcode = user.stores[0].zipcode
         res.json(data)
     })
 })

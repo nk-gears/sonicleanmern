@@ -59,6 +59,7 @@
     "simple-line-icons": "^2.4.1",
     "spinkit": "1.2.5",
     "universal-cookie": "^4.0.0",
+    "xlsx": "^0.15.1",
     "yup": "^0.26.10"
   },
   "scripts": {

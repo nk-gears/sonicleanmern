@@ -12,6 +12,7 @@ const images = require("./routes/api/images")
 const company = require("./routes/api/company")
 const employee = require("./routes/api/employee")
 const salesform = require("./routes/api/salesform")
+const orders = require("./routes/api/orders")
 
 require("dotenv").config()
 
@@ -68,6 +69,7 @@ app.use("/api/images", images)
 app.use("/api/company", company)
 app.use("/api/employee", employee)
 app.use("/api/salesform", salesform)
+app.use("/api/orders", orders)
 
 app.use(express.static(path.join(__dirname, 'client/build')));
 app.use(express.static(path.join(__dirname, 'public')))
@@ -76,8 +78,10 @@ app.use(express.static(path.join(__dirname, 'public')))
 const port = process.env.PORT || 5000;
 
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, 'client/build')));  //  
-  app.get('*', (req, res) => {    res.sendfile(path.join(__dirname = 'client/build/index.html'));  })
+  app.use(express.static("client/build"));
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+    });
 } else {
   app.get('*', (req, res) => {  res.sendFile(path.join(__dirname+'/client/public/index.html'));})
 }
