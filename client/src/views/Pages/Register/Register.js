@@ -24,15 +24,11 @@ const Register = ({register, registerState, resetState, error}) => {
   const [modal, setModal] = useState(false)
 
   useEffect(()=> {
-    
     if(registerState===REQUEST_STATUS.SUCCESS) {
       toggleModal(true)
     }
     if(registerState===REQUEST_STATUS.FAIL) {
-      toast.error(error.message);
-      setTimeout(() => {
-        resetState()
-      }, 500)
+      toggleModal(true)
     }
   }, [registerState])
 

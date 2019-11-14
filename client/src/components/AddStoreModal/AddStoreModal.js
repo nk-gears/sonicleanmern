@@ -46,7 +46,8 @@ const AddStoreModal = ({
     initialData, 
     storesData, 
     updatestore,
-    error
+    error, 
+    id
 }) => {
 
     const [modal, setModal] = useState(false)
@@ -62,9 +63,9 @@ const AddStoreModal = ({
 
     const onSubmit = async (values, { setSubmitting, setErrors }) => {
         if(type==='ADD') {
-            await savestore(values)
+            await savestore(values, id)
         } else {
-            await updatestore(values, initialData._id)
+            await updatestore(values, initialData._id, id)
         }
             
     }
@@ -176,11 +177,11 @@ const mapStateToProps = ({ stores }) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        savestore: (data) => {
-            dispatch(savestore(data));
+        savestore: (data, id) => {
+            dispatch(savestore(data, id));
         },
-        updatestore: (data, id) => {
-            dispatch(putstore(data, id))
+        updatestore: (data, id, dealer) => {
+            dispatch(putstore(data, id, dealer))
         }
     }
 }

@@ -18,12 +18,12 @@ import VisaElectron from '../../../SalesForm/images/visaelectron.png'
 import { REQUEST_STATUS } from '_config/constants'
 
 
-const PaymentMethods = ({ isSubmitSuccess, fetchCards, cardsData, state, endfetchCards}) => {
+const PaymentMethods = ({ isSubmitSuccess, fetchCards, cardsData, state, endfetchCards, accountData}) => {
 
     const [modal, setModal] = useState(false)
     useEffect(() => {
         setModal(false)
-        fetchCards()
+        fetchCards(accountData._id)
     }, [])
 
     const toggleModal = () => {
@@ -72,7 +72,7 @@ const PaymentMethods = ({ isSubmitSuccess, fetchCards, cardsData, state, endfetc
                         <Card>
                             <CardHeader className="d-flex justify-content-between align-items-center">
                                 <h5 className="font-weight-normal">Saved Credit Cards</h5>
-                                <AddPaymentMethodModal toggleModal={toggleModal} customerId={'1'} />
+                                <AddPaymentMethodModal toggleModal={toggleModal} customerId={'1'} id={accountData._id} />
                             </CardHeader>
                             <CardBody>
                                 {
@@ -96,7 +96,7 @@ const PaymentMethods = ({ isSubmitSuccess, fetchCards, cardsData, state, endfetc
                                                                 <td>•••• {item.cardnumber}</td>
                                                                 <td>{item.expdate}</td>
                                                                 <td className="text-right">
-                                                                    <ConfirmModal type={"cardDelete"} id={item._id} />
+                                                                    <ConfirmModal type={"cardDelete"} id={item._id} dealer={accountData._id} />
                                                                 </td>
                                                             </tr>
                                                         )
@@ -113,15 +113,16 @@ const PaymentMethods = ({ isSubmitSuccess, fetchCards, cardsData, state, endfetc
         )
 }
 
-const mapStateToProps = ({ card }) => {
+const mapStateToProps = ({ card, account }) => {
     const { cardsData, state, isSubmitSuccess } = card;
-    return { cardsData, state, isSubmitSuccess };
+    const {accountData} = account
+    return { cardsData, state, isSubmitSuccess, accountData };
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchCards: () => {
-            dispatch(fetchCards());
+        fetchCards: (id) => {
+            dispatch(fetchCards(id));
         },
         endfetchCards: () => {
             dispatch(endCards())

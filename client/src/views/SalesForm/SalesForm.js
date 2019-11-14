@@ -1,11 +1,12 @@
-import React, { Component} from 'react'
-
+import React, { useState, useEffect} from 'react'
+import { connect } from "react-redux";
 import StepWizard from 'react-step-wizard';
 import OrderType from './components/OrderType'
 import SelectProduct from './components/SelectProduct'
 import ShippingInformation from './components/ShippingInformation'
 import Payment from './components/Payment'
 import Nav from './components/Nav'
+import { fetchAccountData } from "modules/account";
 import {
     Card,
     CardBody,
@@ -16,39 +17,41 @@ import {
 
 import './SalesForm.scss'
 
-class SalesForm extends Component {
-    constructor(props) {
-        super(props);
+const SalesForm = ({
+    match,
+    fetchAccount,
+    ...props
+}) => {
 
-        this.state = {
-            form: {},
-            activeStep: 1,
-        }
+    const [activeStep, setActiveStep] = useState(1)
+    const [instance, setIns] = useState()
+
+    useEffect(() => {
+        fetchAccount(match.params.id);
+    }, [])
+
+    const onStepChange = (stats) => {
+        setActiveStep(stats.activeStep)
     }
 
-    onStepChange = (stats) => {
-        this.setState({ activeStep: stats.activeStep})
-    }
+    const setInstance = SW => setIns(SW)
 
-    setInstance = SW => this.setState({ SW })
-
-    render() {
         return (
             <div className="SalesForm animated fadeIn">
                 <Row>
                     <Col>
                         <Card>
                             <CardHeader>
-                                <Nav activeStep={this.state.activeStep} />
+                                <Nav activeStep={activeStep} />
                             </CardHeader>
                             <CardBody>
                                 <StepWizard
-                                    instance={this.setInstance}
-                                    onStepChange={this.onStepChange}
+                                    instance={setInstance}
+                                    onStepChange={onStepChange}
                                     isHashEnabled
                                     isLazyMount={true}
                                 >
-                                    <OrderType hashKey={'ordertype'} {...this.props} />
+                                    <OrderType hashKey={'ordertype'} {...props} />
                                     <SelectProduct hashKey={'selectproduct'} />
                                     <ShippingInformation hashKey={'shippinginformation'} />
                                     <Payment hashKey={'payment'} />
@@ -59,12 +62,25 @@ class SalesForm extends Component {
                 </Row>
             </div>
         )
+}
+
+
+
+const mapStateToProps = ({ account }) => {
+    const {accountData} = account
+    return { accountData };
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        fetchAccount: (id) => {
+            dispatch(fetchAccountData(id));
+        }
     }
-  
 }
 
-SalesForm.propTypes = {
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(SalesForm);
 
-}
-
-export default SalesForm

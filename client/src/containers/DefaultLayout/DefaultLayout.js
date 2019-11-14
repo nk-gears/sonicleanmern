@@ -1,13 +1,11 @@
-import React, { Component, Suspense } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import { Container } from 'reactstrap';
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { logout, loginResetState } from "modules/auth";
 import { Link } from 'react-router-dom'
-import { 
-  fetchAccountData
-} from 'modules/account'
+
 import {
   AppAside,
   AppFooter,
@@ -21,6 +19,7 @@ import {
 } from '@coreui/react';
 // sidebar nav config
 import navigation from '../../_nav';
+import officialnav from '../../_officialnav'
 // routes config
 import routes from '../../Routes/routes';
 import {getUploadedImage} from '_helpers/helper'
@@ -28,46 +27,67 @@ import {getUploadedImage} from '_helpers/helper'
 const DefaultFooter = React.lazy(() => import('./DefaultFooter'));
 const DefaultHeader = React.lazy(() => import('./DefaultHeader'));
 
-class DefaultLayout extends Component {
-  loading = () => <div className="animated fadeIn pt-1 text-center"><div className="sk-spinner sk-spinner-pulse"></div></div>;
+const DefaultLayout = ({
+  accountData,
+  uploadState,
+  userPhoto,
+  user,
+  userLogout,
+  resetState,
+}) => {
+// class DefaultLayout extends Component {
+  const loading = () => <div className="animated fadeIn pt-1 text-center"><div className="sk-spinner sk-spinner-pulse"></div></div>;
 
-  componentDidMount = () => {
-    this.props.fetchAccount()
-  }
+  const [nav, setNav] = useState(navigation)
 
-  signOut(e) {
+  useEffect(()=> {
+    let n = navigation.items.map(item=> {
+      if(item.name==='Sales') {
+        item.url=`/sales/${user.id}`
+      }
+      if(item.name==='Settings') {
+        item.url=`/profile/account/${user.id}`
+      }
+      if(item.name==='Orders') {
+        item.url=`/orders/${user.id}`
+      }
+      return item
+    })
+    let dn = {}
+    dn.items = n
+    setNav(dn)
+  }, [])
+
+  const signOut = (e) => {
     e.preventDefault()
-    this.props.userLogout()
+    userLogout()
   }
 
-  render() {
     return (
       <div className="app">
         <AppHeader fixed>
-          <Suspense fallback={this.loading()}>
-            <DefaultHeader onLogout={e => this.signOut(e)} />
+          <Suspense fallback={loading()}>
+            <DefaultHeader onLogout={e => signOut(e)} />
           </Suspense>
         </AppHeader>
         <div className="app-body">
           <AppSidebar fixed display="lg">
             <AppSidebarHeader >
-              <img src={this.props.userPhoto===undefined ? require('../../assets/img/emptylogo.png') : getUploadedImage(this.props.userPhoto)} className="img-avatar" alt="Avatar"></img>
-              <div><strong>{this.props.accountData.firstName} {this.props.accountData.lastName}</strong></div>
-              <h6 className="text-muted font-weight-normal">{this.props.accountData.companyName}</h6>
+              <img src={user.userPhoto===undefined ? require('../../assets/img/emptylogo.png') : getUploadedImage(user.userPhoto)} className="img-avatar" alt="Avatar"></img>
+              <div><strong>{user.firstName} {user.lastName}</strong></div>
+              <h6 className="text-muted font-weight-normal">{user.companyName}</h6>
             </AppSidebarHeader>
             <AppSidebarForm />
             <Suspense>
-              <AppSidebarNav navConfig={navigation} {...this.props} />
-              <div >
-                <Link style={{ width: "100%" }} to="#" className="nav-link" onClick={e => this.signOut(e)}> <i className="nav-icon fa fa-lock" ></i> Logout </Link>
-              </div>
+              <AppSidebarNav navConfig={ user.roles==='official' ? officialnav: nav } />
+              <Link style={{ width: "100%" }} to="#" className="nav-link" onClick={e => signOut(e)}> <i className="nav-icon fa fa-lock" ></i> Logout </Link>
             </Suspense>
             <AppSidebarFooter />
             <AppSidebarMinimizer />
           </AppSidebar>
           <main className="main">
             <Container fluid className="mt-4 mb-4">
-              <Suspense fallback={this.loading()}>
+              <Suspense fallback={loading()}>
                 <Switch>
                   {routes.map((route, idx) => {
                     return route.component ? (
@@ -81,31 +101,32 @@ class DefaultLayout extends Component {
                         )} />
                     ) : (null);
                   })}
-                  <Redirect from="/" to="/sales" />
+                  <Redirect from="/" to={user.roles==='official' ? "/dealers" :`/sales/${user.id}`} />
                 </Switch>
               </Suspense>
             </Container>
           </main>
           <AppAside fixed>
-            <Suspense fallback={this.loading()}>
+            <Suspense fallback={loading()}>
               {/* <DefaultAside /> */}
             </Suspense>
           </AppAside>
         </div>
         <AppFooter>
-          <Suspense fallback={this.loading()}>
+          <Suspense fallback={loading()}>
             <DefaultFooter />
           </Suspense>
         </AppFooter>
       </div>
     );
-  }
+  
 }
 
 
-const mapStateToProps = ({ account }) => {
+const mapStateToProps = ({ account, auth }) => {
   const { accountData, uploadState, userPhoto } = account;
-  return { accountData, uploadState, userPhoto };
+  const {user} = auth
+  return { accountData, uploadState, userPhoto, user };
 }
 
 
@@ -116,9 +137,6 @@ const mapDispatchToProps = dispatch => {
     },
     resetState: () => {
       dispatch(loginResetState())
-    },
-    fetchAccount: () => {
-      dispatch(fetchAccountData())
     }
   };
 };

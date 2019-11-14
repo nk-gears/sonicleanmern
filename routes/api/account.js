@@ -6,9 +6,9 @@ const User = require("../../models/User");
 const validateAccountInput = require("../../validation/account");
 
 /* GET account info */
-router.get('/current', passport.authenticate('jwt', {session: false}), (req, res) => {
+router.get('/:id', passport.authenticate('jwt', {session: false}), (req, res) => {
 
-    User.findById(req.user._id).then(user=>{
+    User.findById(req.params.id).then(user=>{
 
         let data = {}
         data._id = user._id
@@ -39,7 +39,7 @@ router.get('/current', passport.authenticate('jwt', {session: false}), (req, res
 })
 
 /* PUT account info */
-router.put('/update', passport.authenticate('jwt', {session: false}), (req, res) => {
+router.put('/update/:id', passport.authenticate('jwt', {session: false}), (req, res) => {
 
     const { errors, isValid } = validateAccountInput(req.body);
 
@@ -48,7 +48,7 @@ router.put('/update', passport.authenticate('jwt', {session: false}), (req, res)
     return res.status(400).json(errors);
   }
 
-        User.findById(req.user._id).then(user=> {
+        User.findById(req.params.id).then(user=> {
             user.firstName = req.body.firstName,
             user.lastName = req.body.lastName,
             user.email = req.body.email,

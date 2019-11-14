@@ -46,9 +46,9 @@ export const successSaveStores = createAction(SUCCESS_SAVE_STORES)
 export const failurefetchstore = createAction(FAILURE_FETCH_STORES)
 
 /* Actions  */
-export const fetchStores = () => {
+export const fetchStores = (id) => {
 
-    const apiUrl = `/api/store/list`
+    const apiUrl = `/api/store/list/${id}`
     const token = getToken();
 
     return apiAction({
@@ -62,9 +62,9 @@ export const fetchStores = () => {
 
 }
 
-export const savestore = (data) => {
+export const savestore = (data, id) => {
 
-    const apiUrl = `/api/store/add`
+    const apiUrl = `/api/store/add/${id}`
     const token = getToken();
 
     return apiAction({
@@ -80,9 +80,9 @@ export const savestore = (data) => {
 }
 
 
-export const putstore = (data, id) => {
+export const putstore = (data, id, dealer) => {
 
-    const apiUrl = `/api/store/update/${id}`
+    const apiUrl = `/api/store/update/${id}/${dealer}`
     const token = getToken();
 
     return apiAction({
@@ -97,9 +97,9 @@ export const putstore = (data, id) => {
     });
 }
 
-export const deleteStoreRequest = (id) => {
+export const deleteStoreRequest = (id, dealer) => {
 
-    const apiUrl = `/api/store/delete/${id}`
+    const apiUrl = `/api/store/delete/${id}/${dealer}`
     const token = getToken();
 
     return apiAction({

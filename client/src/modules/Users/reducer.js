@@ -36,9 +36,9 @@ export const {
 
 /* Actions  */
 
-export const fetchUsers = () => {
+export const fetchUsers = (id) => {
 
-    const apiUrl = `/api/employee/list`
+    const apiUrl = `/api/employee/${id}`
     const token = getToken();
 
     return apiAction({
@@ -52,9 +52,9 @@ export const fetchUsers = () => {
 
 }
 
-export const saveUser = (data) => {
+export const saveUser = (data, id) => {
 
-    const apiUrl = `/api/employee/new`
+    const apiUrl = `/api/employee/new/${id}`
     const token = getToken();
 
     return apiAction({
@@ -69,9 +69,9 @@ export const saveUser = (data) => {
     });
 }
 
-export const deleteUserRequest = (id) => {
+export const deleteUserRequest = (id, dealer) => {
 
-    const apiUrl = `/api/employee/delete/${id}`
+    const apiUrl = `/api/employee/delete/${id}/${dealer}`
     const token = getToken();
 
     return apiAction({

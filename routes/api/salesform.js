@@ -10,11 +10,11 @@ const User = require("../../models/User");
 const Orders = require("../../models/Orders")
 
 /* POST a payment method */
-router.post('/order', passport.authenticate('jwt', {session: false}), async (req, res) => {
+router.post('/order/:id', passport.authenticate('jwt', {session: false}), async (req, res) => {
 
     console.log(req.body)
 
-    User.findById(req.user._id).then(user=>{
+    User.findById(req.params.id).then(user=>{
        let selectedCard = user.payments.id(req.body.card)
        stripe.tokens.create({
            card: {
@@ -29,7 +29,7 @@ router.post('/order', passport.authenticate('jwt', {session: false}), async (req
                 stripe.customers
                 .create({
                     name: req.body.order.ship_first_name + req.body.order.ship_last_name,
-                    email: req.user.email,
+                    email: user.email,
                     source: token.id
                 })
                 .then(customer => {
@@ -53,7 +53,8 @@ router.post('/order', passport.authenticate('jwt', {session: false}), async (req
                                         success_code: data.success_code,
                                         cust_ref: data.cust_ref,
                                         order_number: data.order_number, 
-                                        createdBy: req.user._id,
+                                        createdBy: req.params.id,
+                                        order_status: 'In process'
                                     })
 
                                     order.save()
@@ -66,7 +67,8 @@ router.post('/order', passport.authenticate('jwt', {session: false}), async (req
                                         success_code: data.success_code,
                                         cust_ref: data.cust_ref,
                                         order_number: data.order_number, 
-                                        createdBy: req.user._id,
+                                        createdBy: req.params.id,
+                                        order_status: ''
                                     })
 
                                     order.save()

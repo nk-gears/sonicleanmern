@@ -18,8 +18,7 @@ import { TaxesReducer } from './Taxes';
 import { OrderReducer } from './Order';
 import { OrderHistoryReducer } from './OrderHistory';
 import { NotificationReducer } from './Notification'
-
-
+import { officialReducer } from './official'
 
 const appReducers = combineReducers({
     auth: authReducer,
@@ -40,7 +39,8 @@ const appReducers = combineReducers({
     order: OrderReducer,
     orderhistory: OrderHistoryReducer,
     users: UserReducer,
-    notification: NotificationReducer
+    notification: NotificationReducer,
+    official: officialReducer
     // but its referenced here     
 });
 

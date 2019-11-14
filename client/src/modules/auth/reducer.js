@@ -113,7 +113,6 @@ export const authReducer = handleActions({
             return {
                 ...state,
                 error: payload,
-                isLoggedIn: false,
                 registerState: REQUEST_STATUS.FAIL
             }
         },
@@ -138,9 +137,9 @@ export const authReducer = handleActions({
             const decoded = jwt_decode(token);
             return {
                 ...state,
+                isLoggedIn: true,
                 token: payload.token,
                 user: decoded,
-                isLoggedIn: true,
                 error: {},
                 loginState: REQUEST_STATUS.SUCCESS
             }
@@ -148,8 +147,8 @@ export const authReducer = handleActions({
         onFail: (state, payload) => {
             return {
                 ...state,
-                error: payload,
                 isLoggedIn: false,
+                error: payload,
                 loginState: REQUEST_STATUS.FAIL
             }
         },
@@ -181,8 +180,6 @@ export const authReducer = handleActions({
         return {
             token: '',
             user: {},
-            loginState: REQUEST_STATUS.INITIAL,
-            isLoggedIn: false,
         }
     }
 }, initialState)

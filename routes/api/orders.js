@@ -8,17 +8,30 @@ const User = require("../../models/User");
 const Orders = require("../../models/Orders")
 
 /* GET Orders List method */
-router.get('/orderslist', passport.authenticate('jwt', {session: false}), (req, res) => {
+router.get("/orderslist/:id", passport.authenticate('jwt', {session: false}), (req, res) => {
     
-
     var _pageNumber = parseInt(req.query.page) || 1,
         _pageSize = parseInt(req.query.size);
 
-    Orders.countDocuments({createdBy: req.user._id}).then(totalCount=> {
-        Orders.find({createdBy: req.user._id})
+        let query = {}
+        query['createdBy'] = req.params.id
+        if(req.query.ordertype!=="undefined" && req.query.ordertype!=='ALL') {
+            query['cust_ref'] = { $regex: req.query.ordertype, $options: `i` }
+        } 
+        if(req.query.date_from !== 'undefined' &&req.query.date_to !== 'undefined') {
+            query['created'] = { $gte: new Date(req.query.date_from), $lte: new Date(req.query.date_to)}
+        } 
+        if(req.query.order_status !== "undefined" && req.query.order_status!=='ALL') {
+            query['order_status'] = req.query.order_status
+        }
+
+    Orders.countDocuments(query).then(totalCount=> {
+        Orders.find(query)
         .limit(_pageSize)
         .skip(_pageSize * (_pageNumber - 1))
         .then(orders=> {
+
+            // res.json(orders)
     
             Promise.all(
                 orders.map(async order => {
@@ -65,8 +78,6 @@ router.get('/orderslist', passport.authenticate('jwt', {session: false}), (req, 
 /* GET a Order by ID method */
 router.get('/order/:id', passport.authenticate('jwt', {session: false}), (req, res) => {
     
-    console.log(req.params.id)
-
     Orders.findOne({_id: req.params.id})
         .then( async order=> {
             
@@ -91,6 +102,5 @@ router.get('/order/:id', passport.authenticate('jwt', {session: false}), (req, r
             return res.status(400).json({message: 'Cannot find the Order.'})
         })
 })
-
 
 module.exports = router;

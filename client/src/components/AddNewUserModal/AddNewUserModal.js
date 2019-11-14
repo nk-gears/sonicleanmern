@@ -56,7 +56,7 @@ const AddNewUserModal = ({
         data.mohawkAccount = accountData.mohawkAccount
         data.mohawkBrand = accountData.mohawkBrand
         console.log(data)
-        saveNewUser(data)
+        saveNewUser(data, accountData._id)
     }
     return (
         <>
@@ -131,8 +131,8 @@ const mapStateToProps = ({ users, account }) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        saveNewUser: (data) => {
-            dispatch(saveUser(data));
+        saveNewUser: (data, id) => {
+            dispatch(saveUser(data, id));
         }
     }
 }

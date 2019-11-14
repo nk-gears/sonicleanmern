@@ -18,7 +18,8 @@ import './LogoModal.scss'
 const LogoModal = ({
     uploadState,
     companyLogo,
-    uploadLogo
+    uploadLogo,
+    id
 }) => {
     const [pictures, setPictures] = useState([])
     const [modal, setModal] = useState(false)
@@ -39,7 +40,7 @@ const LogoModal = ({
         var data = new FormData();
         data.append('file', pictures[0])
         console.log(data)
-        uploadLogo(data)
+        uploadLogo(data, id)
     }
 
     return (
@@ -93,8 +94,8 @@ const mapDispatchToProps = (dispatch) => {
         fetchCompany: () => {
             dispatch(fetchCompanyData());
         },
-        uploadLogo: (data) => {
-            dispatch(uploadCompanyLogo(data));
+        uploadLogo: (data, id) => {
+            dispatch(uploadCompanyLogo(data, id));
         }
     }
 }

@@ -21,32 +21,32 @@ const TabContainer = ({location, accountData}) => {
                     <section>
                         <Nav pills className="Tabs text-info">
                             <NavItem>
-                                <NavLink tag={Link} to="/profile/account" active={isPath('/profile/account')}>
+                                <NavLink tag={Link} to={`/profile/account/${accountData._id}`} active={isPath('/profile/account')}>
                                     My Account
                                 </NavLink>
                             </NavItem>
                             {
-                                accountData.roles==='admin' ? 
+                                accountData.roles==='dealer' ? 
                                 <>
                                     <NavItem>
-                                        <NavLink tag={Link} to="/profile/company" active={isPath('/profile/company')} >
+                                        <NavLink tag={Link} to={`/profile/company/${accountData._id}`} active={isPath('/profile/company')} >
                                             Company Profile
                                         </NavLink>
                                     </NavItem>
                                     <NavItem>
-                                        <NavLink tag={Link} to="/profile/users" active={isPath('/profile/users')} >
+                                        <NavLink tag={Link} to={`/profile/users/${accountData._id}`} active={isPath('/profile/users')} >
                                             Users
                                         </NavLink>
                                     </NavItem>
                                 </> : null
                             }
                             <NavItem>
-                                <NavLink tag={Link} to="/profile/store" active={isPath('/profile/store')} >
+                                <NavLink tag={Link} to={`/profile/store/${accountData._id}`} active={isPath('/profile/store')} >
                                     Store Locations
                                 </NavLink>
                             </NavItem>
                             <NavItem>
-                                <NavLink tag={Link} to="/profile/billing" active={isPath('/profile/billing')} >
+                                <NavLink tag={Link} to={`/profile/billing/${accountData._id}`} active={isPath('/profile/billing')} >
                                     Payment Methods
                                 </NavLink>
                             </NavItem>
@@ -58,12 +58,12 @@ const TabContainer = ({location, accountData}) => {
                         </Nav>
                     </section>
                     <Switch>
-                        <Redirect exact from="/profile" to="/profile/account" />
-                        <Route exact path="/profile/account" component={Account} />
-                        <Route exact path="/profile/company" component={Company} />
-                        <Route exact path="/profile/billing" component={PaymentMethods} />
-                        <Route exact path="/profile/users" component={Users} />
-                        <Route exact path="/profile/store" component={StoreLocations} />
+                        <Redirect exact from="/profile/:id" to="/profile/account/:id" />
+                        <Route exact path="/profile/account/:id" component={Account} />
+                        <Route exact path="/profile/company/:id" component={Company} />
+                        <Route exact path="/profile/billing/:id" component={PaymentMethods} />
+                        <Route exact path="/profile/users/:id" component={Users} />
+                        <Route exact path="/profile/store/:id" component={StoreLocations} />
                     </Switch>
                 </CardBody>
             </Card>

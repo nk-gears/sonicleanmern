@@ -6,9 +6,9 @@ const User = require("../../models/User");
 const validateCompanyInput = require("../../validation/company");
 
 /* GET Company info */
-router.get('/current', passport.authenticate('jwt', {session: false}), (req, res) => {
+router.get('/:id', passport.authenticate('jwt', {session: false}), (req, res) => {
 
-    User.findById(req.user._id).then(user=>{
+    User.findById(req.params.id).then(user=>{
         let data = {}
         data._id = user._id
         data.companyName = user.companyName,
@@ -20,7 +20,7 @@ router.get('/current', passport.authenticate('jwt', {session: false}), (req, res
 })
 
 /* PUT Company info */
-router.put('/update', passport.authenticate('jwt', {session: false}), (req, res) => {
+router.put('/update/:id', passport.authenticate('jwt', {session: false}), (req, res) => {
 
     const { errors, isValid } = validateCompanyInput(req.body);
 
@@ -28,10 +28,8 @@ router.put('/update', passport.authenticate('jwt', {session: false}), (req, res)
   if (!isValid) {
     return res.status(400).json(errors);
   }
-
-    console.log(req.body)
-    
-        User.findById(req.user._id).then(user=> {
+  
+        User.findById(req.params.id).then(user=> {
             user.companyName = req.body.companyName,
             user.phoneNumber = req.body.phoneNumber,
             user.companyBio = req.body.companyBio,

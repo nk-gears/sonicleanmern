@@ -13,7 +13,7 @@ const initialState = {
     orderhistorylist: {},
     totalCount: 0,
     currentPage: 1,
-    sizePerPage: 1,
+    sizePerPage: 5,
     orderDataById: {},
     orderStatus: '',
     state: REQUEST_STATUS.INITIAL
@@ -31,9 +31,9 @@ export const {
     fail: getOrderByIdFail,
 } = defineLoopActions(GETORDERBYID)
 
-export const fetchOrderHistoryList = (page, size) => {
+export const fetchOrderHistoryList = (page, size, orderType, orderStatus, date_from, date_to, id) => {
 
-    const apiUrl = `/api/orders/orderslist?page=${page}&size=${size}`
+    const apiUrl = `/api/orders/orderslist/${id}?page=${page}&size=${size}&ordertype=${orderType}&order_status=${orderStatus}&date_from=${date_from}&date_to=${date_to}`
     const token = getToken();
 
     return apiAction({

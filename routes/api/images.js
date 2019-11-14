@@ -30,7 +30,7 @@ router.get('/current', passport.authenticate('jwt', {session: false}), (req, res
     res.send(req.user)
 })
 
-router.put('/userphoto', passport.authenticate('jwt', {session: false}), function(req, res, next) {
+router.put('/userphoto/:id', passport.authenticate('jwt', {session: false}), function(req, res, next) {
     
     var matches = req.body.file.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/),
     response = {};
@@ -49,7 +49,7 @@ router.put('/userphoto', passport.authenticate('jwt', {session: false}), functio
     try {
       fs.writeFileSync("./public/uploads/" + fileName, imageBuffer, 'utf8');
       // return res.send({"status":"success"});
-      User.findById(req.user._id).then(user=>{
+      User.findById(req.params.id).then(user=>{
           user.userPhoto = fileName
           user
               .save()
@@ -63,14 +63,14 @@ router.put('/userphoto', passport.authenticate('jwt', {session: false}), functio
     }
 })
 
-router.put('/companylogo', passport.authenticate('jwt', {session: false}), upload.single('file'), function(req, res, next) {
+router.put('/companylogo/:id', passport.authenticate('jwt', {session: false}), upload.single('file'), function(req, res, next) {
   console.log(req.file)
   if (!req.file) {
     res.status(401).json({error: 'Please provide an image'});
     return;
   }
 
-  User.findById(req.user._id).then(user=>{
+  User.findById(req.params.id).then(user=>{
       user.companyLogo = req.file.filename
       user
           .save()

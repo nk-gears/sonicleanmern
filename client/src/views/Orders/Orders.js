@@ -1,19 +1,20 @@
-import React, { useEffect, createRef } from 'react'
+import React, { useEffect, createRef, useState } from 'react'
 import { connect } from "react-redux";
 import moment from 'moment'
 import XLSX from 'xlsx'
-import { Card, CardBody,CardHeader, Badge, Button } from 'reactstrap';
+import { Card, CardBody,CardHeader, Badge, Button, Row, Col } from 'reactstrap';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import 'react-bootstrap-table/dist//react-bootstrap-table-all.min.css';
 import { fetchOrderHistoryList } from "../../modules/OrderHistory";
 import { REQUEST_STATUS } from '_config/constants'
 import LoadingIndicator from 'components/common/LoadingIndicator'
+import OrderFilter from './components/OrderFilter'
 
 import './Orders.scss'
 
 const Orders = ({ 
     history, 
-    getOrderHistoryList, 
+    getOrderHistoryList,
     orderhistorylist, 
     totalCount,
     currentPage,
@@ -24,9 +25,23 @@ const Orders = ({
 
     const BootstrapTableRef = createRef()
 
+    const [pageSize, setPageSize] = useState(5)
+    const [orderType, setOrderType] = useState('ALL')
+    const [orderStatus, setOrderStatus] = useState('ALL')
+    const [dateFrom, setDateFrom] = useState()
+    const [dateTo, setDateTo] = useState()
+
     useEffect(() => {
-        getOrderHistoryList(1, 5)
+        getOrderHistoryList(1, pageSize, orderType, orderStatus, dateFrom, dateTo, accountData._id)
     }, [])
+
+    const onChangeFilterOptions = (orderType, orderStatus, date_from, date_to) => {
+        setDateFrom(date_from)
+        setDateTo(date_to)
+        setOrderType(orderType)
+        setOrderStatus(orderStatus)
+        getOrderHistoryList(1, pageSize, orderType, orderStatus, date_from, date_to)
+    }
 
     const actionFormatter  = (cell, row) => {
         return (
@@ -48,11 +63,12 @@ const Orders = ({
         let oldPageSize = BootstrapTableRef.current.getSizePerPage(),
         isActualPageChange = oldPageSize === sizePerPage
         if(isActualPageChange)
-            getOrderHistoryList(page, sizePerPage)
+            getOrderHistoryList(page, sizePerPage, orderType, orderStatus, dateFrom, dateTo, accountData._id)
     }
 
     const onSizePerPageList = (sizePerPage) => {
-        getOrderHistoryList(1, sizePerPage)
+        setPageSize(sizePerPage)
+        getOrderHistoryList(1, sizePerPage, orderType, orderStatus, dateFrom, dateTo, accountData._id)
     }
 
     const shippingFormatter = (cell, row) => {
@@ -130,31 +146,43 @@ const Orders = ({
         <div className="animated fadeIn Orders">
             <Card>
                 <CardHeader>
-                    <h5 className="font-weight-normal">Orders</h5>
-                    <Button to="#" className="btn btn-sm btn-secondary mr-1 float-right">
-                        <i className="fa fa-print"></i> Print
-                    </Button>
-                    <Button onClick={onExportFile} className="btn btn-sm btn-info mr-1 float-right">
-                        <i className="fa fa-save"></i> Save
-                    </Button>
+                    <Row className="align-items-center">
+                        <Col xs={1}>
+                            <h5 className="font-weight-normal">Orders</h5>
+                        </Col>
+                        <Col xs={8}>
+                            <OrderFilter changeFilterOptions={onChangeFilterOptions} />
+                        </Col>
+                        <Col xs={3}>
+                            <Button to="#" className="btn btn-sm btn-secondary float-right">
+                                <i className="fa fa-print"></i> Print
+                            </Button>
+                            <Button onClick={onExportFile} className="btn btn-sm btn-info mr-1 float-right">
+                                <i className="fa fa-save"></i> Download Order Report
+                            </Button>
+                        </Col>
+                    </Row>
                 </CardHeader>
                 <CardBody>
                     {
                         state===REQUEST_STATUS.INITIAL || state===REQUEST_STATUS.PENDING ? 
-                        <LoadingIndicator /> :
+                        <LoadingIndicator /> : 
                         <BootstrapTable 
                         ref={BootstrapTableRef}
+                        remote
+                        bootstrap4
                         data={orderhistorylist} 
                         pagination 
                         options={{ 
                             sizePerPage: sizePerPage,
                             onPageChange: onPageChange,
-                            sizePerPageList: [1, 5, 10, 15, 20, 25 ],
+                            sizePerPageList: [5, 10, 15, 20, 25],
                             page: currentPage,
-                            onSizePerPageList: onSizePerPageList 
+                            onSizePerPageList: onSizePerPageList,
                         }} 
-                        remote={true}
-                        fetchInfo={ { dataTotalSize: totalCount } }
+                        hover
+                        condensed
+                        fetchInfo={{ dataTotalSize: totalCount * sizePerPage }}
                         >
                             <TableHeaderColumn isKey={true} dataField="cust_ref" dataSort>Order Number#</TableHeaderColumn>
                             <TableHeaderColumn dataField="created" dataFormat={dateFormatter} dataSort>Order Date</TableHeaderColumn>
@@ -179,8 +207,8 @@ const mapStateToProps = ({ orderhistory, account }) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        getOrderHistoryList: (page, size) => {
-            dispatch(fetchOrderHistoryList(page, size));
+        getOrderHistoryList: (page, size, orderType, orderStatus, date_from, date_to, id) => {
+            dispatch(fetchOrderHistoryList(page, size, orderType, orderStatus, date_from, date_to, id));
         }
     }
 }

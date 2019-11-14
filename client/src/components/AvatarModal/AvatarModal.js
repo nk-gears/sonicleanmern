@@ -22,12 +22,13 @@ const AvatarModal = ({
     uploadState,
     userPhoto,
     uploadPhto,
+    match
 }) => {
     const [preview, setPreview] = useState(null)
     const [modal, setModal] = useState(false)
 
     useEffect(()=> {
-        fetchAccount()
+        // fetchAccount()
         if(uploadState===REQUEST_STATUS.SUCCESS) {
             setModal(false)
         }
@@ -51,7 +52,7 @@ const AvatarModal = ({
   }
 
   const uploadImage = () => {
-    uploadPhto(preview)
+    uploadPhto(preview, accountData._id)
   }
 
     return (
@@ -105,8 +106,8 @@ const mapDispatchToProps = (dispatch) => {
         fetchAccount: () => {
             dispatch(fetchAccountData());
         },
-        uploadPhto: (data) => {
-            dispatch(uploadAccountPhto(data));
+        uploadPhto: (data, id) => {
+            dispatch(uploadAccountPhto(data, id));
         }
     }
 }

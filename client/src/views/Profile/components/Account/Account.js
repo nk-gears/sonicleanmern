@@ -16,7 +16,6 @@ import * as Yup from 'yup'
 import { REQUEST_STATUS } from '_config/constants';
 
 import { 
-    fetchAccountData, 
     updateAccountData
 } from 'modules/account'
 
@@ -35,18 +34,13 @@ const accountSchema = Yup.object().shape({
 })
 
 const Account = ({
-    fetchAccount, 
     accountData,
     updateAccount,
     state
 }) => {
 
-    useEffect(() => {
-        fetchAccount()
-    }, [])
-
     const onSubmit = (values) => {
-        updateAccount(values)
+        updateAccount(values, accountData._id)
     }
 
     return (
@@ -133,11 +127,8 @@ const mapStateToProps = ({ account }) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchAccount: () => {
-            dispatch(fetchAccountData());
-        },
-        updateAccount: (data) => {
-            dispatch(updateAccountData(data));
+        updateAccount: (data, id) => {
+            dispatch(updateAccountData(data, id));
         }
     }
 }

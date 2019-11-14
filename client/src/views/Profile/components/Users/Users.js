@@ -13,17 +13,12 @@ const Users = ({
     usersData, 
     state, 
     addUserState,
-    showNotification
+    showNotification,
+    accountData
 }) => {
 
     useEffect(()=> {
-        fetchUsers()
-        // if(addUserState===REQUEST_STATUS.SUCCESS) {
-        //     showNotification({
-        //         message: 'Success Add New User',
-        //         notificationState: addUserState
-        //     })
-        // }
+        fetchUsers(accountData._id)
     }, [])
 
 
@@ -60,7 +55,7 @@ const Users = ({
                                                             <td className="text-right" >{item.roles}</td>
                                                             <td className="text-right" >{item.isVerified ? 'true': 'false'}</td>
                                                             <td className="text-right">
-                                                                <ConfirmModal type={"userDelete"} id={item._id} />
+                                                                <ConfirmModal type={"userDelete"} id={item._id} dealer={accountData._id} />
                                                             </td>
                                                         </tr>
                                                     )
@@ -78,15 +73,16 @@ const Users = ({
     )
 }
 
-const mapStateToProps = ({ users }) => {
+const mapStateToProps = ({ users, account }) => {
+    const { accountData } = account
     const { usersData, isSubmitSuccess, addUserState, state } = users;
-    return { usersData, isSubmitSuccess, addUserState, state };
+    return { usersData, isSubmitSuccess, addUserState, state, accountData };
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchUsers: () => {
-            dispatch(fetchUsers());
+        fetchUsers: (id) => {
+            dispatch(fetchUsers(id));
         },
         showNotification: () => {
             dispatch(showNotification())

@@ -13,7 +13,7 @@ const validateStoreLocationInput = require("../../validation/store");
 // })
 
 /* POST a store location */
-router.post('/add', passport.authenticate('jwt', {session: false}), (req, res) => {
+router.post('/add/:id', passport.authenticate('jwt', {session: false}), (req, res) => {
 
     const { errors, isValid } = validateStoreLocationInput(req.body);
 
@@ -42,7 +42,7 @@ router.post('/add', passport.authenticate('jwt', {session: false}), (req, res) =
                 return true
               }
 
-            User.findById(req.user._id).then(user=>{
+            User.findById(req.params.id).then(user=>{
                 if(user.stores.length===0) {
                     user.stores.push(new_store)
                 } else {
@@ -64,7 +64,7 @@ router.post('/add', passport.authenticate('jwt', {session: false}), (req, res) =
 
 /* PUT payment list */
 
-router.put('/update/:id', passport.authenticate('jwt', {session: false}), (req, res) => {
+router.put('/update/:id/:dealer', passport.authenticate('jwt', {session: false}), (req, res) => {
 
     const { errors, isValid } = validateStoreLocationInput(req.body);
 
@@ -83,7 +83,7 @@ router.put('/update/:id', passport.authenticate('jwt', {session: false}), (req, 
                 zipcode: req.body.zipcode
             })
 
-            User.findById(req.user._id).then(user=> {
+            User.findById(req.params.dealer).then(user=> {
 
                 const store = user.stores.id(req.params.id);
                 if(store) {
@@ -102,9 +102,9 @@ router.put('/update/:id', passport.authenticate('jwt', {session: false}), (req, 
 })
 
 /* GET payment list */
-router.get('/list', passport.authenticate('jwt', {session: false}), (req, res) => {
+router.get('/list/:id', passport.authenticate('jwt', {session: false}), (req, res) => {
 
-    User.findById(req.user._id).then(user=>{
+    User.findById(req.params.id).then(user=>{
         res.json(user.stores)
     })
 
@@ -127,8 +127,8 @@ router.get('/:id', passport.authenticate('jwt', {session: false}), (req, res) =>
 
 
 /* DETE a payment by ID */
-router.delete('/delete/:id', passport.authenticate('jwt', {session: false}), (req, res) => {
-    User.findById(req.user._id).then(user=>{
+router.delete('/delete/:id/:dealer', passport.authenticate('jwt', {session: false}), (req, res) => {
+    User.findById(req.params.dealer).then(user=>{
         if(user.stores.id(req.params.id)) {
             user.stores.id(req.params.id).remove()
         } else {

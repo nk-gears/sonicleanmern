@@ -16,7 +16,6 @@ import {
 
 import { 
   fetchLogin, 
-  registerResetState 
 } from "modules/auth";
 
 import LoginForm from './LoginForm'
@@ -25,18 +24,18 @@ import "ladda/dist/ladda-themeless.min.css";
 import 'react-toastify/dist/ReactToastify.css';
 import { REQUEST_STATUS } from '_config/constants';
 
-const Login = ({userLogin, loginState, error, resetState}) => {
+const Login = ({userLogin, loginState, error}) => {
 
   useEffect(()=>{
     if(loginState===REQUEST_STATUS.FAIL) {
       toast.error(error.message);
-      // resetState()
     }
    }, [loginState])
 
     const onSubmit = (values) => {
       userLogin(values)
     }
+    
     return (
       <div className="app flex-row align-items-center">
         <ToastContainer />
@@ -91,9 +90,6 @@ const mapDispatchToProps = (dispatch) => {
   return {
     userLogin: (data) => {
       dispatch(fetchLogin(data));
-    },
-    resetState: () => {
-      dispatch(registerResetState())
     }
   }
 }

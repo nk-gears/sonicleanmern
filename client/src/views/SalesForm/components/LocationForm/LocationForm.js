@@ -9,13 +9,17 @@ import {
  } from 'reactstrap';
 import AddStoreModal from 'components/AddStoreModal/AddStoreModal'
 import {useRadioButtons} from 'components/common/useRadioButtons'
+import LoadingIndicator from 'components/common/LoadingIndicator'
+
+import { REQUEST_STATUS } from '_config/constants';
 
 import './LocationForm.scss'
 
 const SelectShippingStore = ({
     data, 
     onSelectStore,
-    selectedStore
+    selectedStore,
+    storeLoading
 }) => {
 
     const [storeValue, storeInputProps] = useRadioButtons("store", (value)=> {
@@ -33,6 +37,8 @@ const SelectShippingStore = ({
                     <Row>
                         <Col>
                         {
+                            storeLoading === REQUEST_STATUS.PENDING ?
+                             <LoadingIndicator /> :
                             data && data.map((item, index) => {
                                 return <CustomInput
                                             id={item._id}

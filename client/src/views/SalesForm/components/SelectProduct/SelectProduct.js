@@ -21,7 +21,7 @@ class SelectProduct extends Component {
     }
 
     componentWillMount = () => {
-        this.setState({ 
+        this.setState({
             inventoryIndex: this.props.inventory,
             shipIndex: this.props.ship
         })

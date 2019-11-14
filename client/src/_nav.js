@@ -15,13 +15,13 @@ export default {
     },
     {
       name: 'Settings',
-      url: '/profile',
+      url: '/profile/:id',
       icon: 'icon-settings',
     },
     {
       name: 'Orders',
       url: '/Orders',
       icon: 'fa fa-history',      
-    },
+    }
   ]
 };

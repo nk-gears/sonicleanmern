@@ -62,9 +62,9 @@ export const {
     fail: submitOrderFail,
 } = defineLoopActions(SUBMITORDER)
 
-export const onSubmitOrder = (data) => {
+export const onSubmitOrder = (data, id) => {
 
-    const apiUrl = `/api/salesform/order`
+    const apiUrl = `/api/salesform/order/${id}`
     const token = getToken();
 
     return apiAction({

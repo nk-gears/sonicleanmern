@@ -10,10 +10,10 @@ import LoadingIndicator from 'components/common/LoadingIndicator'
 import './StoreLocations.scss'
 import { REQUEST_STATUS } from '_config/constants';
 
-const StoreLocations = ({ isSubmitSuccess, fetchStores, storesData, state }) => {
+const StoreLocations = ({ isSubmitSuccess, fetchStores, storesData, state, accountData }) => {
 
     useEffect(() => {
-        fetchStores()
+        fetchStores(accountData._id)
     }, [])
 
         return (
@@ -23,7 +23,7 @@ const StoreLocations = ({ isSubmitSuccess, fetchStores, storesData, state }) => 
                         <Card>
                             <CardHeader className="d-flex justify-content-between align-items-center">
                                 <h5 className="font-weight-normal">Store Locations</h5>
-                                <AddStoreModal />
+                                <AddStoreModal id={accountData._id} />
                             </CardHeader>
                             <CardBody>
                                 {
@@ -45,8 +45,8 @@ const StoreLocations = ({ isSubmitSuccess, fetchStores, storesData, state }) => 
                                                                 <td className="text-left">{item.name}</td>
                                                                 <td className="text-right">{item.address1}</td>
                                                                 <td className="text-right">
-                                                                    <AddStoreModal type="EDIT" initialData = {item} />
-                                                                    <ConfirmModal type={"storeDelete"} id={item._id} />
+                                                                    <AddStoreModal type="EDIT" initialData = {item} id={accountData._id} />
+                                                                    <ConfirmModal type={"storeDelete"} id={item._id} dealer={accountData._id} />
                                                                 </td>
                                                             </tr>
                                                         )
@@ -63,15 +63,16 @@ const StoreLocations = ({ isSubmitSuccess, fetchStores, storesData, state }) => 
         )
 }
 
-const mapStateToProps = ({ stores }) => {
+const mapStateToProps = ({ stores, account }) => {
+    const {accountData} = account
     const { storesData, state, isSubmitSuccess } = stores;
-    return { storesData, state, isSubmitSuccess };
+    return { storesData, state, isSubmitSuccess, accountData };
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchStores: () => {
-            dispatch(fetchStores());
+        fetchStores: (id) => {
+            dispatch(fetchStores(id));
         }
     }
 }

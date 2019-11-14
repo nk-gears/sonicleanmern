@@ -17,7 +17,7 @@ const User = require("../../models/User");
 // @route POST api/users/register
 // @desc Register user
 // @access Public
-router.post("/new", passport.authenticate('jwt', {session: false}), (req, res) => {
+router.post("/new/:id", passport.authenticate('jwt', {session: false}), (req, res) => {
     // Form validation
   
     let defaultPassword = 'test123'
@@ -41,7 +41,7 @@ router.post("/new", passport.authenticate('jwt', {session: false}), (req, res) =
           mohawkAccount: req.body.mohawkAccount,
           mohawkBrand: req.body.mohawkBrand,
           roles: 'employee',
-          _adminId: req.user._id
+          _adminId: req.params.id
         });
   
         // Hash password before saving in database
@@ -77,7 +77,7 @@ router.post("/new", passport.authenticate('jwt', {session: false}), (req, res) =
                         return res.status(500).json({ message: err.message }); 
                       }
                     //   res.json({message: 'A verification email has been sent to ' + user.email + '.'});
-                    User.find({_adminId: req.user._id})
+                    User.find({_adminId: req.params.id})
                         .then(employees=> {
                             res.json(employees)
                     })
@@ -91,19 +91,19 @@ router.post("/new", passport.authenticate('jwt', {session: false}), (req, res) =
     });
   });
 
-router.get('/list', passport.authenticate('jwt', {session: false}), (req, res) => {
+router.get('/:id', passport.authenticate('jwt', {session: false}), (req, res) => {
 //   res.send(req.user)
-    User.find({_adminId: req.user._id})
+    User.find({_adminId: req.params.id})
         .then(employees=> {
             res.json(employees)
     })
 })
 
-router.delete('/delete/:id', passport.authenticate('jwt', {session: false}), (req, res) => {
+router.delete('/delete/:id/:dealer', passport.authenticate('jwt', {session: false}), (req, res) => {
 
     User.findByIdAndRemove(req.params.id).then(user=>{
         if(user) {
-            User.find({_adminId: req.user._id})
+            User.find({_adminId: req.params.dealer})
             .then(employees=> {
                 res.json(employees)
             })

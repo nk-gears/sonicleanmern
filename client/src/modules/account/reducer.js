@@ -11,7 +11,7 @@ import { apiAction } from 'utils/apiCall'
 import { defineLoopActions, requestLoopHandlers } from 'utils/state'
 
 const initialState = {
-    accountData: [],
+    accountData: {},
     error: {},
     state: REQUEST_STATUS.INITIAL,
     userPhoto: '',
@@ -38,8 +38,8 @@ export const {
 } = defineLoopActions(UPLOADPHOTO)
 
 
-export const fetchAccountData = () => {
-    const apiUrl = `/api/account/current`
+export const fetchAccountData = (id) => {
+    const apiUrl = `/api/account/${id}`
     const token = getToken();
     return apiAction({
         url: apiUrl,
@@ -51,9 +51,9 @@ export const fetchAccountData = () => {
     });
 }
 
-export const updateAccountData = (data) => {
+export const updateAccountData = (data, id) => {
 
-    const apiUrl = `/api/account/update`
+    const apiUrl = `/api/account/update/${id}`
     const token = getToken();
 
     return apiAction({
@@ -68,13 +68,13 @@ export const updateAccountData = (data) => {
     });
 }
 
-export const uploadAccountPhto = (image) => {
+export const uploadAccountPhto = (image, id) => {
 
     let data = {
         file: image
     }
 
-    const apiUrl = `/api/images/userphoto`
+    const apiUrl = `/api/images/userphoto/${id}`
     const token = getToken();
 
     return apiAction({

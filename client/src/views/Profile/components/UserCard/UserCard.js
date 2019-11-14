@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import {
     Row, 
     Col, 
@@ -8,22 +8,14 @@ import {
     ListGroupItem
 } from 'reactstrap'
 import { connect } from "react-redux";
-import {fetchAccountData} from 'modules/account'
 import moment from 'moment'
 import AvatarModal from 'components/AvatarModal/AvatarModal'
 
 import './UserCard.scss'
 
 const UserCard = ({
-    fetchAccount,
     accountData,
-    state
 }) => {
-
-    useEffect(()=> {
-        fetchAccount()
-    }, [])
-
     return (
         <div className="UserCard text-center">
             
@@ -88,16 +80,8 @@ const mapStateToProps = ({ account }) => {
     return { accountData, state };
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        fetchAccount: () => {
-            dispatch(fetchAccountData());
-        }
-    }
-}
-
 export default connect(
     mapStateToProps,
-    mapDispatchToProps
+    null
 )(UserCard);
 

@@ -11,11 +11,12 @@ const EmailNotification = ({
   selectUsers,
   fetchUsers,
   selectedUsers,
+  accountData,
   usersData
 }) => {
 
   useEffect(() => {
-    fetchUsers() 
+    fetchUsers(accountData._id) 
   }, [])
 
     const saveChanges = (data) => {
@@ -53,10 +54,11 @@ const EmailNotification = ({
     )
 }
 
-const mapStateToProps = ({ users, salesform }) => {
+const mapStateToProps = ({ users, salesform, account }) => {
     const { usersData } = users
+    const {accountData} = account
     const { selectedUsers } = salesform
-    return { usersData, selectedUsers };
+    return { usersData, selectedUsers, accountData };
 }
 
 const mapDispatchToProps = (dispatch) => {
@@ -64,8 +66,8 @@ const mapDispatchToProps = (dispatch) => {
         selectUsers: (users) => {
             dispatch(onSelectUsers(users));
         },
-        fetchUsers: () => {
-          dispatch(fetchUsers())
+        fetchUsers: (id) => {
+          dispatch(fetchUsers(id))
         }
     }
 }

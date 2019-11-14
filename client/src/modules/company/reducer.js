@@ -38,8 +38,8 @@ export const {
 } = defineLoopActions(UPLOADCOMPANYLOGO)
 
 
-export const fetchCompanyData = () => {
-    const apiUrl = `/api/company/current`
+export const fetchCompanyData = (id) => {
+    const apiUrl = `/api/company/${id}`
     const token = getToken();
     return apiAction({
         url: apiUrl,
@@ -51,9 +51,9 @@ export const fetchCompanyData = () => {
     });
 }
 
-export const updateCompanyData = (data) => {
+export const updateCompanyData = (data, id) => {
 
-    const apiUrl = `/api/company/update`
+    const apiUrl = `/api/company/update/${id}`
     const token = getToken();
 
     return apiAction({
@@ -68,9 +68,9 @@ export const updateCompanyData = (data) => {
     });
 }
 
-export const uploadCompanyLogo = (data) => {
+export const uploadCompanyLogo = (data, id) => {
 
-    const apiUrl = `/api/images/companylogo`
+    const apiUrl = `/api/images/companylogo/${id}`
     const token = getToken();
 
     return apiAction({

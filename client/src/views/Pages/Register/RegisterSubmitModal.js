@@ -6,7 +6,7 @@ import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Row, Col } from 're
 import './RegisterSubmitModal.scss'
 import { REQUEST_STATUS } from '_config/constants'
 
-const RegisterSubmitModal = ({ modal, toggleModal, state }) => {
+const RegisterSubmitModal = ({ modal, toggleModal, state, history }) => {
 
     return (
         <div className="">
@@ -46,7 +46,7 @@ const RegisterSubmitModal = ({ modal, toggleModal, state }) => {
                     }
                 </ModalBody>
                 <ModalFooter className="text-center">
-                { state===REQUEST_STATUS.FAIL && <Link to="/" className="mr-auto ml-auto"><Button color="success">Return to Home Page</Button> </Link> }
+                { state===REQUEST_STATUS.SUCCESS &&<Link to="/"> <Button color="success" onClick={()=>toggleModal(false)} className="mr-auto ml-auto">Return to Login</Button></Link> }    
                 { state===REQUEST_STATUS.FAIL && <Button color="danger" onClick={()=>toggleModal(false)} className="mr-auto ml-auto">Close</Button> }
                 </ModalFooter>
             </Modal>

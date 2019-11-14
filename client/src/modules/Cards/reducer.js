@@ -37,8 +37,8 @@ export const {
     fail: deleteCardFail
 } = defineLoopActions(DELETE_CARD)
 
-export const fetchCards = () => {
-    const apiUrl = `/api/payment/list`
+export const fetchCards = (id) => {
+    const apiUrl = `/api/payment/list/${id}`
     const token = getToken();
     return apiAction({
         url: apiUrl,
@@ -50,9 +50,9 @@ export const fetchCards = () => {
     });
 }
 
-export const saveCard = (data) => {
+export const saveCard = (data, id) => {
 
-    const apiUrl = `/api/payment/add`
+    const apiUrl = `/api/payment/add/${id}`
     const token = getToken();
 
     return apiAction({
@@ -67,11 +67,11 @@ export const saveCard = (data) => {
     });
 }
 
-export const deleteCardRequest = (id) => {
+export const deleteCardRequest = (id, dealer) => {
 
     console.log(id)
 
-    const apiUrl = `/api/payment/delete/${id}`
+    const apiUrl = `/api/payment/delete/${id}/${dealer}`
     const token = getToken();
 
     return apiAction({

@@ -49,7 +49,7 @@ const initialValues = {
 }
 
 
-const AddPaymentMethodModal = ({ toggleModal, saveCard, state, endfetchCards, error }) => {
+const AddPaymentMethodModal = ({ toggleModal, saveCard, state, endfetchCards, error, id }) => {
 
     const [cardnumber, setCardnumber] = useState('')
     const [cardtype, setCardtype] = useState('')
@@ -76,7 +76,7 @@ const AddPaymentMethodModal = ({ toggleModal, saveCard, state, endfetchCards, er
                 expiredatemonth: values.expiredate.substr(0, 2),
                 expiredateyear: values.expiredate.substr(3, 6),
             }
-           await saveCard(data);
+           await saveCard(data, id);
         }
     }
 
@@ -338,8 +338,8 @@ const mapStateToProps = ({ card }) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        saveCard: (data) => {
-            dispatch(saveCard(data));
+        saveCard: (data, id) => {
+            dispatch(saveCard(data, id));
         },
         endfetchCards: () => {
             dispatch(endCards())

@@ -13,6 +13,7 @@ const company = require("./routes/api/company")
 const employee = require("./routes/api/employee")
 const salesform = require("./routes/api/salesform")
 const orders = require("./routes/api/orders")
+const official = require("./routes/api/official")
 
 require("dotenv").config()
 
@@ -70,6 +71,7 @@ app.use("/api/company", company)
 app.use("/api/employee", employee)
 app.use("/api/salesform", salesform)
 app.use("/api/orders", orders)
+app.use("/api/official", official)
 
 app.use(express.static(path.join(__dirname, 'client/build')));
 app.use(express.static(path.join(__dirname, 'public')))

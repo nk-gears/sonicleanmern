@@ -25,6 +25,8 @@ const ShippingInformation = ({
     shippinginfor,
     setCustomerInformation,
     customerInformation,
+    state,
+    accountData,
     ...props 
 }) => {
 
@@ -43,7 +45,7 @@ const ShippingInformation = ({
     }
 
     useEffect(()=> {
-        fetchStores()
+        fetchStores(accountData._id)
     }, [])
 
     const handleClick = (...args) => {
@@ -104,6 +106,7 @@ const ShippingInformation = ({
                                             <LocationForm 
                                                 data={storesData} 
                                                 onSelectStore={onSelectStore} 
+                                                storeLoading={state}
                                                 selectedStore={selectedStore} /> : null
                                     }
                                 </Col>
@@ -118,6 +121,7 @@ const ShippingInformation = ({
                                     <LocationForm 
                                         data={storesData} 
                                         onSelectStore={onSelectStore} 
+                                        storeLoading={state}
                                         selectedStore={selectedStore} 
                                     />
                                 </Col>
@@ -130,10 +134,16 @@ const ShippingInformation = ({
     )
 }
 
-const mapStateToProps = ({ salesform, stores }) => {
-    const { orderType, selectedStore, shippinginfor, customerInformation } = salesform;
-    const {storesData} = stores
-    return { orderType, storesData, selectedStore, shippinginfor, customerInformation };
+const mapStateToProps = ({ salesform, stores, account }) => {
+    const { 
+        orderType, 
+        selectedStore, 
+        shippinginfor, 
+        customerInformation 
+    } = salesform;
+    const { storesData, state } = stores
+    const {accountData} = account
+    return { orderType, storesData, selectedStore, shippinginfor, customerInformation, state, accountData };
 }
 
 const mapDispatchToProps = (dispatch) => {
@@ -144,8 +154,8 @@ const mapDispatchToProps = (dispatch) => {
         onSelectStore: (store) => {
             dispatch(onSelectStoreLocation(store))
         },
-        fetchStores: () => {
-            dispatch(fetchStores());
+        fetchStores: (id) => {
+            dispatch(fetchStores(id));
         },
         setCustomerInformation: (value) => {
             dispatch(onSetCustomerInfo(value))

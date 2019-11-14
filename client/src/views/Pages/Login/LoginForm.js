@@ -31,7 +31,6 @@ const loginSchema = Yup.object().shape({
     password: Yup.string()
         .required('Password is required'),
 });
-  
 
 const LoginForm = ({submit, state}) => {
 
@@ -64,7 +63,7 @@ const LoginForm = ({submit, state}) => {
                           >
                             <h1>Login</h1>
                             <p className="text-muted">
-                              Sign In to yourr account
+                              Sign In to your account
                           </p>
                             <InputGroup className="mb-3">
                               <InputGroupAddon addonType="prepend">

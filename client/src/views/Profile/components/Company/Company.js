@@ -37,15 +37,16 @@ const Company = ({
     companyData,
     fetchCompany,
     updateCompany,
-    companyLogo
+    companyLogo,
+    accountData
 }) => {
 
     useEffect(() => {
-        fetchCompany()
+        fetchCompany(accountData._id)
     }, [])
 
     const onSubmit = (data) => {
-        updateCompany(data)
+        updateCompany(data, accountData._id)
     }
 
     return (
@@ -108,7 +109,7 @@ const Company = ({
                                             <Row>
                                                 <Col md={6}>
                                                     <Label >Upload company logo (50px by 50px)</Label>
-                                                    <LogoModal logo={companyLogo} />
+                                                    <LogoModal logo={companyLogo} id={accountData._id} />
                                                 </Col>
                                             </Row>
                                             <hr />
@@ -136,18 +137,19 @@ const Company = ({
     )
 }
 
-const mapStateToProps = ({ company }) => {
-    const { companyData, companyLogo, state } = company;
-    return { companyData, companyLogo, state };
+const mapStateToProps = ({ company, account }) => {
+    const {accountData} = account
+    const { companyData, companyLogo, state, _id } = company;
+    return { companyData, companyLogo, state, accountData };
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchCompany: () => {
-            dispatch(fetchCompanyData());
+        fetchCompany: (id) => {
+            dispatch(fetchCompanyData(id));
         },
-        updateCompany: (data) => {
-            dispatch(updateCompanyData(data));
+        updateCompany: (data, id) => {
+            dispatch(updateCompanyData(data, id));
         }
     }
 }

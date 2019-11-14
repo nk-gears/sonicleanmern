@@ -6,7 +6,6 @@ import { persistStore, persistReducer, createTransform } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 import {parse, stringify} from 'flatted/esm';
 
-
 export default function configureStore(preloadedState) {
 
   const middlewares = [
@@ -34,7 +33,7 @@ export default function configureStore(preloadedState) {
   const persistConfig = {
     key: 'root',
     storage,
-    blacklist: ['auth'],
+    blacklist: [],
     transforms: [transformCircular]
   }
   const persistedReducer = persistReducer(persistConfig, rootReducer)

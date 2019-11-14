@@ -22,7 +22,9 @@ import * as Contants from '_config/constants'
 
 import { fetchCards } from "modules/Cards";
 import { onSelectCard, onSubmitOrder, submitOrderReset } from 'modules/salesForm'
+import LoadingIndicator from 'components/common/LoadingIndicator'
 
+import { REQUEST_STATUS } from '_config/constants';
 import './Payment.scss'
 
 const Payment = ({
@@ -43,6 +45,7 @@ const Payment = ({
     customerInformation,
     resetOrder,
     accountData,
+    cardLoadingState,
     ...props
 }) => {
 
@@ -55,7 +58,7 @@ const Payment = ({
     }
 
     useEffect(()=> {
-        fetchCards()
+        fetchCards(accountData._id)
         // if(state===REQUEST_STATUS.SUCCESS) {
         //     toast.success("Your Order was Successfully Processe.", {position: 'bottom-right'});
         //     // setTimeout(()=> {
@@ -221,7 +224,7 @@ const Payment = ({
             }
         }
 
-        submitOrder(data)
+        submitOrder(data, accountData._id)
     }
 
     return (
@@ -236,6 +239,8 @@ const Payment = ({
                                 <AddPaymentMethodModal toggleModal={toggleModal} customerId={'1'} />
                             </div>
                             {
+                                cardLoadingState === REQUEST_STATUS.PENDING ?
+                                <LoadingIndicator /> :
                                 cardsData.map((item, index) => {
                                     return <PaymentMethod 
                                                 data={item} 
@@ -293,6 +298,7 @@ const mapStateToProps = ({ salesform, card, stores, account }) => {
         inventory,
         customerInformation,
     } = salesform;
+    const cardLoadingState = card['state']
     const { cardsData } = card
     const { storesData } = stores
     const { accountData } = account;
@@ -309,20 +315,21 @@ const mapStateToProps = ({ salesform, card, stores, account }) => {
         shippinginfor,
         inventory,
         customerInformation,
-        accountData
+        accountData,
+        cardLoadingState
     };
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchCards: () => {
-            dispatch(fetchCards());
+        fetchCards: (id) => {
+            dispatch(fetchCards(id));
         },
         selectCard: (card) => {
             dispatch(onSelectCard(card))
         },
-        submitOrder: (data) => {
-            dispatch(onSubmitOrder(data))
+        submitOrder: (data, id) => {
+            dispatch(onSubmitOrder(data, id))
         },
         resetOrder: () => {
             dispatch(submitOrderReset())

@@ -10,7 +10,7 @@ const PaymentMethod = require("../../models/PaymentMethod");
 const validatePaymentMethodInput = require("../../validation/payment");
 
 /* POST a payment method */
-router.post('/add', passport.authenticate('jwt', {session: false}), (req, res) => {
+router.post('/add/:id', passport.authenticate('jwt', {session: false}), (req, res) => {
 
     const { errors, isValid } = validatePaymentMethodInput(req.body);
 
@@ -52,7 +52,7 @@ router.post('/add', passport.authenticate('jwt', {session: false}), (req, res) =
                 return true
               }
 
-            User.findById(req.user._id).then(user=>{
+            User.findById(req.params.id).then(user=>{
                 if(user.payments.length===0) {
                     user.payments.push(new_payment)
                 } else {
@@ -86,9 +86,9 @@ router.post('/add', passport.authenticate('jwt', {session: false}), (req, res) =
 })
 
 /* GET stores list */
-router.get('/list', passport.authenticate('jwt', {session: false}), (req, res) => {
+router.get('/list/:id', passport.authenticate('jwt', {session: false}), (req, res) => {
 
-    User.findById(req.user._id).then(user=>{
+    User.findById(req.params.id).then(user=>{
         let data=[]
         for (let payment of user.payments) {
             let p={}
@@ -105,8 +105,8 @@ router.get('/list', passport.authenticate('jwt', {session: false}), (req, res) =
 
 
 /* DETE a store by ID */
-router.delete('/delete/:id', passport.authenticate('jwt', {session: false}), (req, res) => {
-    User.findById(req.user._id).then(user=>{
+router.delete('/delete/:id/:dealer', passport.authenticate('jwt', {session: false}), (req, res) => {
+    User.findById(req.params.dealer).then(user=>{
         if(user.payments.id(req.params.id)) {
             user.payments.id(req.params.id).remove()
         } else {

@@ -13,6 +13,7 @@ const ConfirmModal = ({
     onDeleteUser, 
     state,
     id,
+    dealer
  }) => {
 
     const [modal, setModal] = useState(false)
@@ -25,9 +26,9 @@ const ConfirmModal = ({
 
     const onDelete = async (id) => {
         switch (type) {
-            case 'storeDelete': await onDeleteStore(id); break;
-            case 'cardDelete': await onDeleteCard(id); break;
-            case 'userDelete': await onDeleteUser(id); break;
+            case 'storeDelete': await onDeleteStore(id, dealer); break;
+            case 'cardDelete': await onDeleteCard(id, dealer); break;
+            case 'userDelete': await onDeleteUser(id, dealer); break;
             default: return ''
         }
     }
@@ -65,14 +66,14 @@ const mapStateToProps = ({ card }) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onDeleteStore: (id) => {
-            dispatch(deleteStoreRequest(id))
+        onDeleteStore: (id, dealer) => {
+            dispatch(deleteStoreRequest(id, dealer))
         },
-        onDeleteCard: (id) => {
-            dispatch(deleteCardRequest(id))
+        onDeleteCard: (id, dealer) => {
+            dispatch(deleteCardRequest(id, dealer))
         },
-        onDeleteUser: (id) => {
-            dispatch(deleteUserRequest(id))
+        onDeleteUser: (id, dealer) => {
+            dispatch(deleteUserRequest(id, dealer))
         },
         endfetchCards: () => {
             dispatch(endCards())
