@@ -1,3 +1,3 @@
-import StoreLocations from './StoreLocations'
+import StoreLocations from './StoreLocations';
 
-export default StoreLocations
+export default StoreLocations;

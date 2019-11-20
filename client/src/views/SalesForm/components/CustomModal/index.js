@@ -1,3 +1,3 @@
-import CustomModal from './CustomModal'
+import CustomModal from './CustomModal';
 
-export default CustomModal
+export default CustomModal;

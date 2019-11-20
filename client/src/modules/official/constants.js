@@ -1,3 +1,3 @@
-const namespace = 'soniclean/official'
+const namespace = 'soniclean/official';
 
-export const GETDEALERSLIST = `${namespace}/getdealerslist`
+export const GETDEALERSLIST = `${namespace}/getdealerslist`;

@@ -1,3 +1,3 @@
-import TabContainer from './TabContainer'
+import TabContainer from './TabContainer';
 
-export default TabContainer
+export default TabContainer;

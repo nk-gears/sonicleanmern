@@ -1,3 +1,3 @@
-import InformationForm from './InformationForm'
+import InformationForm from './InformationForm';
 
-export default InformationForm
+export default InformationForm;

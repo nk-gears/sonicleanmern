@@ -3,9 +3,9 @@ import { Nav } from 'reactstrap';
 import PropTypes from 'prop-types';
 
 import { AppNavbarBrand, AppSidebarToggler } from '@coreui/react';
-import DefaultHeaderDropdown  from './DefaultHeaderDropdown'
-import logo from '../../assets/img/brand/logo.svg'
-import sygnet from '../../assets/img/brand/sygnet.svg'
+import DefaultHeaderDropdown from './DefaultHeaderDropdown';
+import logo from '../../assets/img/brand/logo.svg';
+import sygnet from '../../assets/img/brand/sygnet.svg';
 
 const propTypes = {
   children: PropTypes.node,
@@ -15,7 +15,6 @@ const defaultProps = {};
 
 class DefaultHeader extends Component {
   render() {
-
     // eslint-disable-next-line
     const { children, ...attributes } = this.props;
 
@@ -41,11 +40,11 @@ class DefaultHeader extends Component {
         <Nav className="ml-auto" navbar>
           {/* <DefaultHeaderDropdown notif/>
           <DefaultHeaderDropdown tasks/> */}
-          <DefaultHeaderDropdown mssgs/>
+          <DefaultHeaderDropdown mssgs />
           {/* <NavItem className="d-md-down-none">
             <NavLink href="#"><i className="icon-location-pin"></i></NavLink>
           </NavItem> */}
-          <DefaultHeaderDropdown onLogout={this.props.onLogout} accnt/>
+          <DefaultHeaderDropdown onLogout={this.props.onLogout} accnt />
         </Nav>
         {/* <AppAsideToggler className="d-md-down-none" /> */}
         {/*<AppAsideToggler className="d-lg-none" mobile />*/}

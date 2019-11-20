@@ -1,185 +1,181 @@
-import { handleActions, createAction } from 'redux-actions'
-import jwt_decode from "jwt-decode";
-import { setToken, getToken, removeToken } from '_helpers/token-helpers'
-import { REQUEST_STATUS } from '_config/constants'
+import { handleActions, createAction } from 'redux-actions';
+import jwt_decode from 'jwt-decode';
+import { setToken, getToken, removeToken } from '_helpers/token-helpers';
+import { REQUEST_STATUS } from '_config/constants';
 
-import setAuthToken from 'utils/setAuthToken'
+import setAuthToken from 'utils/setAuthToken';
 
-import { apiAction } from 'utils/apiCall'
-import { defineLoopActions, requestLoopHandlers } from 'utils/state'
+import { apiAction } from 'utils/apiCall';
+import { defineLoopActions, requestLoopHandlers } from 'utils/state';
 
-import {
-    LOGIN,
-    REGISTER,
-    LOGOUT,
-    RESTPASSWORD
- } from './constants'
+import { LOGIN, REGISTER, LOGOUT, RESTPASSWORD } from './constants';
 
 const initialState = {
-    token: '',
-    isLoggedIn: !!getToken(),
-    user: {},
-    registerState: REQUEST_STATUS.INITIAL,
-    loginState: REQUEST_STATUS.INITIAL,
-    resetPasswordState: REQUEST_STATUS.INITIAL,
-    error: {}
-}
+  token: '',
+  isLoggedIn: !!getToken(),
+  user: {},
+  registerState: REQUEST_STATUS.INITIAL,
+  loginState: REQUEST_STATUS.INITIAL,
+  resetPasswordState: REQUEST_STATUS.INITIAL,
+  error: {},
+};
 
 export const {
-    start: register,
-    success: registerSuccess,
-    fail: registerFail,
-    reset: registerResetState
-} = defineLoopActions(REGISTER)
+  start: register,
+  success: registerSuccess,
+  fail: registerFail,
+  reset: registerResetState,
+} = defineLoopActions(REGISTER);
 
 export const {
-    start: login,
-    success: loginSuccess,
-    fail: loginFail,
-    reset: loginResetState
-} = defineLoopActions(LOGIN)
+  start: login,
+  success: loginSuccess,
+  fail: loginFail,
+  reset: loginResetState,
+} = defineLoopActions(LOGIN);
 
 export const {
-    start: resetPassword,
-    success: resetPasswordSuccess,
-    fail: resetPasswordFail,
-} = defineLoopActions(RESTPASSWORD)
+  start: resetPassword,
+  success: resetPasswordSuccess,
+  fail: resetPasswordFail,
+} = defineLoopActions(RESTPASSWORD);
 
-export const logout = createAction(LOGOUT)
+export const logout = createAction(LOGOUT);
 
-export const fetchRegister = (data) => {
+export const fetchRegister = data => {
+  // const appBaseURL = process.env.REACT_APP_API_URL;
+  const apiUrl = `/api/users/register`;
 
-        // const appBaseURL = process.env.REACT_APP_API_URL;
-        const apiUrl = `/api/users/register`
+  return apiAction({
+    url: apiUrl,
+    method: 'POST',
+    data: data,
+    onStart: register,
+    onSuccess: registerSuccess,
+    onFailure: registerFail,
+    label: REGISTER,
+  });
+};
 
-        return apiAction({
-            url: apiUrl,
-            method: 'POST',
-            data: data,
-            onStart: register,
-            onSuccess: registerSuccess,
-            onFailure: registerFail,
-            label: REGISTER
-        });
-}
+export const fetchLogin = data => {
+  // const appBaseURL = process.env.REACT_APP_API_URL;
+  const apiUrl = `/api/users/login`;
 
-export const fetchLogin = (data) => {
-    // const appBaseURL = process.env.REACT_APP_API_URL;
-        const apiUrl = `/api/users/login`
+  return apiAction({
+    url: apiUrl,
+    method: 'POST',
+    data: data,
+    onStart: login,
+    onSuccess: loginSuccess,
+    onFailure: loginFail,
+    label: LOGIN,
+  });
+};
 
-        return apiAction({
-            url: apiUrl,
-            method: 'POST',
-            data: data,
-            onStart: login,
-            onSuccess: loginSuccess,
-            onFailure: loginFail,
-            label: LOGIN
-        });
-}
+export const fetchResetPassword = data => {
+  const apiUrl = `/api/users/confirmation`;
 
-export const fetchResetPassword = (data) => {
+  return apiAction({
+    url: apiUrl,
+    method: 'POST',
+    data: data,
+    onStart: resetPassword,
+    onSuccess: resetPasswordSuccess,
+    onFailure: resetPasswordFail,
+    label: RESTPASSWORD,
+  });
+};
 
-    const apiUrl = `/api/users/confirmation`
-
-    return apiAction({
-        url: apiUrl,
-        method: 'POST',
-        data: data,
-        onStart: resetPassword,
-        onSuccess: resetPasswordSuccess,
-        onFailure: resetPasswordFail,
-        label: RESTPASSWORD
-    });
-}
-
-export const authReducer = handleActions({
+export const authReducer = handleActions(
+  {
     ...requestLoopHandlers({
-        action: REGISTER, 
-        onStart: (state, payload) => {
-            return {
-                ...state,
-                registerState: REQUEST_STATUS.PENDING
-            }
-        },
-        onSuccess: (state, payload) => {
-            return {
-                ...state,
-                error: {},
-                registerState: REQUEST_STATUS.SUCCESS
-            }
-        },
-        onFail: (state, payload) => {
-            return {
-                ...state,
-                error: payload,
-                registerState: REQUEST_STATUS.FAIL
-            }
-        },
-        initialValue: initialState
-    }),
-
-    ...requestLoopHandlers({
-        action: LOGIN,
-        onStart: (state, payload) => {
-            return {
-                ...state,
-                isLoggedIn: false,
-                loginState: REQUEST_STATUS.PENDING
-            }
-        },
-        onSuccess: (state, payload) => {
-            const {token} = payload
-            localStorage.setItem("jwtToken", token);
-            console.log(token)
-            setToken(token)
-            setAuthToken(token);
-            const decoded = jwt_decode(token);
-            return {
-                ...state,
-                isLoggedIn: true,
-                token: payload.token,
-                user: decoded,
-                error: {},
-                loginState: REQUEST_STATUS.SUCCESS
-            }
-        },
-        onFail: (state, payload) => {
-            return {
-                ...state,
-                isLoggedIn: false,
-                error: payload,
-                loginState: REQUEST_STATUS.FAIL
-            }
-        },
-        initialValue: initialState
-    }),
-
-    ...requestLoopHandlers({
-        action: RESTPASSWORD, 
-        onStart: (state, payload) => {
-            return {
-                ...state,
-                resetPasswordState: REQUEST_STATUS.PENDING
-            }
-        },
-        onSuccess: (state, payload) => {
-            return {
-                ...state,
-                error: {},
-                resetPasswordState: REQUEST_STATUS.SUCCESS
-            }
-        },
-        initialValue: initialState
-    }),
-
-    [LOGOUT]: (state) => {
-        removeToken()
-        localStorage.removeItem("jwtToken");
-        setAuthToken(false);
+      action: REGISTER,
+      onStart: (state, payload) => {
         return {
-            token: '',
-            user: {},
-        }
-    }
-}, initialState)
+          ...state,
+          registerState: REQUEST_STATUS.PENDING,
+        };
+      },
+      onSuccess: (state, payload) => {
+        return {
+          ...state,
+          error: {},
+          registerState: REQUEST_STATUS.SUCCESS,
+        };
+      },
+      onFail: (state, payload) => {
+        return {
+          ...state,
+          error: payload,
+          registerState: REQUEST_STATUS.FAIL,
+        };
+      },
+      initialValue: initialState,
+    }),
+
+    ...requestLoopHandlers({
+      action: LOGIN,
+      onStart: (state, payload) => {
+        return {
+          ...state,
+          isLoggedIn: false,
+          loginState: REQUEST_STATUS.PENDING,
+        };
+      },
+      onSuccess: (state, payload) => {
+        const { token } = payload;
+        localStorage.setItem('jwtToken', token);
+        console.log(token);
+        setToken(token);
+        setAuthToken(token);
+        const decoded = jwt_decode(token);
+        return {
+          ...state,
+          isLoggedIn: true,
+          token: payload.token,
+          user: decoded,
+          error: {},
+          loginState: REQUEST_STATUS.SUCCESS,
+        };
+      },
+      onFail: (state, payload) => {
+        return {
+          ...state,
+          isLoggedIn: false,
+          error: payload,
+          loginState: REQUEST_STATUS.FAIL,
+        };
+      },
+      initialValue: initialState,
+    }),
+
+    ...requestLoopHandlers({
+      action: RESTPASSWORD,
+      onStart: (state, payload) => {
+        return {
+          ...state,
+          resetPasswordState: REQUEST_STATUS.PENDING,
+        };
+      },
+      onSuccess: (state, payload) => {
+        return {
+          ...state,
+          error: {},
+          resetPasswordState: REQUEST_STATUS.SUCCESS,
+        };
+      },
+      initialValue: initialState,
+    }),
+
+    [LOGOUT]: state => {
+      removeToken();
+      localStorage.removeItem('jwtToken');
+      setAuthToken(false);
+      return {
+        token: '',
+        user: {},
+      };
+    },
+  },
+  initialState
+);

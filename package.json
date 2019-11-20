@@ -33,5 +33,11 @@
     "stripe": "^7.9.1",
     "validator": "^10.9.0",
     "xlsx": "^0.15.1"
+  },
+  "devDependencies": {
+    "eslint-plugin-prettier": "^3.1.1",
+    "husky": "^3.1.0",
+    "prettier": "1.19.1",
+    "pretty-quick": "^2.0.1"
   }
 }

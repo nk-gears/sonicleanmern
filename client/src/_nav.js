@@ -21,7 +21,7 @@ export default {
     {
       name: 'Orders',
       url: '/Orders',
-      icon: 'fa fa-history',      
-    }
-  ]
+      icon: 'fa fa-history',
+    },
+  ],
 };

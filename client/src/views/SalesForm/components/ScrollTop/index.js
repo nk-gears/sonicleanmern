@@ -1,3 +1,3 @@
-import ScrollToTopOnMount from './ScrollTop'
+import ScrollToTopOnMount from './ScrollTop';
 
-export default ScrollToTopOnMount
+export default ScrollToTopOnMount;

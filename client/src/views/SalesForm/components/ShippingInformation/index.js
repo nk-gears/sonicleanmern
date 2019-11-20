@@ -1,3 +1,3 @@
-import ShippingInformation from './ShippingInformation'
+import ShippingInformation from './ShippingInformation';
 
-export default ShippingInformation
+export default ShippingInformation;

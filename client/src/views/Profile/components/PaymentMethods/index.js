@@ -1,3 +1,3 @@
-import PaymentMethods from './PaymentMethods'
+import PaymentMethods from './PaymentMethods';
 
-export default PaymentMethods
+export default PaymentMethods;

@@ -1,3 +1,3 @@
-import SalesForm from './SalesForm'
+import SalesForm from './SalesForm';
 
-export default SalesForm
+export default SalesForm;

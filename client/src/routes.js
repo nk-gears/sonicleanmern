@@ -12,7 +12,9 @@ const Invoice = React.lazy(() => import('./views/Apps/Invoicing/Invoice'));
 
 const AdvancedForms = React.lazy(() => import('./views/Forms/AdvancedForms'));
 const BasicForms = React.lazy(() => import('./views/Forms/BasicForms'));
-const ValidationForms = React.lazy(() => import('./views/Forms/ValidationForms'));
+const ValidationForms = React.lazy(() =>
+  import('./views/Forms/ValidationForms')
+);
 const GoogleMaps = React.lazy(() => import('./views/GoogleMaps'));
 const Toastr = React.lazy(() => import('./views/Notifications/Toastr'));
 const Calendar = React.lazy(() => import('./views/Plugins/Calendar'));
@@ -20,7 +22,9 @@ const Draggable = React.lazy(() => import('./views/Plugins/Draggable'));
 const Spinners = React.lazy(() => import('./views/Plugins/Spinners'));
 const DataTable = React.lazy(() => import('./views/Tables/DataTable'));
 const Tables = React.lazy(() => import('./views/Tables/Tables'));
-const LoadingButtons = React.lazy(() => import('./views/Buttons/LoadingButtons'));
+const LoadingButtons = React.lazy(() =>
+  import('./views/Buttons/LoadingButtons')
+);
 
 const Breadcrumbs = React.lazy(() => import('./views/Base/Breadcrumbs'));
 const Cards = React.lazy(() => import('./views/Base/Cards'));
@@ -41,7 +45,9 @@ const Switches = React.lazy(() => import('./views/Base/Switches'));
 const Tabs = React.lazy(() => import('./views/Base/Tabs'));
 const Tooltips = React.lazy(() => import('./views/Base/Tooltips'));
 const BrandButtons = React.lazy(() => import('./views/Buttons/BrandButtons'));
-const ButtonDropdowns = React.lazy(() => import('./views/Buttons/ButtonDropdowns'));
+const ButtonDropdowns = React.lazy(() =>
+  import('./views/Buttons/ButtonDropdowns')
+);
 const ButtonGroups = React.lazy(() => import('./views/Buttons/ButtonGroups'));
 const Buttons = React.lazy(() => import('./views/Buttons/Buttons'));
 const Charts = React.lazy(() => import('./views/Charts'));
@@ -49,7 +55,9 @@ const Dashboard = React.lazy(() => import('./views/Dashboard'));
 const CoreUIIcons = React.lazy(() => import('./views/Icons/CoreUIIcons'));
 const Flags = React.lazy(() => import('./views/Icons/Flags'));
 const FontAwesome = React.lazy(() => import('./views/Icons/FontAwesome'));
-const SimpleLineIcons = React.lazy(() => import('./views/Icons/SimpleLineIcons'));
+const SimpleLineIcons = React.lazy(() =>
+  import('./views/Icons/SimpleLineIcons')
+);
 const Alerts = React.lazy(() => import('./views/Notifications/Alerts'));
 const Badges = React.lazy(() => import('./views/Notifications/Badges'));
 const Modals = React.lazy(() => import('./views/Notifications/Modals'));
@@ -85,25 +93,66 @@ const routes = [
   { path: '/base/tooltips', name: 'Tooltips', component: Tooltips },
   { path: '/buttons', name: 'Buttons', component: Buttons, exact: true },
   { path: '/buttons/buttons', name: 'Buttons', component: Buttons },
-  { path: '/buttons/button-dropdowns', name: 'Dropdowns', component: ButtonDropdowns },
-  { path: '/buttons/button-groups', name: 'Button Groups', component: ButtonGroups },
-  { path: '/buttons/brand-buttons', name: 'Brand Buttons', component: BrandButtons },
-  { path: '/buttons/loading-buttons', name: 'Loading Buttons', component: LoadingButtons },
+  {
+    path: '/buttons/button-dropdowns',
+    name: 'Dropdowns',
+    component: ButtonDropdowns,
+  },
+  {
+    path: '/buttons/button-groups',
+    name: 'Button Groups',
+    component: ButtonGroups,
+  },
+  {
+    path: '/buttons/brand-buttons',
+    name: 'Brand Buttons',
+    component: BrandButtons,
+  },
+  {
+    path: '/buttons/loading-buttons',
+    name: 'Loading Buttons',
+    component: LoadingButtons,
+  },
   { path: '/charts', name: 'Charts', component: Charts },
   { path: '/editors', name: 'Editors', component: CodeEditors, exact: true },
-  { path: '/editors/code-editors', name: 'Code Editors', component: CodeEditors },
-  { path: '/editors/text-editors', name: 'Text Editors', component: TextEditors },
+  {
+    path: '/editors/code-editors',
+    name: 'Code Editors',
+    component: CodeEditors,
+  },
+  {
+    path: '/editors/text-editors',
+    name: 'Text Editors',
+    component: TextEditors,
+  },
   { path: '/forms', name: 'Forms', component: BasicForms, exact: true },
-  { path: '/forms/advanced-forms', name: 'Advanced Forms', component: AdvancedForms },
+  {
+    path: '/forms/advanced-forms',
+    name: 'Advanced Forms',
+    component: AdvancedForms,
+  },
   { path: '/forms/basic-forms', name: 'Basic Forms', component: BasicForms },
-  { path: '/forms/validation-forms', name: 'Form Validation', component: ValidationForms },
+  {
+    path: '/forms/validation-forms',
+    name: 'Form Validation',
+    component: ValidationForms,
+  },
   { path: '/google-maps', name: 'Google Maps', component: GoogleMaps },
   { path: '/icons', exact: true, name: 'Icons', component: CoreUIIcons },
   { path: '/icons/coreui-icons', name: 'CoreUI Icons', component: CoreUIIcons },
   { path: '/icons/flags', name: 'Flags', component: Flags },
   { path: '/icons/font-awesome', name: 'Font Awesome', component: FontAwesome },
-  { path: '/icons/simple-line-icons', name: 'Simple Line Icons', component: SimpleLineIcons },
-  { path: '/notifications', name: 'Notifications', component: Alerts, exact: true },
+  {
+    path: '/icons/simple-line-icons',
+    name: 'Simple Line Icons',
+    component: SimpleLineIcons,
+  },
+  {
+    path: '/notifications',
+    name: 'Notifications',
+    component: Alerts,
+    exact: true,
+  },
   { path: '/notifications/alerts', name: 'Alerts', component: Alerts },
   { path: '/notifications/badges', name: 'Badges', component: Badges },
   { path: '/notifications/modals', name: 'Modals', component: Modals },
@@ -123,8 +172,8 @@ const routes = [
   { path: '/apps/email/message', name: 'Message', component: Message },
   { path: '/apps/invoicing', name: 'Invoice', component: Invoice, exact: true },
   { path: '/apps/invoicing/invoice', name: 'Invoice', component: Invoice },
-  { path: '/users', exact: true,  name: 'Users', component: Users },
-  { path: '/users/:id', exact: true, name: 'User Details', component: User }
+  { path: '/users', exact: true, name: 'Users', component: Users },
+  { path: '/users/:id', exact: true, name: 'User Details', component: User },
 ];
 
 export default routes;

@@ -1,3 +1,3 @@
-import PaymentShipping from './PaymentShipping'
+import PaymentShipping from './PaymentShipping';
 
-export default PaymentShipping
+export default PaymentShipping;

@@ -1,3 +1,3 @@
-import AddLocationModal from './AddLocationModal'
+import AddLocationModal from './AddLocationModal';
 
-export default AddLocationModal
+export default AddLocationModal;

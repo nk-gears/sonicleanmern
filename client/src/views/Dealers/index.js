@@ -1,3 +1,3 @@
-import Dealers from './Dealers'
+import Dealers from './Dealers';
 
-export default Dealers
+export default Dealers;

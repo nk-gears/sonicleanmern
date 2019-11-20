@@ -1,74 +1,74 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 // Create Schema
 
-var Store = require('./Store')
-var PaymentMethod = require('./PaymentMethod')
+var Store = require('./Store');
+var PaymentMethod = require('./PaymentMethod');
 
 const UserSchema = new Schema({
   firstName: {
     type: String,
-    required: true
+    required: true,
   },
   lastName: {
     type: String,
-    required: true
+    required: true,
   },
   email: {
     type: String,
-    required: true
+    required: true,
   },
   password: {
     type: String,
-    required: true
+    required: true,
   },
   phoneNumber: {
     type: String,
-    required: false
+    required: false,
   },
   companyName: {
     type: String,
-    required: false
+    required: false,
   },
   websiteURL: {
     type: String,
-    required: false
+    required: false,
   },
   mohawkAccount: {
     type: Number,
-    required: false
+    required: false,
   },
   mohawkBrand: {
     type: String,
-    enum : ['Mohawk','Karastan', 'Mohawk & Karastan'],
+    enum: ['Mohawk', 'Karastan', 'Mohawk & Karastan'],
     default: 'Mohawk',
-    require: false
+    require: false,
   },
   workPhoneNumber: {
-    type: String
+    type: String,
   },
   userPhoto: {
     type: String,
   },
   extension: {
-    type: String
+    type: String,
   },
   companyBio: {
-    type: String
+    type: String,
   },
   companyLogo: {
-    type: String
+    type: String,
   },
   roles: {
     type: String,
-    enum : ['dealer','employee', 'official', 'manager'],
+    enum: ['dealer', 'employee', 'official', 'manager'],
     default: '',
-    require: false
+    require: false,
   },
-  _adminId: { 
-    type: mongoose.Schema.Types.ObjectId, 
-    required: false, 
+  _adminId: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: false,
   },
   isVerified: {
     type: Boolean,
@@ -76,9 +76,9 @@ const UserSchema = new Schema({
   },
   passwordResetToken: String,
   passwordResetExpires: Date,
-  created: {type:Date, default:Date.now},
+  created: { type: Date, default: Date.now },
   stores: [Store.schema],
-  payments: [PaymentMethod.schema]
+  payments: [PaymentMethod.schema],
 });
 
-module.exports = User = mongoose.model("users", UserSchema);
+module.exports = User = mongoose.model('users', UserSchema);

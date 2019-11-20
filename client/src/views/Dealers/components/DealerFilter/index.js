@@ -1,3 +1,3 @@
-import DealerFilter from './DealerFilter'
+import DealerFilter from './DealerFilter';
 
-export default DealerFilter
+export default DealerFilter;

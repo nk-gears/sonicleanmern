@@ -1,3 +1,3 @@
-import ProductInformationModal from './ProductInformationModal'
+import ProductInformationModal from './ProductInformationModal';
 
-export default ProductInformationModal
+export default ProductInformationModal;

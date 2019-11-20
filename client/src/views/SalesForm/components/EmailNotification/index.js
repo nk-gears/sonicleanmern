@@ -1,3 +1,3 @@
-import EmailNotification from './EmailNotification'
+import EmailNotification from './EmailNotification';
 
-export default EmailNotification
+export default EmailNotification;

@@ -1,3 +1,3 @@
-import PromoCode from './PromoCode'
+import PromoCode from './PromoCode';
 
-export default PromoCode
+export default PromoCode;

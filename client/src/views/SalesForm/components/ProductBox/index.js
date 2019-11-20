@@ -1,3 +1,3 @@
-import ProductBox from './ProductBox'
+import ProductBox from './ProductBox';
 
-export default ProductBox
+export default ProductBox;

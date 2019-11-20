@@ -1,3 +1,3 @@
-import ReferralModal from './ReferralModal'
+import ReferralModal from './ReferralModal';
 
-export default ReferralModal
+export default ReferralModal;

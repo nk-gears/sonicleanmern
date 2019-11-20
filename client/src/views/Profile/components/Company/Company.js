@@ -1,162 +1,168 @@
-import React, { useEffect } from 'react'
-import { 
-    Row, 
-    Col, 
-    Form, 
-    FormGroup, 
-    Input, 
-    Label, 
-    FormFeedback, 
-    Button 
-} from 'reactstrap'
-import { connect } from 'react-redux'
+import React, { useEffect } from 'react';
+import {
+  Row,
+  Col,
+  Form,
+  FormGroup,
+  Input,
+  Label,
+  FormFeedback,
+  Button,
+} from 'reactstrap';
+import { connect } from 'react-redux';
 import { Formik, Field } from 'formik';
-import FormInput from 'components/common/FormInput'
-import FormPhoneInput from 'components/common/FormPhoneInput'
-import LoadingIndicator from 'components/common/LoadingIndicator'
-import LogoModal from 'components/LogoModal/LogoModal'
-import { fetchCompanyData, updateCompanyData } from 'modules/company'
+import FormInput from 'components/common/FormInput';
+import FormPhoneInput from 'components/common/FormPhoneInput';
+import LoadingIndicator from 'components/common/LoadingIndicator';
+import LogoModal from 'components/LogoModal/LogoModal';
+import { fetchCompanyData, updateCompanyData } from 'modules/company';
 import { REQUEST_STATUS } from '_config/constants';
-import * as Yup from 'yup'
+import * as Yup from 'yup';
 
-import './Company.scss'
+import './Company.scss';
 
 const companySchema = Yup.object().shape({
-    companyName: Yup.string()
-        .min(2, `First name has to be at least 2 characters`)
-        .required('First name is required'),
-    phoneNumber: Yup.string()
-        .min(8, `Phone number has to be at least 6 character`)
-        .required('Phone number is required!'),
-    companyBio: Yup.string()
-        .max(250, `Bio has be max 25 characeters`)
-})
+  companyName: Yup.string()
+    .min(2, `First name has to be at least 2 characters`)
+    .required('First name is required'),
+  phoneNumber: Yup.string()
+    .min(8, `Phone number has to be at least 6 character`)
+    .required('Phone number is required!'),
+  companyBio: Yup.string().max(250, `Bio has be max 25 characeters`),
+});
 
 const Company = ({
-    state,
-    companyData,
-    fetchCompany,
-    updateCompany,
-    companyLogo,
-    accountData
+  state,
+  companyData,
+  fetchCompany,
+  updateCompany,
+  companyLogo,
+  accountData,
 }) => {
+  useEffect(() => {
+    fetchCompany(accountData._id);
+  }, []);
 
-    useEffect(() => {
-        fetchCompany(accountData._id)
-    }, [])
+  const onSubmit = data => {
+    updateCompany(data, accountData._id);
+  };
 
-    const onSubmit = (data) => {
-        updateCompany(data, accountData._id)
-    }
-
-    return (
-        <div className="Company mt-5">
-            <Row>
-                <Col>
-                {
-                        state===REQUEST_STATUS.PENDING ? <LoadingIndicator /> : 
-                        <Formik
-                            initialValues={companyData}
-                            validationSchema={companySchema}
-                            onSubmit={onSubmit}
-                            render={
-                                ({
-                                    handleSubmit,
-                                    isValid,
-                                    errors,
-                                    touched,
-                                    handleChange,
-                                    handleBlur,
-                                    values
-                                }) => (
-                                        <Form onSubmit={handleSubmit} noValidate name='simpleForm'>
-                                            <Row>
-                                                <Col md={6}>
-                                                    <FormGroup>
-                                                        <Label >Company Name*</Label>
-                                                        <Field name="companyName" type={'text'} component={FormInput}/>
-                                                    </FormGroup>
-                                                </Col>
-                                                <Col md={6}>
-                                                    <FormGroup>
-                                                        <Label>Phone Number</Label>
-                                                        <Field name="phoneNumber" type={'text'} component={FormPhoneInput} />
-                                                    </FormGroup>
-                                                </Col>
-                                            </Row>
-                                            <Row>
-                                                <Col>
-                                                    <FormGroup>
-                                                        <Label >Company Bio (optional)</Label>
-                                                        <Input
-                                                            name="companyBio"
-                                                            className="position-relative"
-                                                            type="textarea"
-                                                            id="companyBio"
-                                                            autoComplete="given-name"
-                                                            valid={!errors.companyBio}
-                                                            invalid={touched.companyBio && !!errors.companyBio}
-                                                            autoFocus={true}
-                                                            onChange={handleChange}
-                                                            onBlur={handleBlur}
-                                                            placeholder = "This information will be displayed on your company's dealer locator listining on www.sonicleanusa.com.(e.g. family owned business since 1975...)"
-                                                            value={values.companyBio} />
-                                                            <h6 className="text-muted position-absolute font-weight-normal maxlength">max 250 characters</h6>
-                                                        <FormFeedback className="position-absolute bio-error">{errors.companyBio}</FormFeedback>
-                                                    </FormGroup>
-                                                </Col>
-                                            </Row>
-                                            <Row>
-                                                <Col md={6}>
-                                                    <Label >Upload company logo (50px by 50px)</Label>
-                                                    <LogoModal logo={companyLogo} id={accountData._id} />
-                                                </Col>
-                                            </Row>
-                                            <hr />
-                                            <Row className="float-right">
-                                                <Col>
-                                                    <FormGroup>
-                                                        <Button 
-                                                            type="submit" 
-                                                            color="success" 
-                                                            className="mr-1" 
-                                                            disabled={!isValid}
-                                                        >
-                                                            Submit
-                                                        </Button>
-                                                    </FormGroup>
-                                                </Col>
-                                            </Row>
-                                        </Form>
-                                    )}
+  return (
+    <div className="Company mt-5">
+      <Row>
+        <Col>
+          {state === REQUEST_STATUS.PENDING ? (
+            <LoadingIndicator />
+          ) : (
+            <Formik
+              initialValues={companyData}
+              validationSchema={companySchema}
+              onSubmit={onSubmit}
+              render={({
+                handleSubmit,
+                isValid,
+                errors,
+                touched,
+                handleChange,
+                handleBlur,
+                values,
+              }) => (
+                <Form onSubmit={handleSubmit} noValidate name="simpleForm">
+                  <Row>
+                    <Col md={6}>
+                      <FormGroup>
+                        <Label>Company Name*</Label>
+                        <Field
+                          name="companyName"
+                          type={'text'}
+                          component={FormInput}
                         />
-                    }
-                </Col>
-            </Row>
-        </div>
-    )
-}
+                      </FormGroup>
+                    </Col>
+                    <Col md={6}>
+                      <FormGroup>
+                        <Label>Phone Number</Label>
+                        <Field
+                          name="phoneNumber"
+                          type={'text'}
+                          component={FormPhoneInput}
+                        />
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col>
+                      <FormGroup>
+                        <Label>Company Bio (optional)</Label>
+                        <Input
+                          name="companyBio"
+                          className="position-relative"
+                          type="textarea"
+                          id="companyBio"
+                          autoComplete="given-name"
+                          valid={!errors.companyBio}
+                          invalid={touched.companyBio && !!errors.companyBio}
+                          autoFocus={true}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          placeholder="This information will be displayed on your company's dealer locator listining on www.sonicleanusa.com.(e.g. family owned business since 1975...)"
+                          value={values.companyBio}
+                        />
+                        <h6 className="text-muted position-absolute font-weight-normal maxlength">
+                          max 250 characters
+                        </h6>
+                        <FormFeedback className="position-absolute bio-error">
+                          {errors.companyBio}
+                        </FormFeedback>
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col md={6}>
+                      <Label>Upload company logo (50px by 50px)</Label>
+                      <LogoModal logo={companyLogo} id={accountData._id} />
+                    </Col>
+                  </Row>
+                  <hr />
+                  <Row className="float-right">
+                    <Col>
+                      <FormGroup>
+                        <Button
+                          type="submit"
+                          color="success"
+                          className="mr-1"
+                          disabled={!isValid}
+                        >
+                          Submit
+                        </Button>
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                </Form>
+              )}
+            />
+          )}
+        </Col>
+      </Row>
+    </div>
+  );
+};
 
 const mapStateToProps = ({ company, account }) => {
-    const {accountData} = account
-    const { companyData, companyLogo, state, _id } = company;
-    return { companyData, companyLogo, state, accountData };
-}
+  const { accountData } = account;
+  const { companyData, companyLogo, state, _id } = company;
+  return { companyData, companyLogo, state, accountData };
+};
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        fetchCompany: (id) => {
-            dispatch(fetchCompanyData(id));
-        },
-        updateCompany: (data, id) => {
-            dispatch(updateCompanyData(data, id));
-        }
-    }
-}
+const mapDispatchToProps = dispatch => {
+  return {
+    fetchCompany: id => {
+      dispatch(fetchCompanyData(id));
+    },
+    updateCompany: (data, id) => {
+      dispatch(updateCompanyData(data, id));
+    },
+  };
+};
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(Company);
-
-
+export default connect(mapStateToProps, mapDispatchToProps)(Company);

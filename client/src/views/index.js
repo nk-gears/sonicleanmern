@@ -16,7 +16,13 @@ import {
   Tooltips,
 } from './Base';
 
-import { BrandButtons, ButtonDropdowns, ButtonGroups, Buttons, LoadingButtons } from './Buttons';
+import {
+  BrandButtons,
+  ButtonDropdowns,
+  ButtonGroups,
+  Buttons,
+  LoadingButtons,
+} from './Buttons';
 import Charts from './Charts';
 import Dashboard from './Dashboard';
 import { CodeEditors, TextEditors } from './Editors';
@@ -82,6 +88,5 @@ export {
   Message,
   Compose,
   Invoice,
-  ReactGoogleMaps
+  ReactGoogleMaps,
 };
-

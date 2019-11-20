@@ -1,7 +1,7 @@
-import { combineReducers } from "redux";
+import { combineReducers } from 'redux';
 import { authReducer } from './auth';
 import { accountReducer } from './account';
-import { companyReducer } from './company'
+import { companyReducer } from './company';
 import { SalesFormReducer } from './salesForm';
 import { StateReducer } from './States';
 import { BrandReducer } from './Brands';
@@ -17,41 +17,41 @@ import { PromoCodeReducer } from './PromoCode';
 import { TaxesReducer } from './Taxes';
 import { OrderReducer } from './Order';
 import { OrderHistoryReducer } from './OrderHistory';
-import { NotificationReducer } from './Notification'
-import { officialReducer } from './official'
+import { NotificationReducer } from './Notification';
+import { officialReducer } from './official';
 
 const appReducers = combineReducers({
-    auth: authReducer,
-    account: accountReducer,
-    company: companyReducer,
-    salesform: SalesFormReducer,
-    states: StateReducer,
-    brands: BrandReducer,
-    register: RegisterReducer,
-    referral: ReferralReducer,
-    priceList: PriceListReducer,
-    emailNotificationList: EmailNotificationReducer,
-    stores: StoreReducer,
-    card: CardReducer,
-    customer: CustomerReducer,
-    promoCode: PromoCodeReducer,
-    taxes: TaxesReducer,
-    order: OrderReducer,
-    orderhistory: OrderHistoryReducer,
-    users: UserReducer,
-    notification: NotificationReducer,
-    official: officialReducer
-    // but its referenced here     
+  auth: authReducer,
+  account: accountReducer,
+  company: companyReducer,
+  salesform: SalesFormReducer,
+  states: StateReducer,
+  brands: BrandReducer,
+  register: RegisterReducer,
+  referral: ReferralReducer,
+  priceList: PriceListReducer,
+  emailNotificationList: EmailNotificationReducer,
+  stores: StoreReducer,
+  card: CardReducer,
+  customer: CustomerReducer,
+  promoCode: PromoCodeReducer,
+  taxes: TaxesReducer,
+  order: OrderReducer,
+  orderhistory: OrderHistoryReducer,
+  users: UserReducer,
+  notification: NotificationReducer,
+  official: officialReducer,
+  // but its referenced here
 });
 
-const initialState = appReducers({}, {})
+const initialState = appReducers({}, {});
 
 const VisualbitlizerApp = (state, action) => {
-    if (action.type === 'soniclean/auth/logout') {
-        console.log('asdf')
-        state = initialState
-      }
-    return appReducers(state, action);
+  if (action.type === 'soniclean/auth/logout') {
+    console.log('asdf');
+    state = initialState;
+  }
+  return appReducers(state, action);
 };
 
-export default VisualbitlizerApp; 
+export default VisualbitlizerApp;

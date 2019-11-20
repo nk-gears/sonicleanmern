@@ -1,3 +1,3 @@
-import OrderTypeItem from './OrderTypeItem'
+import OrderTypeItem from './OrderTypeItem';
 
-export default OrderTypeItem
+export default OrderTypeItem;

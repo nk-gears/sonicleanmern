@@ -1,3 +1,3 @@
-import AddPaymentMethod from './AddPaymentMethod'
+import AddPaymentMethod from './AddPaymentMethod';
 
-export default AddPaymentMethod
+export default AddPaymentMethod;

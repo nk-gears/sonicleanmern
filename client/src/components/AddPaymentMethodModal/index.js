@@ -1,3 +1,3 @@
-import AddPaymentMethodModal from './AddPaymentMethodModal'
+import AddPaymentMethodModal from './AddPaymentMethodModal';
 
-export default AddPaymentMethodModal
+export default AddPaymentMethodModal;
