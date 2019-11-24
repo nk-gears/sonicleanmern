@@ -1,24 +1,23 @@
 import React, { useEffect } from 'react';
 import { Row, Col, Card, CardHeader, CardBody, Table } from 'reactstrap';
 import { connect } from 'react-redux';
-import ConfirmModal from 'components/ConfirmModal/ConfirmModal';
+import ConfirmationModal from 'components/ConfirmationModal/ConfirmationModal';
 import AddNewUserModal from 'components/AddNewUserModal/AddNewUserModal';
-import './Users.scss';
-import { fetchUsers } from 'modules/Users';
-import { showNotification } from 'modules/Notification';
+import { fetchUsers, deleteUserRequest } from 'modules/Users';
 import { REQUEST_STATUS } from '_config/constants';
 import LoadingIndicator from 'components/common/LoadingIndicator';
-const Users = ({
-  fetchUsers,
-  usersData,
-  state,
-  addUserState,
-  showNotification,
-  accountData,
-}) => {
+
+import './Users.scss';
+
+const Users = ({ fetchUsers, usersData, state, onDeleteUser, accountData }) => {
   useEffect(() => {
     fetchUsers(accountData._id);
   }, []);
+
+  const deleteUser = (id, dealer) => {
+    console.log(id, dealer);
+    onDeleteUser(id, dealer);
+  };
 
   return (
     <div className="Users mt-5 mb-5">
@@ -56,10 +55,14 @@ const Users = ({
                             {item.isVerified ? 'true' : 'false'}
                           </td>
                           <td className="text-right">
-                            <ConfirmModal
-                              type={'userDelete'}
-                              id={item._id}
-                              dealer={accountData._id}
+                            <ConfirmationModal
+                              text="Delete"
+                              size="md"
+                              color="danger"
+                              header="Activation"
+                              onClickFunc={() =>
+                                deleteUser(item._id, accountData._id)
+                              }
                             />
                           </td>
                         </tr>
@@ -87,8 +90,8 @@ const mapDispatchToProps = dispatch => {
     fetchUsers: id => {
       dispatch(fetchUsers(id));
     },
-    showNotification: () => {
-      dispatch(showNotification());
+    onDeleteUser: (id, dealer) => {
+      dispatch(deleteUserRequest(id, dealer));
     },
   };
 };

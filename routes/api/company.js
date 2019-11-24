@@ -35,20 +35,20 @@ router.put(
     }
 
     User.findById(req.params.id).then(user => {
-      (user.companyName = req.body.companyName),
-        (user.phoneNumber = req.body.phoneNumber),
-        (user.companyBio = req.body.companyBio),
-        user
-          .save()
-          .then(user => {
-            let data = {};
-            data._id = user._id;
-            data.companyName = user.companyName;
-            data.phoneNumber = user.phoneNumber;
-            data.companyBio = user.companyBio;
-            res.json(data);
-          })
-          .catch(err => console.log(err));
+      user.companyName = req.body.companyName;
+      user.phoneNumber = req.body.phoneNumber;
+      user.companyBio = req.body.companyBio;
+      user
+        .save()
+        .then(user => {
+          let data = {};
+          data._id = user._id;
+          data.companyName = user.companyName;
+          data.phoneNumber = user.phoneNumber;
+          data.companyBio = user.companyBio;
+          res.json(data);
+        })
+        .catch(err => console.log(err));
     });
   }
 );

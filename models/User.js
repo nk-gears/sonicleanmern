@@ -74,7 +74,10 @@ const UserSchema = new Schema({
     type: Boolean,
     default: false,
   },
-  passwordResetToken: String,
+  passwordResetToken: {
+    type: String,
+    default: '',
+  },
   passwordResetExpires: Date,
   created: { type: Date, default: Date.now },
   stores: [Store.schema],
