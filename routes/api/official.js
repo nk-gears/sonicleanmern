@@ -17,8 +17,6 @@ router.get(
       query['email'] = { $regex: req.query.email, $options: `i` };
     }
 
-    console.log(query);
-
     User.countDocuments(query).then(totalCount => {
       User.find(query)
         .limit(_pageSize)
@@ -33,6 +31,16 @@ router.get(
           };
           res.json(response);
         });
+    });
+  }
+);
+
+router.delete(
+  '/delete/:id',
+  passport.authenticate('jwt', { session: false }),
+  (req, res) => {
+    User.findByIdAndRemove(req.params.id).then(user => {
+      res.json(user);
     });
   }
 );

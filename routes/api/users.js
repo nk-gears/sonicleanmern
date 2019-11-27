@@ -6,6 +6,8 @@ const keys = require('../../config/keys');
 const passport = require('passport');
 const modemailer = require('nodemailer');
 const crypto = require('crypto');
+var handlebars = require('handlebars');
+var fs = require('fs');
 
 // Load input validation
 const validateRegisterInput = require('../../validation/register');
@@ -44,7 +46,7 @@ router.post('/register', (req, res) => {
         websiteURL: req.body.websiteURL,
         mohawkAccount: req.body.mohawkAccount,
         mohawkBrand: req.body.mohawkBrand,
-        roles: 'admin',
+        roles: 'dealer',
         stores: {
           name: req.body.companyName,
           phoneNumber: req.body.phoneNumber,
@@ -71,36 +73,7 @@ router.post('/register', (req, res) => {
               });
 
               newToken.save().then(token => {
-                var transporter = modemailer.createTransport({
-                  service: 'gmail',
-                  auth: {
-                    user: 'wonder.dev21@gmail.com',
-                    pass: 'aksrudeo101668',
-                  },
-                });
-                var mailOptions = {
-                  from: 'wonder.dev21@gmail.com',
-                  to: user.email,
-                  subject: 'Account Verification Token',
-                  text:
-                    'Hello,\n\n' +
-                    'Please verify your account by clicking the link: \nhttps://' +
-                    'soniclean.herokuapp.com' +
-                    '/confirmation/' +
-                    token.token +
-                    '.\n',
-                };
-                transporter.sendMail(mailOptions, function(err) {
-                  if (err) {
-                    return res.status(500).json({ message: err.message });
-                  }
-                  res.json({
-                    message:
-                      'A verification email has been sent to ' +
-                      user.email +
-                      '.',
-                  });
-                });
+                res.json(token);
               });
             })
             .catch(err => console.log(err));
@@ -184,12 +157,10 @@ router.post('/confirmation', (req, res) => {
 
   Token.findOne({ token: req.body.token }, function(err, token) {
     if (!token)
-      return res
-        .status(400)
-        .json({
-          message:
-            'We were unable to find a valid token. Your token my have expired.',
-        });
+      return res.status(400).json({
+        message:
+          'We were unable to find a valid token. Your token my have expired.',
+      });
 
     // If we found a token, find a matching user
     User.findOne({ _id: token._userId }, function(err, user) {
@@ -230,11 +201,9 @@ router.post('/resend', (req, res) => {
         .status(400)
         .send({ msg: 'We were unable to find a user with that email.' });
     if (user.isVerified)
-      return res
-        .status(400)
-        .send({
-          msg: 'This account has already been verified. Please log in.',
-        });
+      return res.status(400).send({
+        msg: 'This account has already been verified. Please log in.',
+      });
 
     // Create a verification token, save it, and send email
     var token = new Token({
@@ -283,6 +252,65 @@ router.get(
   passport.authenticate('jwt', { session: false }),
   (req, res) => {
     res.send(req.user);
+  }
+);
+
+var readHTMLFile = function(path, callback) {
+  fs.readFile(path, { encoding: 'utf-8' }, function(err, html) {
+    if (err) {
+      throw err;
+      callback(err);
+    } else {
+      callback(null, html);
+    }
+  });
+};
+
+router.post(
+  '/active/:id',
+  passport.authenticate('jwt', { session: false }),
+  (req, res) => {
+    var sender = 'wonder.dev21@gmail.com';
+    var password = 'aksrudeo101668';
+
+    User.findById(req.params.id).then(user => {
+      Token.findOne({ _userId: user._id }).then(token => {
+        readHTMLFile(
+          __dirname + '/../../templates/resetPassword.html',
+          function(err, html) {
+            var transporter = modemailer.createTransport({
+              service: 'gmail',
+              auth: {
+                user: sender,
+                pass: password,
+              },
+            });
+
+            var template = handlebars.compile(html);
+            var replacements = {
+              firstname: user.firstName,
+              token: token.token,
+            };
+            var htmlToSend = template(replacements);
+            var mailOptions = {
+              from: 'wonder.dev21@gmail.com',
+              to: user.email,
+              subject: 'Account Verification Token',
+              html: htmlToSend,
+            };
+            transporter.sendMail(mailOptions, function(err) {
+              if (err) {
+                return res.status(500).json({ message: err.message });
+              }
+              user.passwordResetToken = token.token;
+              user.save().then(user => {
+                res.json('verification');
+              });
+            });
+          }
+        );
+      });
+    });
   }
 );
 

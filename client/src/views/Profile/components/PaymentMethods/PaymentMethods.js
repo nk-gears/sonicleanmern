@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-
 import { Row, Col, Card, CardHeader, CardBody, Table } from 'reactstrap';
-import './PaymentMethods.scss';
 import AddPaymentMethodModal from 'components/AddPaymentMethodModal/AddPaymentMethodModal';
-import ConfirmModal from 'components/ConfirmModal/ConfirmModal';
+import ConfirmationModal from 'components/ConfirmationModal/ConfirmationModal';
 import LoadingIndicator from 'components/common/LoadingIndicator';
-import { fetchCards, endCards } from '../../../../modules/Cards';
+import {
+  fetchCards,
+  endCards,
+  deleteCardRequest,
+} from '../../../../modules/Cards';
 
 import Visa from '../../images/visa.png';
 import Mastercard from '../../../SalesForm/images/Mastercard.png';
@@ -17,6 +19,8 @@ import JCB from '../../../SalesForm/images/jcb.png';
 import VisaElectron from '../../../SalesForm/images/visaelectron.png';
 import { REQUEST_STATUS } from '_config/constants';
 
+import './PaymentMethods.scss';
+
 const PaymentMethods = ({
   isSubmitSuccess,
   fetchCards,
@@ -24,6 +28,7 @@ const PaymentMethods = ({
   state,
   endfetchCards,
   accountData,
+  onDeleteCard,
 }) => {
   const [modal, setModal] = useState(false);
   useEffect(() => {
@@ -33,6 +38,10 @@ const PaymentMethods = ({
 
   const toggleModal = () => {
     setModal(!modal);
+  };
+
+  const deleteCard = (id, dealer) => {
+    onDeleteCard(id, dealer);
   };
 
   const getCardType = param => {
@@ -111,10 +120,14 @@ const PaymentMethods = ({
                             <td>•••• {item.cardnumber}</td>
                             <td>{item.expdate}</td>
                             <td className="text-right">
-                              <ConfirmModal
-                                type={'cardDelete'}
-                                id={item._id}
-                                dealer={accountData._id}
+                              <ConfirmationModal
+                                text="Delete"
+                                size="md"
+                                color="danger"
+                                header="Activation"
+                                onClickFunc={() =>
+                                  deleteCard(item._id, accountData._id)
+                                }
                               />
                             </td>
                           </tr>
@@ -144,6 +157,9 @@ const mapDispatchToProps = dispatch => {
     },
     endfetchCards: () => {
       dispatch(endCards());
+    },
+    onDeleteCard: (id, dealer) => {
+      dispatch(deleteCardRequest(id, dealer));
     },
   };
 };

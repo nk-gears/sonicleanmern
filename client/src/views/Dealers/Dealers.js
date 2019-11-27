@@ -12,16 +12,23 @@ import {
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import 'react-bootstrap-table/dist//react-bootstrap-table-all.min.css';
 import { REQUEST_STATUS } from '_config/constants';
+import ConfirmationModal from 'components/ConfirmationModal/ConfirmationModal';
 import LoadingIndicator from 'components/common/LoadingIndicator';
 import DealerFilter from './components/DealerFilter';
-import { fetchDealersList } from '../../modules/official';
+import {
+  fetchDealersList,
+  deleteDealerById,
+  dealerActivationRequest,
+} from '../../modules/official';
 
 import './Dealers.scss';
 
 const Dealers = ({
   history,
   getDealersList,
+  deleteDear,
   dealersList,
+  dealerActivation,
   totalCount,
   currentPage,
   sizePerPage,
@@ -32,8 +39,8 @@ const Dealers = ({
   const [pageSize, setPageSize] = useState(5);
   const [email, setEmail] = useState('');
   useEffect(() => {
-    getDealersList(1, 5, email);
-  }, []);
+    if (dealersList.length === 0) getDealersList(1, 5, email);
+  }, [dealersList]);
 
   const actionFormatter = (cell, row) => {
     return (
@@ -47,15 +54,19 @@ const Dealers = ({
         </Button>
         <Button
           onClick={() => history.push(`/profile/account/${row._id}`)}
-          className="ml-1"
+          className="ml-1 mr-1"
           color="success"
           size="sm"
         >
           Detail
         </Button>
-        <Button className="ml-1" color="danger" size="sm">
-          Delete
-        </Button>
+        <ConfirmationModal
+          text="Delete"
+          size="sm"
+          color="danger"
+          header="Activation"
+          onClickFunc={() => deleteDear(row._id)}
+        />
       </>
     );
   };
@@ -77,11 +88,13 @@ const Dealers = ({
       );
     } else {
       return (
-        <h6>
-          <Badge color="danger" pill>
-            UnVerified
-          </Badge>
-        </h6>
+        <ConfirmationModal
+          text={row.passwordResetToken !== '' ? 'Resend' : 'Active'}
+          size="sm"
+          color="danger"
+          header="Activation"
+          onClickFunc={() => dealerActivation(row._id)}
+        />
       );
     }
   };
@@ -214,6 +227,12 @@ const mapDispatchToProps = dispatch => {
   return {
     getDealersList: (page, size, email) => {
       dispatch(fetchDealersList(page, size, email));
+    },
+    deleteDear: id => {
+      dispatch(deleteDealerById(id));
+    },
+    dealerActivation: id => {
+      dispatch(dealerActivationRequest(id));
     },
   };
 };

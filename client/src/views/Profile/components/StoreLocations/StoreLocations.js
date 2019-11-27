@@ -1,25 +1,28 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-
 import { Row, Col, Card, CardHeader, CardBody, Table } from 'reactstrap';
-import ConfirmModal from 'components/ConfirmModal/ConfirmModal';
+import ConfirmationModal from 'components/ConfirmationModal/ConfirmationModal';
 import AddStoreModal from 'components/AddStoreModal/AddStoreModal';
-import { fetchStores } from 'modules/Stores';
+import { fetchStores, deleteStoreRequest } from 'modules/Stores';
 import LoadingIndicator from 'components/common/LoadingIndicator';
-
-import './StoreLocations.scss';
 import { REQUEST_STATUS } from '_config/constants';
 
+import './StoreLocations.scss';
+
 const StoreLocations = ({
-  isSubmitSuccess,
   fetchStores,
   storesData,
   state,
   accountData,
+  onDeleteStore,
 }) => {
   useEffect(() => {
     fetchStores(accountData._id);
   }, []);
+
+  const deleteStore = (id, dealer) => {
+    onDeleteStore(id, dealer);
+  };
 
   return (
     <div className="StoreLocations mt-5 mb-5">
@@ -54,10 +57,14 @@ const StoreLocations = ({
                               initialData={item}
                               id={accountData._id}
                             />
-                            <ConfirmModal
-                              type={'storeDelete'}
-                              id={item._id}
-                              dealer={accountData._id}
+                            <ConfirmationModal
+                              text="Delete"
+                              size="md"
+                              color="danger"
+                              header="DELETE"
+                              onClickFunc={() =>
+                                deleteStore(item._id, accountData._id)
+                              }
                             />
                           </td>
                         </tr>
@@ -84,6 +91,9 @@ const mapDispatchToProps = dispatch => {
   return {
     fetchStores: id => {
       dispatch(fetchStores(id));
+    },
+    onDeleteStore: (id, dealer) => {
+      dispatch(deleteStoreRequest(id, dealer));
     },
   };
 };

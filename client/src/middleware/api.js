@@ -27,6 +27,8 @@ const apiMiddleware = ({ dispatch }) => next => action => {
     dispatch(onStart(label));
   }
 
+  console.log(url, data);
+
   axios
     .request({
       url,
