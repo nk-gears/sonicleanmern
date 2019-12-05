@@ -28,7 +28,7 @@ class OrderType extends Component {
   onSelected = (type, selected) => {
     this.setState({ selectedOrderType: type });
     this.props.onSelectOrderType(type);
-    if (type === 0) {
+    if (type === 0 || type === 2) {
       this.props.onSelectShippingInfor(1);
     } else {
       this.props.onSelectShippingInfor(-1);
@@ -59,21 +59,25 @@ class OrderType extends Component {
         </Row>
         <Row className="justify-content-center mt-5">
           {Constants.orderType.map((item, index) => {
-            return (
-              <Col md="4" lg="3" className="mt-3" key={index}>
-                <OrderTypeItem
-                  info={item}
-                  selectedIndex={orderType}
-                  type={index}
-                  onSelected={this.onSelected}
-                />
-              </Col>
-            );
+            if (this.props.user.roles !== 'official' && index === 2) {
+              return '';
+            } else {
+              return (
+                <Col md="4" lg="3" className="mt-3" key={index}>
+                  <OrderTypeItem
+                    info={item}
+                    selectedIndex={orderType}
+                    type={index}
+                    onSelected={this.onSelected}
+                  />
+                </Col>
+              );
+            }
           })}
         </Row>
         <Row>
           <Col>
-            {orderType === 2 ? (
+            {orderType === 3 ? (
               <Button color="primary mt-5" onClick={this.toggleModal}>
                 Continue
               </Button>
@@ -97,9 +101,10 @@ class OrderType extends Component {
 
 OrderType.propTypes = {};
 
-const mapStateToProps = ({ salesform }) => {
+const mapStateToProps = ({ salesform, auth }) => {
   const { orderType } = salesform;
-  return { orderType };
+  const { user } = auth;
+  return { orderType, user };
 };
 
 const mapDispatchToProps = dispatch => {

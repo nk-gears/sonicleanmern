@@ -11,12 +11,10 @@ import {
   Input,
 } from 'reactstrap';
 import { Formik } from 'formik';
-
 import LaddaButton, { EXPAND_RIGHT, L } from 'react-ladda';
-
 import * as Yup from 'yup';
-
 import { isPending } from 'utils/state';
+import { REQUEST_STATUS } from '_config/constants';
 
 import 'ladda/dist/ladda-themeless.min.css';
 import 'react-toastify/dist/ReactToastify.css';

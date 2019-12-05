@@ -28,7 +28,7 @@ class SelectProduct extends Component {
 
   onSelectProduct = (selectedIndex, counts, clickType) => {
     const { orderType } = this.props;
-    if (orderType === 1) {
+    if (orderType === 1 || orderType === 2) {
       if (clickType === true) {
         let shipIndex = this.props.ship;
         shipIndex.push(selectedIndex);
@@ -87,6 +87,28 @@ class SelectProduct extends Component {
           <Row className="mx-auto">
             {orderType === 1
               ? Contants.DirectShipProducts.map((item, index) => {
+                  return (
+                    <Col
+                      xs="12"
+                      sm="6"
+                      md="6"
+                      lg="4"
+                      className="mt-4"
+                      key={index}
+                    >
+                      <ProductCard
+                        onSelectProduct={this.onSelectProduct}
+                        inventory={this.state.inventoryIndex}
+                        ship={this.state.shipIndex}
+                        productIndex={item._id}
+                        data={item}
+                        type="check"
+                      />
+                    </Col>
+                  );
+                })
+              : orderType === 2
+              ? Contants.DemoProducts.map((item, index) => {
                   return (
                     <Col
                       xs="12"

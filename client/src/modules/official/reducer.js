@@ -35,10 +35,10 @@ export const {
   fail: dealerActivationFail,
 } = defineLoopActions(DEALERACTIVATION);
 
-export const fetchDealersList = (page, size, email) => {
+export const fetchDealersList = (page, size, search) => {
   console.log(page, size);
 
-  const apiUrl = `/api/official/dealers?page=${page}&size=${size}&email=${email}`;
+  const apiUrl = `/api/official/dealers?page=${page}&size=${size}&search=${search}`;
   const token = getToken();
   return apiAction({
     url: apiUrl,

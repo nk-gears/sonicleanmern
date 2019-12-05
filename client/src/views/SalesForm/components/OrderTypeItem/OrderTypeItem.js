@@ -47,7 +47,7 @@ class OrderTypeItem extends Component {
         })}
         onClick={this.onSelect}
       >
-        <CardBody>
+        <CardBody className="d-flex flex-column h-100">
           <h4
             className={classNames(
               'font-weight-bold text-muted',
@@ -58,7 +58,7 @@ class OrderTypeItem extends Component {
           </h4>
           <h5
             className={classNames(
-              'font-weight-bold mt-3 text-muted',
+              'font-weight-bold text-muted  mb-4',
               selectedIndex === type ? 'OrderTypeItem__text' : ''
             )}
           >
@@ -67,15 +67,15 @@ class OrderTypeItem extends Component {
           {info.description && (
             <h6
               className={classNames(
-                'mt-3 text-muted',
-                selectedIndex === type ? 'OrderTypeItem__text' : ''
+                'text-muted',
+                selectedIndex === type ? 'OrderTypeItem__text mb-4' : ''
               )}
             >
               {info.description}
             </h6>
           )}
           <AppSwitch
-            className={'mx-1 mt-4'}
+            className={'mx-1 mt-auto'}
             checked={selectedIndex === type}
             disabled={true}
             color={'success'}

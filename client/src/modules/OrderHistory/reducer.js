@@ -37,9 +37,16 @@ export const fetchOrderHistoryList = (
   date_to,
   id
 ) => {
-  const apiUrl = `/api/orders/orderslist/${id}?page=${page}&size=${size}&ordertype=${orderType}&order_status=${orderStatus}&date_from=${date_from}&date_to=${date_to}`;
-  const token = getToken();
+  let apiUrl = `/api/orders/orderslist?page=${page}&size=${size}&ordertype=${orderType}&order_status=${orderStatus}`;
 
+  if (id) {
+    apiUrl = `${apiUrl}&id=${id}`;
+  }
+  if (date_from && date_to) {
+    apiUrl = `${apiUrl}&date_from=${date_from}&date_to=${date_to}`;
+  }
+  const token = getToken();
+  console.log(apiUrl);
   return apiAction({
     url: apiUrl,
     method: 'GET',
@@ -89,6 +96,7 @@ export const OrderHistoryReducer = handleActions(
           ...state,
           orderDataById: payload.orderData,
           orderStatus: payload.orderStatus,
+          orderPayment: payload.orderPayment,
           state: REQUEST_STATUS.SUCCESS,
         };
       },

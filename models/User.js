@@ -83,5 +83,5 @@ const UserSchema = new Schema({
   stores: [Store.schema],
   payments: [PaymentMethod.schema],
 });
-
+UserSchema.index({ '$**': 'text' });
 module.exports = User = mongoose.model('users', UserSchema);

@@ -9,37 +9,35 @@ const Orders = require('../../models/Orders');
 
 /* GET Orders List method */
 router.get(
-  '/orderslist/:id',
+  '/orderslist',
   passport.authenticate('jwt', { session: false }),
   (req, res) => {
     var _pageNumber = parseInt(req.query.page) || 1,
       _pageSize = parseInt(req.query.size);
-
     let query = {};
-    query['createdBy'] = req.params.id;
-    if (req.query.ordertype !== 'undefined' && req.query.ordertype !== 'ALL') {
-      query['cust_ref'] = { $regex: req.query.ordertype, $options: `i` };
+    if (req.query.id) {
+      query['createdBy'] = req.query.id;
     }
-    if (
-      req.query.date_from !== 'undefined' &&
-      req.query.date_to !== 'undefined'
-    ) {
-      query['created'] = {
-        $gte: new Date(req.query.date_from),
-        $lte: new Date(req.query.date_to),
-      };
-    }
-    if (
-      req.query.order_status !== 'undefined' &&
-      req.query.order_status !== 'ALL'
-    ) {
-      query['order_status'] = req.query.order_status;
-    }
+    // if (req.query.ordertype !== 'undefined' && req.query.ordertype !== 'ALL') {
+    //   query['cust_ref'] = { $regex: req.query.ordertype, $options: `i` };
+    // }
+    // if (req.query.date_from && req.query.date_to) {
+    //   query['created'] = {
+    //     $gte: new Date(req.query.date_from),
+    //     $lte: new Date(req.query.date_to),
+    //   };
+    // }
+    // if (
+    //   req.query.order_status !== 'undefined' &&
+    //   req.query.order_status !== 'ALL'
+    // ) {
+    //   query['order_status'] = req.query.order_status;
+    // }
 
     Orders.countDocuments(query).then(totalCount => {
       Orders.find(query)
-        .limit(_pageSize)
-        .skip(_pageSize * (_pageNumber - 1))
+        // .limit(_pageSize)
+        // .skip(_pageSize * (_pageNumber - 1))
         .then(orders => {
           // res.json(orders)
 
@@ -59,6 +57,9 @@ router.get(
 
               let ordersdata = {};
               ordersdata._id = order._id;
+              ordersdata.payment_type = order.payment_type;
+              ordersdata.mohawk_account = order.mohawk_account;
+              ordersdata._createdBy = order.createdBy;
               ordersdata.success_code = pd.success_code;
               ordersdata.cust_ref = pd.response.cust_ref;
               ordersdata.created = pd.response.created_date_time;
@@ -71,9 +72,9 @@ router.get(
               ordersdata.ship_city = pd.response.ship_city;
               ordersdata.ship_state = pd.response.ship_state;
               ordersdata.ship_zip = pd.response.ship_zip;
-              (ordersdata.ship_phone = pd.response.ship_phone),
-                (ordersdata.ship_e_mail = pd.response.ship_e_mail),
-                (ordersdata.order_status = ld.response.order_status);
+              ordersdata.ship_phone = pd.response.ship_phone;
+              ordersdata.ship_e_mail = pd.response.ship_e_mail;
+              ordersdata.order_status = ld.response.order_status;
               return ordersdata;
             })
           ).then(response => {
@@ -81,6 +82,7 @@ router.get(
             var data = {
               data: response,
               pages: totalPages,
+              totalCount: totalCount,
               currentPage: _pageNumber,
               sizePerPage: _pageSize,
             };
@@ -115,7 +117,10 @@ router.get(
         var data = {
           orderData: pd.response,
           orderStatus: ld.response.order_status,
+          orderPayment: order.payment_type,
         };
+
+        console.log(data);
         res.json(data);
       })
       .catch(err => {

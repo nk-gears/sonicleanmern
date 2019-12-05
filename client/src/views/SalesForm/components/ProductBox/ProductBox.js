@@ -16,6 +16,8 @@ const ProductBox = ({ item, orderType, quantity, setPrice }) => {
       result = Contants.InventoryProducts.filter(
         product => product._id === item
       );
+    } else {
+      result = Contants.DemoProducts.filter(product => product._id === item);
     }
     setProduct(result[0]);
   }, [item]);
@@ -29,7 +31,7 @@ const ProductBox = ({ item, orderType, quantity, setPrice }) => {
         setPrice((product.price * quantity * product.multiples) / 100);
         return (product.price / 100).toFixed(2);
       }
-    } else if (orderType === 1) {
+    } else if (orderType === 1 || orderType === 2) {
       setPrice(product.price / 100);
       return (product.price / 100).toFixed(2);
     }
@@ -48,7 +50,9 @@ const ProductBox = ({ item, orderType, quantity, setPrice }) => {
           </h6>
           <h6 className="mt-1">
             QTY:{' '}
-            {orderType === 1 ? '1' : product && quantity * product.multiples}
+            {orderType === 1 || orderType === 2
+              ? '1'
+              : product && quantity * product.multiples}
           </h6>
         </Col>
       </Row>

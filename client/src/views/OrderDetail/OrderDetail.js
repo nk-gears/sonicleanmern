@@ -13,6 +13,7 @@ const OrderDetail = ({
   getOrderById,
   orderDataById,
   orderStatus,
+  orderPayment,
   state,
 }) => {
   useEffect(() => {
@@ -35,6 +36,10 @@ const OrderDetail = ({
       });
     } else if (orderDataById.cust_ref.split('.')[1] === 'INV') {
       p_name = Contants.InventoryProducts.filter(item => {
+        return item._id === offerCode;
+      });
+    } else {
+      p_name = Contants.DemoProducts.filter(item => {
         return item._id === offerCode;
       });
     }
@@ -101,7 +106,12 @@ const OrderDetail = ({
                     </strong>
                   </div>
                   <div>
-                    Payment Method: <strong>Credit/Debit Card</strong>
+                    Payment Method:{' '}
+                    <strong>
+                      {orderPayment === 'stripe'
+                        ? 'Credit/Debit Card'
+                        : 'Mohawk'}
+                    </strong>
                   </div>
                   <div>
                     Order Status: <strong>{getOrderStatus(orderStatus)}</strong>
@@ -198,8 +208,8 @@ const OrderDetail = ({
 };
 
 const mapStateToProps = ({ orderhistory }) => {
-  const { orderDataById, orderStatus, state } = orderhistory;
-  return { orderDataById, orderStatus, state };
+  const { orderDataById, orderStatus, state, orderPayment } = orderhistory;
+  return { orderDataById, orderStatus, state, orderPayment };
 };
 
 const mapDispatchToProps = dispatch => {

@@ -23,6 +23,39 @@ const orderTypeList = [
   },
 ];
 
+const DemoProducts = [
+  {
+    _id: '00001',
+    price: '17500',
+    unit: 'unit',
+    tooltip: 'Karastan Soft Carpet Upright Vacuum',
+    name: 'Karastan Soft Carpet Upright Vacuum',
+    description: '(Model: KSC-7500)',
+    image: KSC_7500,
+    multiples: 2,
+  },
+  {
+    _id: '00002',
+    price: '16500',
+    unit: 'unit',
+    tooltip: 'Soft Carpet Upright Vacuum',
+    name: 'Soft Carpet Upright Vacuum',
+    description: '(Model: SFC-7000)',
+    image: SFC_7000,
+    multiples: 2,
+  },
+  {
+    _id: '00003',
+    price: '7500',
+    unit: 'unit',
+    tooltip: 'Soniclean Handheld Vacuum',
+    name: 'Soniclean Handheld Vacuum',
+    description: '(Model: HH-0800)',
+    image: HH_0800,
+    multiples: 2,
+  },
+];
+
 const DirectShipProducts = [
   {
     _id: '00001',
@@ -224,6 +257,12 @@ const orderType = [
       "This order form allows you place an order containing a maximum of 1 of each type of vacuum and a maximum of 1 package of each type of accessory. Direct ship orders can be shipped to your customers or to your store location. You will need your company's credit/ debit card information to process this order.All prices include freight for orders with shipping addresses within the contiguous US.",
   },
   {
+    title: 'DEMO UNIT',
+    description: 'Demo unit order form',
+    detail:
+      "This order form allows you place an order containing a maximum of 1 of each type of vacuum and a maximum of 1 package of each type of accessory. Direct ship orders can be shipped to your customers or to your store location. You will need your company's credit/ debit card information to process this order.All prices include freight for orders with shipping addresses within the contiguous US.",
+  },
+  {
     title: 'REFERRAL SALE',
     description:
       'Refer your customer and get credit towards purchases of Soniclean products',
@@ -257,6 +296,7 @@ const ShippingType = {
 
 export {
   InventoryProducts,
+  DemoProducts,
   DirectShipProducts,
   products,
   orderType,

@@ -13,8 +13,8 @@ router.get(
 
     let query = { roles: 'dealer' };
 
-    if (req.query.email !== '' && req.query.email !== undefined) {
-      query['email'] = { $regex: req.query.email, $options: `i` };
+    if (req.query.search !== '' && req.query.search !== undefined) {
+      query['$text'] = { $search: req.query.search };
     }
 
     User.countDocuments(query).then(totalCount => {

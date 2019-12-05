@@ -12,6 +12,7 @@ import ProductInfo from '../ProductInfo';
 import PromoCode from '../PromoCode';
 // import ScrollTop from '../ScrollTop'
 import AddPaymentMethodModal from 'components/AddPaymentMethodModal/AddPaymentMethodModal';
+import MohawkPaymentMethod from '../MohawkPaymentMethod';
 import * as Contants from '_config/constants';
 
 import { fetchCards } from 'modules/Cards';
@@ -44,6 +45,7 @@ const Payment = ({
   resetOrder,
   accountData,
   cardLoadingState,
+  user,
   ...props
 }) => {
   const [modal, setModal] = useState(false);
@@ -147,7 +149,10 @@ const Payment = ({
 
     let data = {};
 
+    console.log(selectedCard.cardnumber);
+
     data.card = selectedCard;
+    data.mohawk_account = accountData.mohawkAccount;
     data.order = {};
     data.amount = totalPrice;
     data.order.cust_company = accountData.mainstore.name;
@@ -161,16 +166,17 @@ const Payment = ({
     data.order.cust_phone = accountData.mainstore.phoneNumber;
     data.order.cust_e_mail = accountData.email;
     data.order.credit_card_no = selectedCard.cardnumber;
-
     data.order.ship_country = 'USA';
     data.order.cust_country = 'USA';
     data.order.ship_is_billing = false;
 
-    if (orderType === 1) {
+    if (orderType === 1 || orderType === 2) {
+      let type = orderType === 1 ? '.DS' : '.DEM';
       data.order.cust_ref =
         Math.random()
           .toString(36)
-          .substring(7) + '.DS';
+          .substring(7) + type;
+
       if (shippinginfor === 0) {
         data.order.ship_first_name = customerInformation.firstName;
         data.order.ship_last_name = customerInformation.lastName;
@@ -284,6 +290,13 @@ const Payment = ({
                   );
                 })
               )}
+
+              {user.roles === 'official' && (
+                <MohawkPaymentMethod
+                  selectedIndex={selectedCard}
+                  selectPayment={onSelectCard}
+                />
+              )}
               <hr />
               <PaymentShipping SW={props.previousStep} />
               <hr />
@@ -299,7 +312,7 @@ const Payment = ({
                 <CardBody>
                   {orderType === 0
                     ? inventory && getInventoryProducts(inventory)
-                    : orderType === 1
+                    : orderType === 1 || orderType === 2
                     ? ship && getDirectProducts(ship)
                     : null}
                   <PromoCode />
@@ -322,7 +335,7 @@ const Payment = ({
   );
 };
 
-const mapStateToProps = ({ salesform, card, stores, account }) => {
+const mapStateToProps = ({ salesform, card, stores, account, auth }) => {
   const {
     orderType,
     selectedCard,
@@ -339,6 +352,7 @@ const mapStateToProps = ({ salesform, card, stores, account }) => {
   const { cardsData } = card;
   const { storesData } = stores;
   const { accountData } = account;
+  const { user } = auth;
   return {
     orderType,
     selectedCard,
@@ -354,6 +368,7 @@ const mapStateToProps = ({ salesform, card, stores, account }) => {
     customerInformation,
     accountData,
     cardLoadingState,
+    user,
   };
 };
 

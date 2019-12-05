@@ -43,7 +43,6 @@ const OrderFilter = ({ changeFilterOptions }) => {
   };
 
   const handleChangeDate = (startDate, endDate) => {
-    console.log(startDate, endDate);
     setStartDate(startDate);
     setEndDate(endDate);
     if (startDate !== null && endDate !== null) {

@@ -4,6 +4,7 @@ import DefaultLayout from '../containers/DefaultLayout';
 const SalesForm = React.lazy(() => import('../views/SalesForm'));
 const Profile = React.lazy(() => import('../views/Profile'));
 const Orders = React.lazy(() => import('../views/Orders'));
+const OrdersList = React.lazy(() => import('../views/Orders/OrdersList'));
 const OrderDetail = React.lazy(() => import('../views/OrderDetail'));
 const Dealers = React.lazy(() => import('../views/Dealers'));
 
@@ -56,7 +57,14 @@ const routes = [
     path: '/orders/:id',
     exact: true,
     name: 'Orders',
-    component: Orders,
+    component: OrdersList,
+    private: true,
+  },
+  {
+    path: '/orders',
+    exact: true,
+    name: 'Orders',
+    component: OrdersList,
     private: true,
   },
   {

@@ -4,6 +4,8 @@ const Schema = mongoose.Schema;
 // Create Schema
 
 const OrdersSchema = new Schema({
+  payment_type: { type: String, required: true },
+  mohawk_account: { type: String, required: true },
   success_code: { type: Boolean, required: true },
   cust_ref: { type: String, required: true },
   order_number: { type: String, require: true },

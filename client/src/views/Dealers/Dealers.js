@@ -37,10 +37,10 @@ const Dealers = ({
   const BootstrapTableRef = createRef();
 
   const [pageSize, setPageSize] = useState(5);
-  const [email, setEmail] = useState('');
+  const [search, setSearch] = useState('');
   useEffect(() => {
-    if (dealersList.length === 0) getDealersList(1, 5, email);
-  }, [dealersList]);
+    getDealersList(1, 5, search);
+  }, []);
 
   const actionFormatter = (cell, row) => {
     return (
@@ -74,7 +74,7 @@ const Dealers = ({
   const onPageChange = (page, sizePerPage) => {
     let oldPageSize = BootstrapTableRef.current.getSizePerPage(),
       isActualPageChange = oldPageSize === sizePerPage;
-    if (isActualPageChange) getDealersList(page, sizePerPage, email);
+    if (isActualPageChange) getDealersList(page, sizePerPage, search);
   };
 
   const verifiedFormatter = (cell, row) => {
@@ -101,7 +101,7 @@ const Dealers = ({
 
   const onSizePerPageList = sizePerPage => {
     setPageSize(sizePerPage);
-    getDealersList(1, sizePerPage, email);
+    getDealersList(1, sizePerPage, search);
   };
 
   // const dateFormatter = (cell, row) => {
@@ -113,7 +113,7 @@ const Dealers = ({
   };
 
   const onSearch = value => {
-    setEmail(value);
+    setSearch(value);
     getDealersList(1, sizePerPage, value);
   };
 
@@ -126,7 +126,7 @@ const Dealers = ({
               <h5 className="font-weight-normal">Dealers</h5>
             </Col>
             <Col>
-              <DealerFilter searchEmailFilter={onSearch} />
+              <DealerFilter searchFilter={onSearch} />
             </Col>
           </Row>
         </CardHeader>
@@ -225,8 +225,8 @@ const mapStateToProps = ({ official, account }) => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    getDealersList: (page, size, email) => {
-      dispatch(fetchDealersList(page, size, email));
+    getDealersList: (page, size, search) => {
+      dispatch(fetchDealersList(page, size, search));
     },
     deleteDear: id => {
       dispatch(deleteDealerById(id));

@@ -32,7 +32,7 @@ const Orders = ({
 }) => {
   const BootstrapTableRef = createRef();
 
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize, setPageSize] = useState(10);
   const [orderType, setOrderType] = useState('ALL');
   const [orderStatus, setOrderStatus] = useState('ALL');
   const [dateFrom, setDateFrom] = useState();
@@ -66,7 +66,8 @@ const Orders = ({
       orderType,
       orderStatus,
       date_from,
-      date_to
+      date_to,
+      accountData._id
     );
   };
 
@@ -272,7 +273,7 @@ const Orders = ({
               options={{
                 sizePerPage: sizePerPage,
                 onPageChange: onPageChange,
-                sizePerPageList: [5, 10, 15, 20, 25],
+                sizePerPageList: [10, 25, 30, 50],
                 page: currentPage,
                 onSizePerPageList: onSizePerPageList,
               }}
